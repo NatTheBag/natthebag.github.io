@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Han Lu</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@300;400;500&family=Newsreader:ital,wght@0,300;0,400;1,300;1,400&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:       #0d0d0d;
+      --surface:  #141414;
+      --border:   #222;
+      --muted:    #444;
+      --dim:      #888;
+      --text:     #d8d4cc;
+      --bright:   #f0ece4;
+      --accent:   #c9a96e;
+      --mono:     'DM Mono', monospace;
+      --serif:    'Newsreader', Georgia, serif;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--serif);
+      font-size: 16px;
+      line-height: 1.7;
+      min-height: 100vh;
+    }
+
+    /* ── LAYOUT ─────────────────────────────────── */
+    .shell {
+      max-width: 680px;
+      margin: 0 auto;
+      padding: 0 28px;
+    }
+
+    /* ── HEADER ─────────────────────────────────── */
+    header {
+      padding: 56px 0 40px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .site-name {
+      font-family: var(--mono);
+      font-size: 11px;
+      font-weight: 400;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--dim);
+      margin-bottom: 36px;
+    }
+
+    .profile {
+      display: flex;
+      align-items: flex-start;
+      gap: 28px;
+    }
+
+    .avatar {
+      width: 72px;
+      height: 72px;
+      border-radius: 50%;
+      object-fit: cover;
+      flex-shrink: 0;
+      filter: grayscale(20%);
+      border: 1px solid var(--border);
+    }
+
+    .profile-text h1 {
+      font-family: var(--serif);
+      font-size: 1.6rem;
+      font-weight: 300;
+      color: var(--bright);
+      letter-spacing: -0.01em;
+      line-height: 1.2;
+      margin-bottom: 6px;
+    }
+
+    .profile-text .tagline {
+      font-size: 0.88rem;
+      color: var(--dim);
+      font-style: italic;
+      line-height: 1.5;
+      max-width: 460px;
+    }
+
+    /* ── NAV ─────────────────────────────────────── */
+    nav {
+      margin-top: 28px;
+      display: flex;
+      gap: 24px;
+      align-items: center;
+    }
+
+    nav a {
+      font-family: var(--mono);
+      font-size: 11px;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--dim);
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+
+    nav a:hover { color: var(--accent); }
+
+    nav .dot {
+      width: 3px; height: 3px;
+      background: var(--muted);
+      border-radius: 50%;
+    }
+
+    /* ── ABOUT SECTION ──────────────────────────── */
+    .about-section {
+      padding: 40px 0 32px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .section-label {
+      font-family: var(--mono);
+      font-size: 10px;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 18px;
+    }
+
+    .about-section p {
+      font-size: 0.92rem;
+      color: var(--text);
+      margin-bottom: 12px;
+    }
+
+    .about-section p:last-child { margin-bottom: 0; }
+
+    /* ── POSTS ──────────────────────────────────── */
+    .posts-section {
+      padding: 40px 0 0;
+    }
+
+    .post-list {
+      list-style: none;
+    }
+
+    .post-item {
+      padding: 22px 0;
+      border-bottom: 1px solid var(--border);
+      animation: fadeUp 0.4s ease both;
+    }
+
+    .post-item:last-child { border-bottom: none; }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(10px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    .post-meta {
+      font-family: var(--mono);
+      font-size: 10px;
+      letter-spacing: 0.12em;
+      color: var(--muted);
+      margin-bottom: 6px;
+    }
+
+    .post-title {
+      font-size: 1.08rem;
+      font-weight: 400;
+      color: var(--bright);
+      margin-bottom: 6px;
+      line-height: 1.35;
+    }
+
+    .post-excerpt {
+      font-size: 0.87rem;
+      color: var(--dim);
+      font-style: italic;
+      line-height: 1.55;
+    }
+
+    /* ── FOOTER ─────────────────────────────────── */
+    footer {
+      padding: 44px 0 40px;
+      margin-top: 12px;
+    }
+
+    .footer-inner {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+
+    .footer-copy {
+      font-family: var(--mono);
+      font-size: 10px;
+      letter-spacing: 0.1em;
+      color: var(--muted);
+    }
+
+    .footer-email a {
+      font-family: var(--mono);
+      font-size: 10px;
+      letter-spacing: 0.1em;
+      color: var(--muted);
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+
+    .footer-email a:hover { color: var(--accent); }
+
+    /* ── SUBTLE GRAIN OVERLAY ───────────────────── */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      opacity: 0.025;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+      background-size: 200px;
+      z-index: 9999;
+    }
+
+    /* ── RESPONSIVE ──────────────────────────────── */
+    @media (max-width: 480px) {
+      .profile { flex-direction: column; gap: 18px; }
+      .footer-inner { flex-direction: column; align-items: flex-start; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="shell">
+
+  <header>
+    <div class="site-name">hanlu.github.io</div>
+
+    <div class="profile">
+      <img
+        class="avatar"
+        src="https://natthebag.github.io/avatar.jpg"
+        alt="Han Lu"
+        onerror="this.style.display='none'"
+      />
+      <div class="profile-text">
+        <h1>Han Lu</h1>
+        <p class="tagline">
+          Student at Stanford Online High School — interested in engineering,
+          robotics, and building things that exist in the physical world.
+        </p>
+      </div>
+    </div>
+
+    <nav>
+      <a href="https://drive.google.com/file/d/126iD2QpgK5JmunKySybLHMXaEBGWAuKc/view?usp=sharing" target="_blank">Résumé</a>
+      <div class="dot"></div>
+      <a href="mailto:hanlu0427@gmail.com">Email</a>
+    </nav>
+  </header>
+
+  <!-- ── ABOUT ──────────────────────────────────────── -->
+  <section class="about-section">
+    <div class="section-label">About</div>
+    <p>
+      I'm a high school student planning to major in an engineering subfield. I lead
+      STEM-oriented clubs including Robotics and 3D Printing, and work on
+      robotics-related outreach in my community.
+    </p>
+    <p>
+      I'm proficient in Autodesk Fusion 360 and comfortable with basic manufacturing —
+      FDM printing, 2-axis and 3-axis milling. I like making things that are useful and
+      occasionally things that are just interesting.
+    </p>
+  </section>
+
+  <!-- ── POSTS ──────────────────────────────────────── -->
+  <section class="posts-section">
+    <div class="section-label">Writing</div>
+
+    <!--
+    ════════════════════════════════════════════════════
+    HOW TO ADD A NEW POST
+    ────────────────────────────────────────────────────
+    Copy the block below (from <li> to </li>) and paste
+    it at the TOP of the <ul> list. Fill in:
+      • data-date  →  YYYY-MM-DD  (used for sorting)
+      • .post-meta →  display date e.g. "Mar 2026"
+      • .post-title→  your post title
+      • .post-excerpt → one or two sentence summary
+    ════════════════════════════════════════════════════
+
+    <li class="post-item" data-date="2026-03-17">
+      <div class="post-meta">Mar 2026</div>
+      <div class="post-title">Your Post Title Here</div>
+      <p class="post-excerpt">
+        A short description of what this post is about — one or two sentences.
+      </p>
+    </li>
+
+    ════════════════════════════════════════════════════
+    -->
+
+    <ul class="post-list" id="posts">
+
+      <li class="post-item" data-date="2025-07-26" style="animation-delay:0.05s">
+        <div class="post-meta">Jul 2025</div>
+        <div class="post-title">Welcome to my site</div>
+        <p class="post-excerpt">
+          Getting started — a place to write about things I'm working on,
+          thinking about, or learning.
+        </p>
+      </li>
+
+    </ul>
+  </section>
+
+  <footer>
+    <div class="footer-inner">
+      <span class="footer-copy">© 2026 Han Lu — All rights reserved.</span>
+      <span class="footer-email"><a href="mailto:hanlu0427@gmail.com">hanlu0427@gmail.com</a></span>
+    </div>
+  </footer>
+
+</div><!-- /shell -->
+
+<script>
+  // Stagger animation delays on posts
+  document.querySelectorAll('.post-item').forEach((el, i) => {
+    if (!el.style.animationDelay) el.style.animationDelay = (i * 0.06) + 's';
+  });
+</script>
+</body>
+</html>
