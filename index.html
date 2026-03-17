@@ -5,21 +5,25 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Han Lu</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@300;400;500&family=Newsreader:ital,wght@0,300;0,400;1,300;1,400&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=DM+Mono:ital,wght@0,300;0,400;0,500;1,300&family=Newsreader:ital,opsz,wght@0,6..72,300;0,6..72,400;1,6..72,300;1,6..72,400&display=swap" rel="stylesheet">
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
     :root {
-      --bg:       #0d0d0d;
-      --surface:  #141414;
-      --border:   #222;
-      --muted:    #444;
-      --dim:      #888;
-      --text:     #d8d4cc;
-      --bright:   #f0ece4;
-      --accent:   #c9a96e;
-      --mono:     'DM Mono', monospace;
-      --serif:    'Newsreader', Georgia, serif;
+      --bg:        #0c0c0b;
+      --surface:   #131310;
+      --surface2:  #191916;
+      --border:    #222220;
+      --border2:   #2e2e2a;
+      --muted:     #484840;
+      --dim:       #7a7a70;
+      --text:      #cec9be;
+      --bright:    #edeae2;
+      --accent:    #c8a86b;
+      --accent2:   #8fb89a;
+      --mono:      'DM Mono', monospace;
+      --serif:     'Newsreader', Georgia, serif;
+      --radius:    4px;
     }
 
     html { scroll-behavior: smooth; }
@@ -29,31 +33,89 @@
       color: var(--text);
       font-family: var(--serif);
       font-size: 16px;
-      line-height: 1.7;
+      line-height: 1.72;
       min-height: 100vh;
     }
 
-    /* ── LAYOUT ─────────────────────────────────── */
+    /* subtle grain */
+    body::after {
+      content: '';
+      position: fixed; inset: 0;
+      pointer-events: none;
+      z-index: 9000;
+      opacity: 0.03;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+      background-size: 256px;
+    }
+
+    /* ── SHELL ─────────────────────────────── */
     .shell {
-      max-width: 680px;
+      max-width: 700px;
       margin: 0 auto;
-      padding: 0 28px;
+      padding: 0 32px;
     }
 
-    /* ── HEADER ─────────────────────────────────── */
-    header {
-      padding: 56px 0 40px;
+    /* ── NAV BAR ───────────────────────────── */
+    .topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 24px 0 20px;
       border-bottom: 1px solid var(--border);
+      margin-bottom: 0;
     }
 
-    .site-name {
+    .topbar-logo {
       font-family: var(--mono);
       font-size: 11px;
-      font-weight: 400;
-      letter-spacing: 0.18em;
+      letter-spacing: 0.16em;
       text-transform: uppercase;
       color: var(--dim);
-      margin-bottom: 36px;
+      cursor: pointer;
+      transition: color 0.2s;
+    }
+    .topbar-logo:hover { color: var(--accent); }
+
+    .topbar-nav {
+      display: flex;
+      gap: 0;
+      align-items: center;
+    }
+
+    .tab-btn {
+      font-family: var(--mono);
+      font-size: 10px;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--dim);
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: 6px 14px;
+      border-radius: var(--radius);
+      transition: color 0.2s, background 0.2s;
+    }
+    .tab-btn:hover { color: var(--text); }
+    .tab-btn.active {
+      color: var(--bright);
+      background: var(--surface2);
+    }
+
+    /* ── PAGES ─────────────────────────────── */
+    .page { display: none; animation: pageIn 0.3s ease both; }
+    .page.active { display: block; }
+
+    @keyframes pageIn {
+      from { opacity: 0; transform: translateY(8px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ═══════════════════════════════════════
+       HOME PAGE
+    ═══════════════════════════════════════ */
+    .hero {
+      padding: 52px 0 36px;
+      border-bottom: 1px solid var(--border);
     }
 
     .profile {
@@ -63,64 +125,54 @@
     }
 
     .avatar {
-      width: 72px;
-      height: 72px;
+      width: 76px; height: 76px;
       border-radius: 50%;
       object-fit: cover;
       flex-shrink: 0;
-      filter: grayscale(20%);
-      border: 1px solid var(--border);
+      filter: grayscale(15%);
+      border: 1px solid var(--border2);
     }
 
     .profile-text h1 {
       font-family: var(--serif);
-      font-size: 1.6rem;
+      font-size: 1.65rem;
       font-weight: 300;
       color: var(--bright);
       letter-spacing: -0.01em;
       line-height: 1.2;
-      margin-bottom: 6px;
+      margin-bottom: 7px;
     }
 
     .profile-text .tagline {
       font-size: 0.88rem;
       color: var(--dim);
       font-style: italic;
-      line-height: 1.5;
-      max-width: 460px;
+      line-height: 1.55;
     }
 
-    /* ── NAV ─────────────────────────────────────── */
-    nav {
-      margin-top: 28px;
+    .hero-links {
+      margin-top: 24px;
       display: flex;
-      gap: 24px;
-      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
     }
 
-    nav a {
+    .pill-link {
       font-family: var(--mono);
-      font-size: 11px;
+      font-size: 10px;
       letter-spacing: 0.14em;
       text-transform: uppercase;
       color: var(--dim);
       text-decoration: none;
-      transition: color 0.2s;
+      padding: 5px 12px;
+      border: 1px solid var(--border2);
+      border-radius: 20px;
+      transition: color 0.2s, border-color 0.2s;
     }
+    .pill-link:hover { color: var(--accent); border-color: var(--accent); }
 
-    nav a:hover { color: var(--accent); }
-
-    nav .dot {
-      width: 3px; height: 3px;
-      background: var(--muted);
-      border-radius: 50%;
-    }
-
-    /* ── ABOUT SECTION ──────────────────────────── */
-    .about-section {
-      padding: 40px 0 32px;
-      border-bottom: 1px solid var(--border);
-    }
+    /* posts on home */
+    .home-posts { padding: 40px 0 0; }
 
     .section-label {
       font-family: var(--mono);
@@ -128,36 +180,23 @@
       letter-spacing: 0.2em;
       text-transform: uppercase;
       color: var(--muted);
-      margin-bottom: 18px;
+      margin-bottom: 20px;
     }
 
-    .about-section p {
-      font-size: 0.92rem;
-      color: var(--text);
-      margin-bottom: 12px;
-    }
-
-    .about-section p:last-child { margin-bottom: 0; }
-
-    /* ── POSTS ──────────────────────────────────── */
-    .posts-section {
-      padding: 40px 0 0;
-    }
-
-    .post-list {
-      list-style: none;
-    }
+    .post-list { list-style: none; }
 
     .post-item {
-      padding: 22px 0;
+      padding: 20px 0;
       border-bottom: 1px solid var(--border);
-      animation: fadeUp 0.4s ease both;
+      cursor: pointer;
+      transition: background 0.15s;
+      animation: fadeUp 0.35s ease both;
     }
-
     .post-item:last-child { border-bottom: none; }
+    .post-item:hover .post-title { color: var(--accent); }
 
     @keyframes fadeUp {
-      from { opacity: 0; transform: translateY(10px); }
+      from { opacity: 0; transform: translateY(8px); }
       to   { opacity: 1; transform: translateY(0); }
     }
 
@@ -166,35 +205,354 @@
       font-size: 10px;
       letter-spacing: 0.12em;
       color: var(--muted);
-      margin-bottom: 6px;
+      margin-bottom: 5px;
     }
 
     .post-title {
-      font-size: 1.08rem;
+      font-size: 1.05rem;
       font-weight: 400;
       color: var(--bright);
-      margin-bottom: 6px;
       line-height: 1.35;
+      margin-bottom: 5px;
+      transition: color 0.2s;
     }
 
     .post-excerpt {
-      font-size: 0.87rem;
+      font-size: 0.86rem;
       color: var(--dim);
       font-style: italic;
       line-height: 1.55;
     }
 
-    /* ── FOOTER ─────────────────────────────────── */
+    /* ═══════════════════════════════════════
+       ABOUT PAGE
+    ═══════════════════════════════════════ */
+    .about-page { padding: 48px 0 0; }
+
+    .about-name {
+      font-size: 1.5rem;
+      font-weight: 300;
+      color: var(--bright);
+      margin-bottom: 4px;
+    }
+
+    .about-subtitle {
+      font-family: var(--mono);
+      font-size: 11px;
+      letter-spacing: 0.14em;
+      color: var(--dim);
+      margin-bottom: 40px;
+    }
+
+    .about-block {
+      margin-bottom: 44px;
+    }
+
+    .about-block p {
+      font-size: 0.92rem;
+      color: var(--text);
+      margin-bottom: 12px;
+    }
+    .about-block p:last-child { margin-bottom: 0; }
+
+    /* Skills grid */
+    .skills-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 10px;
+      margin-top: 4px;
+    }
+
+    .skill-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 14px;
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      font-size: 0.83rem;
+      color: var(--text);
+    }
+
+    .skill-dot {
+      width: 5px; height: 5px;
+      border-radius: 50%;
+      background: var(--accent);
+      flex-shrink: 0;
+    }
+
+    /* Education */
+    .edu-item {
+      padding: 14px 0;
+      border-bottom: 1px solid var(--border);
+    }
+    .edu-item:last-child { border-bottom: none; }
+
+    .edu-school {
+      font-size: 0.95rem;
+      color: var(--bright);
+      font-weight: 400;
+      margin-bottom: 3px;
+    }
+
+    .edu-detail {
+      font-family: var(--mono);
+      font-size: 10px;
+      letter-spacing: 0.1em;
+      color: var(--dim);
+    }
+
+    /* Clubs */
+    .club-list { list-style: none; }
+
+    .club-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      padding: 12px 0;
+      border-bottom: 1px solid var(--border);
+      font-size: 0.9rem;
+    }
+    .club-item:last-child { border-bottom: none; }
+
+    .club-role {
+      font-family: var(--mono);
+      font-size: 9px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--accent2);
+      padding: 2px 7px;
+      border: 1px solid var(--accent2);
+      border-radius: 20px;
+      flex-shrink: 0;
+      margin-top: 2px;
+      opacity: 0.75;
+    }
+
+    .club-name { color: var(--bright); }
+    .club-desc { font-size: 0.82rem; color: var(--dim); font-style: italic; margin-top: 2px; }
+
+    /* ═══════════════════════════════════════
+       PROJECTS PAGE
+    ═══════════════════════════════════════ */
+    .projects-page { padding: 48px 0 0; }
+
+    .projects-grid {
+      display: grid;
+      gap: 16px;
+    }
+
+    .project-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      overflow: hidden;
+      transition: border-color 0.2s, transform 0.2s;
+      animation: fadeUp 0.35s ease both;
+    }
+    .project-card:hover {
+      border-color: var(--border2);
+      transform: translateY(-2px);
+    }
+
+    .project-img-wrap {
+      width: 100%;
+      height: 180px;
+      background: var(--surface2);
+      overflow: hidden;
+      position: relative;
+    }
+
+    .project-img-wrap img {
+      width: 100%; height: 100%;
+      object-fit: cover;
+      filter: grayscale(20%);
+      transition: filter 0.3s;
+    }
+    .project-card:hover .project-img-wrap img { filter: grayscale(0%); }
+
+    .project-img-placeholder {
+      width: 100%; height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: var(--mono);
+      font-size: 11px;
+      letter-spacing: 0.14em;
+      color: var(--muted);
+      text-transform: uppercase;
+    }
+
+    .project-body {
+      padding: 20px 22px 22px;
+    }
+
+    .project-header {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 8px;
+    }
+
+    .project-name {
+      font-size: 1rem;
+      font-weight: 400;
+      color: var(--bright);
+      line-height: 1.3;
+    }
+
+    .status-badge {
+      font-family: var(--mono);
+      font-size: 9px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      padding: 2px 8px;
+      border-radius: 20px;
+      flex-shrink: 0;
+      margin-top: 3px;
+    }
+    .status-badge.ongoing {
+      color: var(--accent2);
+      background: rgba(143,184,154,0.1);
+      border: 1px solid rgba(143,184,154,0.25);
+    }
+    .status-badge.complete {
+      color: var(--dim);
+      background: var(--surface2);
+      border: 1px solid var(--border2);
+    }
+
+    .project-desc {
+      font-size: 0.87rem;
+      color: var(--dim);
+      font-style: italic;
+      line-height: 1.55;
+      margin-bottom: 14px;
+    }
+
+    .project-links {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .project-link {
+      font-family: var(--mono);
+      font-size: 10px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--dim);
+      text-decoration: none;
+      padding: 4px 10px;
+      border: 1px solid var(--border2);
+      border-radius: var(--radius);
+      transition: color 0.2s, border-color 0.2s;
+    }
+    .project-link:hover { color: var(--accent); border-color: var(--accent); }
+
+    /* ═══════════════════════════════════════
+       POST MODAL
+    ═══════════════════════════════════════ */
+    .modal-backdrop {
+      position: fixed; inset: 0;
+      background: rgba(10,10,9,0.88);
+      backdrop-filter: blur(6px);
+      z-index: 8000;
+      display: flex;
+      align-items: flex-start;
+      justify-content: center;
+      padding: 40px 24px 40px;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.25s;
+      overflow-y: auto;
+    }
+    .modal-backdrop.open {
+      opacity: 1;
+      pointer-events: all;
+    }
+
+    .modal {
+      background: var(--surface);
+      border: 1px solid var(--border2);
+      border-radius: 8px;
+      width: 100%;
+      max-width: 640px;
+      padding: 44px 48px 52px;
+      transform: translateY(16px);
+      transition: transform 0.28s ease;
+      position: relative;
+      margin: auto;
+    }
+    .modal-backdrop.open .modal { transform: translateY(0); }
+
+    .modal-close {
+      position: absolute;
+      top: 18px; right: 20px;
+      background: none;
+      border: none;
+      cursor: pointer;
+      color: var(--muted);
+      font-size: 20px;
+      line-height: 1;
+      padding: 4px 8px;
+      border-radius: var(--radius);
+      transition: color 0.2s;
+    }
+    .modal-close:hover { color: var(--text); }
+
+    .modal-meta {
+      font-family: var(--mono);
+      font-size: 10px;
+      letter-spacing: 0.14em;
+      color: var(--muted);
+      margin-bottom: 14px;
+    }
+
+    .modal-title {
+      font-size: 1.5rem;
+      font-weight: 300;
+      color: var(--bright);
+      line-height: 1.3;
+      margin-bottom: 28px;
+      padding-bottom: 24px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .modal-body {
+      font-size: 0.93rem;
+      line-height: 1.8;
+      color: var(--text);
+    }
+
+    .modal-body p { margin-bottom: 16px; }
+    .modal-body p:last-child { margin-bottom: 0; }
+    .modal-body h2 {
+      font-size: 1rem;
+      font-weight: 400;
+      color: var(--bright);
+      margin: 28px 0 10px;
+      font-family: var(--mono);
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      font-size: 11px;
+    }
+    .modal-body a { color: var(--accent); text-decoration: underline; text-decoration-color: rgba(200,168,107,0.3); }
+
+    /* ── FOOTER ─────────────────────────────── */
     footer {
-      padding: 44px 0 40px;
-      margin-top: 12px;
+      margin-top: 60px;
+      padding: 28px 0 36px;
+      border-top: 1px solid var(--border);
     }
 
     .footer-inner {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      gap: 16px;
+      gap: 12px;
       flex-wrap: wrap;
     }
 
@@ -213,24 +571,14 @@
       text-decoration: none;
       transition: color 0.2s;
     }
-
     .footer-email a:hover { color: var(--accent); }
 
-    /* ── SUBTLE GRAIN OVERLAY ───────────────────── */
-    body::before {
-      content: '';
-      position: fixed;
-      inset: 0;
-      pointer-events: none;
-      opacity: 0.025;
-      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
-      background-size: 200px;
-      z-index: 9999;
-    }
-
-    /* ── RESPONSIVE ──────────────────────────────── */
-    @media (max-width: 480px) {
-      .profile { flex-direction: column; gap: 18px; }
+    /* ── RESPONSIVE ──────────────────────────── */
+    @media (max-width: 520px) {
+      .shell { padding: 0 20px; }
+      .profile { flex-direction: column; gap: 16px; }
+      .modal { padding: 36px 24px 40px; }
+      .skills-grid { grid-template-columns: 1fr; }
       .footer-inner { flex-direction: column; align-items: flex-start; }
     }
   </style>
@@ -239,102 +587,349 @@
 
 <div class="shell">
 
-  <header>
-    <div class="site-name">hanlu.github.io</div>
+  <!-- ── TOP NAV ──────────────────────────────── -->
+  <div class="topbar">
+    <div class="topbar-logo" onclick="showPage('home')">Han Lu</div>
+    <nav class="topbar-nav">
+      <button class="tab-btn active" data-page="home"    onclick="showPage('home')">Home</button>
+      <button class="tab-btn"        data-page="about"   onclick="showPage('about')">About</button>
+      <button class="tab-btn"        data-page="projects" onclick="showPage('projects')">Projects</button>
+    </nav>
+  </div>
 
-    <div class="profile">
-      <img
-        class="avatar"
-        src="https://natthebag.github.io/avatar.jpg"
-        alt="Han Lu"
-        onerror="this.style.display='none'"
-      />
-      <div class="profile-text">
-        <h1>Han Lu</h1>
-        <p class="tagline">
-          Student at Stanford Online High School — interested in engineering,
-          robotics, and building things that exist in the physical world.
-        </p>
+  <!-- ═══════════════════════════════════════════
+       HOME PAGE
+  ════════════════════════════════════════════ -->
+  <div id="page-home" class="page active">
+
+    <div class="hero">
+      <div class="profile">
+        <img
+          class="avatar"
+          src="https://natthebag.github.io/avatar.jpg"
+          alt="Han Lu"
+          onerror="this.style.display='none'"
+        />
+        <div class="profile-text">
+          <h1>Han Lu</h1>
+          <p class="tagline">
+            Student at Stanford Online High School — interested in engineering,
+            robotics, and building things that exist in the physical world.
+          </p>
+        </div>
+      </div>
+      <div class="hero-links">
+        <a class="pill-link" href="https://drive.google.com/file/d/126iD2QpgK5JmunKySybLHMXaEBGWAuKc/view?usp=sharing" target="_blank">Résumé ↗</a>
+        <a class="pill-link" href="mailto:hanlu0427@gmail.com">hanlu0427@gmail.com</a>
       </div>
     </div>
 
-    <nav>
-      <a href="https://drive.google.com/file/d/126iD2QpgK5JmunKySybLHMXaEBGWAuKc/view?usp=sharing" target="_blank">Résumé</a>
-      <div class="dot"></div>
-      <a href="mailto:hanlu0427@gmail.com">Email</a>
-    </nav>
-  </header>
-
-  <!-- ── ABOUT ──────────────────────────────────────── -->
-  <section class="about-section">
-    <div class="section-label">About</div>
-    <p>
-      I'm a high school student planning to major in an engineering subfield. I lead
-      STEM-oriented clubs including Robotics and 3D Printing, and work on
-      robotics-related outreach in my community.
-    </p>
-    <p>
-      I'm proficient in Autodesk Fusion 360 and comfortable with basic manufacturing —
-      FDM printing, 2-axis and 3-axis milling. I like making things that are useful and
-      occasionally things that are just interesting.
-    </p>
-  </section>
-
-  <!-- ── POSTS ──────────────────────────────────────── -->
-  <section class="posts-section">
-    <div class="section-label">Writing</div>
-
-    <!--
-    ════════════════════════════════════════════════════
-    HOW TO ADD A NEW POST
-    ────────────────────────────────────────────────────
-    Copy the block below (from <li> to </li>) and paste
-    it at the TOP of the <ul> list. Fill in:
-      • data-date  →  YYYY-MM-DD  (used for sorting)
-      • .post-meta →  display date e.g. "Mar 2026"
-      • .post-title→  your post title
-      • .post-excerpt → one or two sentence summary
-    ════════════════════════════════════════════════════
-
-    <li class="post-item" data-date="2026-03-17">
-      <div class="post-meta">Mar 2026</div>
-      <div class="post-title">Your Post Title Here</div>
-      <p class="post-excerpt">
-        A short description of what this post is about — one or two sentences.
-      </p>
-    </li>
-
-    ════════════════════════════════════════════════════
-    -->
-
-    <ul class="post-list" id="posts">
-
-      <li class="post-item" data-date="2025-07-26" style="animation-delay:0.05s">
-        <div class="post-meta">Jul 2025</div>
-        <div class="post-title">Welcome to my site</div>
-        <p class="post-excerpt">
-          Getting started — a place to write about things I'm working on,
-          thinking about, or learning.
-        </p>
-      </li>
-
-    </ul>
-  </section>
-
-  <footer>
-    <div class="footer-inner">
-      <span class="footer-copy">© 2026 Han Lu — All rights reserved.</span>
-      <span class="footer-email"><a href="mailto:hanlu0427@gmail.com">hanlu0427@gmail.com</a></span>
+    <div class="home-posts">
+      <div class="section-label">Writing</div>
+      <ul class="post-list" id="post-list">
+        <!-- Posts are rendered by JS from the POSTS array below -->
+      </ul>
     </div>
-  </footer>
+
+    <footer>
+      <div class="footer-inner">
+        <span class="footer-copy">© 2026 Han Lu — All rights reserved.</span>
+        <span class="footer-email"><a href="mailto:hanlu0427@gmail.com">hanlu0427@gmail.com</a></span>
+      </div>
+    </footer>
+  </div>
+
+  <!-- ═══════════════════════════════════════════
+       ABOUT PAGE
+  ════════════════════════════════════════════ -->
+  <div id="page-about" class="page">
+    <div class="about-page">
+
+      <div class="about-name">Han Lu</div>
+      <div class="about-subtitle">Stanford Online High School · Class of 2026</div>
+
+      <!-- BIO -->
+      <div class="about-block">
+        <div class="section-label">Bio</div>
+        <p>
+          I'm a high school student at Stanford Online High School, planning to pursue
+          an undergraduate degree in an engineering discipline — likely mechanical,
+          electrical, or robotics engineering.
+        </p>
+        <p>
+          My interests center on the intersection of hardware and software: designing
+          physical systems that actually work in the real world. I've spent time on
+          robotics outreach, where I help introduce younger students to hands-on
+          engineering.
+        </p>
+      </div>
+
+      <!-- EDUCATION -->
+      <div class="about-block">
+        <div class="section-label">Education</div>
+        <div class="edu-item">
+          <div class="edu-school">Stanford Online High School</div>
+          <div class="edu-detail">High School Diploma · Expected 2026</div>
+        </div>
+      </div>
+
+      <!-- CLUBS -->
+      <div class="about-block">
+        <div class="section-label">Clubs &amp; Activities</div>
+        <ul class="club-list">
+          <li class="club-item">
+            <span class="club-role">Lead</span>
+            <div>
+              <div class="club-name">Robotics Club</div>
+              <div class="club-desc">Design, build, and program competitive robots. Lead a team through ideation to fabrication.</div>
+            </div>
+          </li>
+          <li class="club-item">
+            <span class="club-role">Lead</span>
+            <div>
+              <div class="club-name">3D Printing Club</div>
+              <div class="club-desc">FDM printing projects and curriculum; teach peers modeling in Autodesk Fusion 360.</div>
+            </div>
+          </li>
+          <li class="club-item">
+            <span class="club-role">Member</span>
+            <div>
+              <div class="club-name">Robotics Outreach</div>
+              <div class="club-desc">Community programs introducing K–8 students to engineering and robotics concepts.</div>
+            </div>
+          </li>
+        </ul>
+      </div>
+
+      <!-- SKILLS -->
+      <div class="about-block">
+        <div class="section-label">Skills &amp; Tools</div>
+        <div class="skills-grid">
+          <div class="skill-item"><span class="skill-dot"></span>Autodesk Fusion 360</div>
+          <div class="skill-item"><span class="skill-dot"></span>FDM 3D Printing</div>
+          <div class="skill-item"><span class="skill-dot"></span>2 &amp; 3-axis CNC Milling</div>
+          <div class="skill-item"><span class="skill-dot"></span>Robot Design &amp; Build</div>
+          <div class="skill-item"><span class="skill-dot"></span>Prototyping &amp; Fabrication</div>
+          <div class="skill-item"><span class="skill-dot"></span>Basic Electronics</div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════
+       PROJECTS PAGE
+  ════════════════════════════════════════════ -->
+  <div id="page-projects" class="page">
+    <div class="projects-page">
+      <div class="section-label" style="margin-bottom:24px;">Projects</div>
+      <div class="projects-grid" id="projects-grid">
+        <!-- Rendered by JS from PROJECTS array -->
+      </div>
+    </div>
+  </div>
 
 </div><!-- /shell -->
 
+
+<!-- ═══════════════════════════════════════════
+     POST MODAL
+════════════════════════════════════════════ -->
+<div class="modal-backdrop" id="modal-backdrop" onclick="closeModalBackdrop(event)">
+  <div class="modal" id="modal">
+    <button class="modal-close" onclick="closeModal()" title="Close">✕</button>
+    <div class="modal-meta" id="modal-meta"></div>
+    <div class="modal-title" id="modal-title"></div>
+    <div class="modal-body" id="modal-body"></div>
+  </div>
+</div>
+
+
 <script>
-  // Stagger animation delays on posts
-  document.querySelectorAll('.post-item').forEach((el, i) => {
-    if (!el.style.animationDelay) el.style.animationDelay = (i * 0.06) + 's';
+/* ════════════════════════════════════════════════════════════
+   ██████╗  ██████╗ ███████╗████████╗███████╗
+   ██╔══██╗██╔═══██╗██╔════╝╚══██╔══╝██╔════╝
+   ██████╔╝██║   ██║███████╗   ██║   ███████╗
+   ██╔═══╝ ██║   ██║╚════██║   ██║   ╚════██║
+   ██║     ╚██████╔╝███████║   ██║   ███████║
+   ╚═╝      ╚═════╝ ╚══════╝   ╚═╝   ╚══════╝
+
+   HOW TO ADD A NEW POST
+   ─────────────────────
+   Copy one of the objects in the POSTS array and paste it
+   at the TOP of the array (newest first). Fill in:
+
+     date    → "YYYY-MM-DD"   used for sorting
+     display → "Mon YYYY"     shown on the card
+     title   → post title
+     excerpt → 1–2 sentence teaser (shown on card)
+     body    → full article content as an HTML string.
+               Use <p> for paragraphs, <h2> for sections,
+               <a href="..."> for links.
+
+   Example:
+   {
+     date: "2026-03-17",
+     display: "Mar 2026",
+     title: "My New Post",
+     excerpt: "A short teaser sentence.",
+     body: `<p>First paragraph...</p><p>Second paragraph...</p>`
+   },
+════════════════════════════════════════════════════════════ */
+
+const POSTS = [
+  {
+    date: "2025-07-26",
+    display: "Jul 2025",
+    title: "Welcome to my site",
+    excerpt: "Getting started — a place to write about things I'm working on, thinking about, or learning.",
+    body: `
+      <p>This is the beginning of my personal site. I plan to use it to write about projects I'm working on,
+      things I've learned, and ideas I'm thinking through.</p>
+      <p>If you've found this and want to reach out, feel free to email me at
+      <a href="mailto:hanlu0427@gmail.com">hanlu0427@gmail.com</a>.</p>
+    `
+  },
+];
+
+/* ════════════════════════════════════════════════════════════
+   ██████╗ ██████╗  ██████╗      ██╗███████╗ ██████╗████████╗███████╗
+   ██╔══██╗██╔══██╗██╔═══██╗     ██║██╔════╝██╔════╝╚══██╔══╝██╔════╝
+   ██████╔╝██████╔╝██║   ██║     ██║█████╗  ██║        ██║   ███████╗
+   ██╔═══╝ ██╔══██╗██║   ██║██   ██║██╔══╝  ██║        ██║   ╚════██║
+   ██║     ██║  ██║╚██████╔╝╚█████╔╝███████╗╚██████╗   ██║   ███████║
+   ╚═╝     ╚═╝  ╚═╝ ╚═════╝  ╚════╝ ╚══════╝ ╚═════╝   ╚═╝   ╚══════╝
+
+   HOW TO ADD A NEW PROJECT
+   ────────────────────────
+   Copy one of the objects below and add it to the array.
+   Fill in:
+
+     name    → project title
+     status  → "ongoing" or "complete"
+     desc    → 1–3 sentence description
+     image   → URL to an image, or "" for placeholder
+     links   → array of { label, url } objects (can be empty [])
+
+   Example:
+   {
+     name: "My Robot Arm",
+     status: "ongoing",
+     desc: "A 4-DOF robotic arm built from scratch using servo motors and 3D-printed joints.",
+     image: "",
+     links: [
+       { label: "GitHub", url: "https://github.com/natthebag/robot-arm" },
+       { label: "Demo", url: "https://youtu.be/..." }
+     ]
+   },
+════════════════════════════════════════════════════════════ */
+
+const PROJECTS = [
+  {
+    name: "Robotics Club Competition Bot",
+    status: "ongoing",
+    desc: "Annual competition robot designed and built from scratch. Responsible for mechanical design in Fusion 360 and FDM-printed structural components.",
+    image: "",
+    links: []
+  },
+  {
+    name: "3D Printing Curriculum",
+    status: "complete",
+    desc: "Developed and ran a multi-week workshop series teaching Autodesk Fusion 360 and FDM printing fundamentals to high school peers.",
+    image: "",
+    links: []
+  },
+  {
+    name: "Robotics Outreach Program",
+    status: "ongoing",
+    desc: "Community program introducing K–8 students to engineering concepts through hands-on robot-building activities.",
+    image: "",
+    links: []
+  },
+];
+
+/* ════════════════════════════════════
+   RENDER LOGIC — no need to edit below
+════════════════════════════════════ */
+
+function renderPosts() {
+  const list = document.getElementById('post-list');
+  const sorted = [...POSTS].sort((a, b) => b.date.localeCompare(a.date));
+  list.innerHTML = sorted.map((p, i) => `
+    <li class="post-item" style="animation-delay:${i * 0.06}s" onclick="openPost(${POSTS.indexOf(p)})">
+      <div class="post-meta">${p.display}</div>
+      <div class="post-title">${p.title}</div>
+      <p class="post-excerpt">${p.excerpt}</p>
+    </li>
+  `).join('');
+}
+
+function renderProjects() {
+  const grid = document.getElementById('projects-grid');
+  grid.innerHTML = PROJECTS.map((p, i) => `
+    <div class="project-card" style="animation-delay:${i * 0.07}s">
+      <div class="project-img-wrap">
+        ${p.image
+          ? `<img src="${p.image}" alt="${p.name}" loading="lazy" />`
+          : `<div class="project-img-placeholder">No image</div>`
+        }
+      </div>
+      <div class="project-body">
+        <div class="project-header">
+          <div class="project-name">${p.name}</div>
+          <span class="status-badge ${p.status}">${p.status}</span>
+        </div>
+        <p class="project-desc">${p.desc}</p>
+        ${p.links.length ? `
+          <div class="project-links">
+            ${p.links.map(l => `<a class="project-link" href="${l.url}" target="_blank">${l.label} ↗</a>`).join('')}
+          </div>
+        ` : ''}
+      </div>
+    </div>
+  `).join('');
+}
+
+/* ── MODAL ──────────────────────────── */
+function openPost(idx) {
+  const p = POSTS[idx];
+  document.getElementById('modal-meta').textContent = p.display;
+  document.getElementById('modal-title').textContent = p.title;
+  document.getElementById('modal-body').innerHTML = p.body;
+  document.getElementById('modal-backdrop').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeModal() {
+  document.getElementById('modal-backdrop').classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+function closeModalBackdrop(e) {
+  if (e.target === document.getElementById('modal-backdrop')) closeModal();
+}
+
+document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
+
+/* ── PAGE SWITCHING ──────────────────── */
+function showPage(name) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('page-' + name).classList.add('active');
+  document.querySelector(`[data-page="${name}"]`).classList.add('active');
+
+  // re-trigger animations
+  document.querySelectorAll(`#page-${name} .post-item, #page-${name} .project-card`).forEach((el, i) => {
+    el.style.animation = 'none';
+    el.offsetHeight; // reflow
+    el.style.animation = '';
+    el.style.animationDelay = (i * 0.06) + 's';
   });
+}
+
+/* ── INIT ─────────────────────────────── */
+renderPosts();
+renderProjects();
 </script>
 </body>
 </html>
