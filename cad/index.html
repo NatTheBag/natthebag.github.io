@@ -1,0 +1,852 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>CAD Tutorials — Han Lu</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=DM+Mono:ital,wght@0,300;0,400;0,500;1,300&family=Newsreader:ital,opsz,wght@0,6..72,300;0,6..72,400;1,6..72,300;1,6..72,400&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:        #0c0c0b;
+      --surface:   #131310;
+      --surface2:  #191916;
+      --border:    #222220;
+      --border2:   #2e2e2a;
+      --muted:     #484840;
+      --dim:       #7a7a70;
+      --text:      #cec9be;
+      --bright:    #edeae2;
+      --accent:    #c8a86b;
+      --accent2:   #8fb89a;
+      --mono:      'DM Mono', monospace;
+      --serif:     'Newsreader', Georgia, serif;
+      --sidebar-w: 260px;
+      --topbar-h:  56px;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--serif);
+      font-size: 16px;
+      line-height: 1.72;
+      min-height: 100vh;
+    }
+
+    /* grain */
+    body::after {
+      content: '';
+      position: fixed; inset: 0;
+      pointer-events: none;
+      z-index: 9000;
+      opacity: 0.025;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+      background-size: 256px;
+    }
+
+    /* ── TOPBAR ─────────────────────────────────── */
+    .topbar {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      height: var(--topbar-h);
+      background: var(--bg);
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      padding: 0 28px;
+      gap: 20px;
+      z-index: 500;
+    }
+
+    .topbar-home {
+      font-family: var(--mono);
+      font-size: 11px;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--dim);
+      text-decoration: none;
+      transition: color 0.2s;
+      flex-shrink: 0;
+    }
+    .topbar-home:hover { color: var(--accent); }
+
+    .topbar-sep {
+      color: var(--muted);
+      font-family: var(--mono);
+      font-size: 12px;
+    }
+
+    .topbar-title {
+      font-family: var(--mono);
+      font-size: 11px;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--bright);
+    }
+
+    .topbar-spacer { flex: 1; }
+
+    /* mobile menu toggle */
+    .sidebar-toggle {
+      display: none;
+      background: none;
+      border: 1px solid var(--border2);
+      border-radius: 4px;
+      color: var(--dim);
+      cursor: pointer;
+      padding: 5px 10px;
+      font-family: var(--mono);
+      font-size: 10px;
+      letter-spacing: 0.1em;
+      transition: color 0.2s;
+    }
+    .sidebar-toggle:hover { color: var(--text); }
+
+    /* ── LAYOUT ──────────────────────────────────── */
+    .layout {
+      display: flex;
+      margin-top: var(--topbar-h);
+      min-height: calc(100vh - var(--topbar-h));
+    }
+
+    /* ── SIDEBAR ─────────────────────────────────── */
+    .sidebar {
+      width: var(--sidebar-w);
+      flex-shrink: 0;
+      position: fixed;
+      top: var(--topbar-h);
+      left: 0;
+      bottom: 0;
+      overflow-y: auto;
+      border-right: 1px solid var(--border);
+      background: var(--surface);
+      padding: 28px 0 40px;
+      transition: transform 0.25s ease;
+      scrollbar-width: thin;
+      scrollbar-color: var(--border2) transparent;
+    }
+
+    .sidebar-section {
+      margin-bottom: 28px;
+    }
+
+    .sidebar-section-label {
+      font-family: var(--mono);
+      font-size: 9px;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--muted);
+      padding: 0 20px;
+      margin-bottom: 6px;
+    }
+
+    .sidebar-lesson {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      padding: 8px 20px;
+      cursor: pointer;
+      transition: background 0.15s;
+      border-left: 2px solid transparent;
+      text-align: left;
+      background: none;
+      border-top: none;
+      border-right: none;
+      border-bottom: none;
+      width: 100%;
+    }
+    .sidebar-lesson:hover {
+      background: var(--surface2);
+    }
+    .sidebar-lesson.active {
+      border-left-color: var(--accent);
+      background: var(--surface2);
+    }
+
+    .lesson-num {
+      font-family: var(--mono);
+      font-size: 9px;
+      letter-spacing: 0.1em;
+      color: var(--muted);
+      flex-shrink: 0;
+      padding-top: 3px;
+      min-width: 20px;
+    }
+    .sidebar-lesson.active .lesson-num { color: var(--accent); }
+
+    .lesson-label {
+      font-size: 0.83rem;
+      color: var(--dim);
+      line-height: 1.35;
+    }
+    .sidebar-lesson.active .lesson-label,
+    .sidebar-lesson:hover .lesson-label { color: var(--text); }
+
+    .lesson-type-tag {
+      font-family: var(--mono);
+      font-size: 8px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      padding: 1px 5px;
+      border-radius: 3px;
+      margin-top: 3px;
+      display: inline-block;
+    }
+    .lesson-type-tag.video {
+      color: var(--accent);
+      background: rgba(200,168,107,0.1);
+      border: 1px solid rgba(200,168,107,0.2);
+    }
+    .lesson-type-tag.reading {
+      color: var(--accent2);
+      background: rgba(143,184,154,0.08);
+      border: 1px solid rgba(143,184,154,0.18);
+    }
+
+    /* ── MAIN CONTENT ────────────────────────────── */
+    .main {
+      margin-left: var(--sidebar-w);
+      flex: 1;
+      min-width: 0;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .lesson-content {
+      flex: 1;
+      padding: 48px 56px 32px;
+      max-width: 780px;
+    }
+
+    /* breadcrumb */
+    .breadcrumb {
+      font-family: var(--mono);
+      font-size: 10px;
+      letter-spacing: 0.12em;
+      color: var(--muted);
+      margin-bottom: 20px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .breadcrumb-sep { color: var(--border2); }
+
+    .lesson-header {
+      margin-bottom: 36px;
+      padding-bottom: 28px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .lesson-meta-row {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 10px;
+    }
+
+    .lesson-number-badge {
+      font-family: var(--mono);
+      font-size: 10px;
+      letter-spacing: 0.12em;
+      color: var(--muted);
+    }
+
+    .lesson-type-pill {
+      font-family: var(--mono);
+      font-size: 9px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      padding: 2px 8px;
+      border-radius: 20px;
+    }
+    .lesson-type-pill.video {
+      color: var(--accent);
+      background: rgba(200,168,107,0.1);
+      border: 1px solid rgba(200,168,107,0.2);
+    }
+    .lesson-type-pill.reading {
+      color: var(--accent2);
+      background: rgba(143,184,154,0.08);
+      border: 1px solid rgba(143,184,154,0.18);
+    }
+
+    .lesson-title {
+      font-family: var(--serif);
+      font-size: 1.7rem;
+      font-weight: 300;
+      color: var(--bright);
+      line-height: 1.25;
+      letter-spacing: -0.01em;
+    }
+
+    /* ── VIDEO EMBED ─────────────────────────────── */
+    .video-wrap {
+      position: relative;
+      width: 100%;
+      padding-bottom: 56.25%; /* 16:9 */
+      height: 0;
+      overflow: hidden;
+      border-radius: 6px;
+      background: var(--surface2);
+      border: 1px solid var(--border2);
+      margin: 0 0 32px;
+    }
+    .video-wrap iframe,
+    .video-wrap video {
+      position: absolute;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      border: none;
+    }
+
+    /* ── LESSON BODY ─────────────────────────────── */
+    .lesson-body { animation: fadeIn 0.3s ease; }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(6px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    .lesson-body p {
+      font-size: 0.93rem;
+      color: var(--text);
+      margin-bottom: 16px;
+      line-height: 1.8;
+    }
+
+    .lesson-body h2 {
+      font-family: var(--mono);
+      font-size: 10px;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin: 32px 0 12px;
+    }
+
+    .lesson-body h3 {
+      font-family: var(--serif);
+      font-size: 1rem;
+      font-weight: 400;
+      color: var(--bright);
+      margin: 24px 0 8px;
+    }
+
+    .lesson-body ul, .lesson-body ol {
+      padding-left: 20px;
+      margin-bottom: 16px;
+    }
+    .lesson-body li {
+      font-size: 0.92rem;
+      color: var(--text);
+      margin-bottom: 6px;
+      line-height: 1.7;
+    }
+
+    .lesson-body a {
+      color: var(--accent);
+      text-decoration: underline;
+      text-decoration-color: rgba(200,168,107,0.3);
+    }
+
+    .lesson-body strong { color: var(--bright); font-weight: 400; }
+
+    .lesson-body code {
+      font-family: var(--mono);
+      font-size: 0.82rem;
+      background: var(--surface2);
+      border: 1px solid var(--border2);
+      padding: 1px 6px;
+      border-radius: 3px;
+      color: var(--accent2);
+    }
+
+    .lesson-body blockquote {
+      border-left: 2px solid var(--accent);
+      padding: 2px 16px;
+      margin: 20px 0;
+      font-style: italic;
+      color: var(--dim);
+      font-size: 0.92rem;
+    }
+
+    /* tip / note boxes */
+    .tip-box {
+      background: var(--surface2);
+      border: 1px solid var(--border2);
+      border-left: 3px solid var(--accent2);
+      border-radius: 4px;
+      padding: 14px 18px;
+      margin: 20px 0;
+      font-size: 0.88rem;
+      color: var(--text);
+    }
+    .tip-box .tip-label {
+      font-family: var(--mono);
+      font-size: 9px;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--accent2);
+      margin-bottom: 6px;
+    }
+
+    /* ── NAV BUTTONS ─────────────────────────────── */
+    .lesson-nav {
+      padding: 28px 56px 48px;
+      display: flex;
+      gap: 12px;
+      justify-content: space-between;
+      border-top: 1px solid var(--border);
+      margin-top: auto;
+    }
+
+    .nav-btn {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 12px 18px;
+      background: var(--surface);
+      border: 1px solid var(--border2);
+      border-radius: 6px;
+      cursor: pointer;
+      transition: border-color 0.2s, background 0.2s;
+      min-width: 0;
+      max-width: 48%;
+      text-align: left;
+    }
+    .nav-btn:hover {
+      border-color: var(--muted);
+      background: var(--surface2);
+    }
+    .nav-btn:disabled {
+      opacity: 0.3;
+      cursor: default;
+      pointer-events: none;
+    }
+
+    .nav-btn.next { margin-left: auto; text-align: right; flex-direction: row-reverse; }
+
+    .nav-arrow {
+      font-size: 16px;
+      color: var(--dim);
+      flex-shrink: 0;
+    }
+
+    .nav-text-wrap { min-width: 0; }
+
+    .nav-direction {
+      font-family: var(--mono);
+      font-size: 9px;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 3px;
+    }
+
+    .nav-lesson-title {
+      font-size: 0.85rem;
+      color: var(--text);
+      line-height: 1.3;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    /* ── MOBILE ──────────────────────────────────── */
+    @media (max-width: 768px) {
+      :root { --sidebar-w: 240px; }
+
+      .sidebar-toggle { display: block; }
+
+      .sidebar {
+        transform: translateX(-100%);
+        z-index: 400;
+        box-shadow: 4px 0 24px rgba(0,0,0,0.5);
+      }
+      .sidebar.open { transform: translateX(0); }
+
+      .sidebar-overlay {
+        display: none;
+        position: fixed; inset: 0;
+        background: rgba(0,0,0,0.5);
+        z-index: 399;
+      }
+      .sidebar-overlay.open { display: block; }
+
+      .main { margin-left: 0; }
+
+      .lesson-content { padding: 32px 24px 24px; }
+      .lesson-nav { padding: 24px 24px 40px; }
+      .lesson-title { font-size: 1.3rem; }
+    }
+
+    @media (max-width: 480px) {
+      .nav-btn { padding: 10px 12px; }
+      .nav-lesson-title { font-size: 0.78rem; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ── TOPBAR ──────────────────────────────────── -->
+<header class="topbar">
+  <a class="topbar-home" href="https://natthebag.github.io">Han Lu</a>
+  <span class="topbar-sep">/</span>
+  <span class="topbar-title">CAD Tutorials</span>
+  <div class="topbar-spacer"></div>
+  <button class="sidebar-toggle" onclick="toggleSidebar()" aria-label="Toggle menu">☰ Lessons</button>
+</header>
+
+<!-- overlay for mobile sidebar -->
+<div class="sidebar-overlay" id="sidebar-overlay" onclick="closeSidebar()"></div>
+
+<div class="layout">
+
+  <!-- ── SIDEBAR ────────────────────────────────── -->
+  <nav class="sidebar" id="sidebar">
+    <div id="sidebar-content">
+      <!-- rendered by JS -->
+    </div>
+  </nav>
+
+  <!-- ── MAIN ───────────────────────────────────── -->
+  <div class="main">
+    <div class="lesson-content" id="lesson-content">
+      <!-- rendered by JS -->
+    </div>
+    <div class="lesson-nav" id="lesson-nav">
+      <!-- rendered by JS -->
+    </div>
+  </div>
+
+</div>
+
+<script>
+/* ════════════════════════════════════════════════════════════════════
+   ██████╗ ██╗   ██╗██████╗ ██████╗ ██╗ ██████╗██╗   ██╗██╗     ██╗   ██╗███╗   ███╗
+  ██╔════╝ ██║   ██║██╔══██╗██╔══██╗██║██╔════╝██║   ██║██║     ██║   ██║████╗ ████║
+  ██║      ██║   ██║██████╔╝██████╔╝██║██║     ██║   ██║██║     ██║   ██║██╔████╔██║
+  ██║      ██║   ██║██╔══██╗██╔══██╗██║██║     ██║   ██║██║     ██║   ██║██║╚██╔╝██║
+  ╚██████╗ ╚██████╔╝██║  ██║██║  ██║██║╚██████╗╚██████╔╝███████╗╚██████╔╝██║ ╚═╝ ██║
+   ╚═════╝  ╚═════╝ ╚═╝  ╚═╝╚═╝  ╚═╝╚═╝ ╚═════╝ ╚═════╝ ╚══════╝ ╚═════╝ ╚═╝     ╚═╝
+
+  HOW TO ADD A LESSON
+  ───────────────────
+  1. Find the CURRICULUM array below.
+  2. Lessons are grouped into sections. To add a new section, add an object:
+
+       { section: "Section Title" }
+
+  3. To add a lesson, add an object with:
+
+       {
+         title:   "Lesson Title",
+         type:    "video" | "reading",   ← shows a colored badge
+         content: `...HTML string...`    ← the main lesson body
+         video:   "YOUTUBE_ID_OR_URL",   ← OPTIONAL — omit if no video
+       }
+
+  ─────────────────────────────────────────────────
+  VIDEO EMBEDDING
+  ─────────────────────────────────────────────────
+  To embed a YouTube video, add this field to the lesson object:
+
+     video: "dQw4w9WgXcQ"   ← just the YouTube video ID (the part after ?v=)
+
+  For a direct video file (mp4 hosted somewhere), use the full URL:
+     video: "https://example.com/my-video.mp4"
+
+  The video always appears at the top of the lesson, above the text content.
+
+  ─────────────────────────────────────────────────
+  WRITING LESSON CONTENT
+  ─────────────────────────────────────────────────
+  content is an HTML string. Supported elements:
+
+    <p>Regular paragraph</p>
+    <h2>Section heading (monospace, small caps)</h2>
+    <h3>Sub-heading (serif)</h3>
+    <ul><li>Bullet list</li></ul>
+    <ol><li>Numbered list</li></ol>
+    <strong>Bold / highlight</strong>
+    <code>inline code</code>
+    <a href="...">link</a>
+    <blockquote>callout quote</blockquote>
+
+    Tip/note box:
+    <div class="tip-box">
+      <div class="tip-label">Tip</div>
+      Your tip text here.
+    </div>
+
+════════════════════════════════════════════════════════════════════ */
+
+const CURRICULUM = [
+
+  { section: "Getting Started" },
+
+  {
+    title: "Introduction to CAD",
+    type: "reading",
+    video: "",   // ← paste a YouTube video ID here, e.g. "dQw4w9WgXcQ"
+    content: `
+      <p> Hello everyone! Welcome to this CAD and design tutorial, designed to help you 
+        hit the ground running either in contributing to our team or just for fun. I hope these pages and lectures 
+        are clear, and feel free to contact me with questions, typos, errata, etc. Good luck! </p>
+
+      <h2>What you'll learn</h2>
+      <ul>
+        <li>Navigating the Fusion 360 interface</li>
+        <li>2D sketching and constraints</li>
+        <li>3D modeling</li>
+        <li>Assemblies and joints</li>
+        <li>Various design principles </li>
+        <li>Exporting for FDM printing and CNC milling</li>
+      </ul>
+
+      <h2>Prerequisites</h2>
+      <p>No prior CAD experience is needed. A free Fusion 360 student license is available at
+      <a href="https://www.autodesk.com/education/edu-software/overview" target="_blank">autodesk.com/education</a>.</p>
+
+      <div class="tip-box">
+        <div class="tip-label">Legacy</div>
+        Some of my previous tutorials are found at <a href = "https://the-knights-of-ni.github.io/5206-docs/hardware.html"> 5206's hardware onboarding
+        site </a> or at <a href = "https://github.com/Pixelators4014/4014-docs/tree/main/docs/design"> 4014's design documentation </a>. Feel free to 
+        take a look at those, perhaps more whimsical, documentation to supplement this CAD tutorial, where I plan to cover the subject more comprehensively. 
+      </div>
+    `
+  },
+
+  {
+    title: "Installing Fusion 360",
+    type: "reading",
+    content: `
+      <p>If you are a student, you are eligible for an educational license, which grants you access to Fusion 360, as well as the whole Autodesk fleet of products. </p>
+
+      <h2>Steps</h2>
+      <ol>
+        <li>Go to <a href="https://www.autodesk.com/education/edu-software/overview" target="_blank">autodesk.com/education</a></li>
+        <li>Click <strong>Get started</strong> and create an Autodesk account with your school email.</li>
+        <li>Search for Fusion 360 in the education portal and click <strong>Get product</strong>.</li>
+        <li>Download and run the installer. Sign in with your Autodesk account when prompted.</li>
+        <li>Send the Captain or Hardware Lead to be invited to the team project.</li>
+      </ol>
+
+      <h2>System Requirements</h2>
+      <ul>
+        <li>Windows 10/11 or macOS 10.15+</li>
+        <li>4 GB RAM minimum (8 GB recommended)</li>
+        <li>Dedicated GPU recommended for smooth 3D navigation</li>
+        <li>Internet connection required for license verification</li>
+      </ul>
+
+      <div class="tip-box">
+        <div class="tip-label">Tip </div>
+        Using an external mouse, particularly one with three buttons, is typically recommended, since
+        pan and orbit use the middle mouse button. 
+      </div>
+
+      <div class="tip-box">
+        <div class="tip-label">Note</div>
+        The free education license must be renewed every year. Set a reminder so you don't
+        lose access mid-project.
+      </div>
+    `
+  },
+
+  { section: "Computer Aided Design: Basics"},
+
+  {
+    title: "CAD Example: Stanford OHS Pixel",
+    type: "video",
+    video: "UB3AWK5_Jvg",
+    content: `
+      <p> Instead of beginning with sketch basics, as many do, let us begin with an example to motivate our discussion. In this video, I will make a pixel, which is 
+        our school's (Stanford OHS') mascot. It covers basic navigation, sketch creation, and 3D modeling. In the following sections, we will go into more detail and build 
+        up a more rigorous foundation. </p>
+    `
+  },
+
+  { section: "The End?"},
+
+  {
+    title: "Work In Progress",
+    type:"reading",
+    content: `
+       <p>If you've found this, this site is still being developed. Feel free to reach out if you have any inquiries!</p>
+    `
+  },
+
+
+];
+
+/* ════════════════════════════════════════════════
+   RENDER ENGINE — no need to edit below this line
+════════════════════════════════════════════════ */
+
+// Flatten to a flat array of lessons, keeping section headers for the sidebar
+const flatLessons = [];
+const sections = [];
+let sectionIndex = -1;
+
+CURRICULUM.forEach(item => {
+  if (item.section) {
+    sectionIndex++;
+    sections.push({ label: item.section, startIndex: flatLessons.length });
+  } else {
+    flatLessons.push({ ...item, sectionIndex });
+  }
+});
+
+let currentIndex = 0;
+
+function renderSidebar() {
+  const container = document.getElementById('sidebar-content');
+  let html = '';
+  let lastSection = -1;
+
+  flatLessons.forEach((lesson, i) => {
+    if (lesson.sectionIndex !== lastSection) {
+      if (lastSection !== -1) html += '</div>';
+      html += `<div class="sidebar-section">
+        <div class="sidebar-section-label">${sections[lesson.sectionIndex].label}</div>`;
+      lastSection = lesson.sectionIndex;
+    }
+    const active = i === currentIndex ? 'active' : '';
+    const num = String(i + 1).padStart(2, '0');
+    html += `
+      <button class="sidebar-lesson ${active}" onclick="goTo(${i})" id="sidebar-btn-${i}">
+        <span class="lesson-num">${num}</span>
+        <span class="lesson-label">
+          ${lesson.title}
+          <br>
+          <span class="lesson-type-tag ${lesson.type}">${lesson.type}</span>
+        </span>
+      </button>`;
+  });
+  if (lastSection !== -1) html += '</div>';
+  container.innerHTML = html;
+}
+
+function videoEmbed(video) {
+  if (!video) return '';
+
+  // Detect if it's a YouTube ID (no slashes, no http)
+  const isYouTubeId = video && !video.includes('/') && !video.startsWith('http');
+  // Also handle full YouTube URLs
+  const ytMatch = video.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/)([^&\s]+)/);
+
+  let embedUrl = '';
+
+  if (isYouTubeId && video.length > 5) {
+    embedUrl = `https://www.youtube.com/embed/${video}`;
+  } else if (ytMatch) {
+    embedUrl = `https://www.youtube.com/embed/${ytMatch[1]}`;
+  } else if (video.startsWith('http')) {
+    // direct video file
+    return `<div class="video-wrap"><video controls src="${video}"></video></div>`;
+  }
+
+  if (!embedUrl) return '';
+  return `<div class="video-wrap">
+    <iframe src="${embedUrl}" allowfullscreen
+      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture">
+    </iframe>
+  </div>`;
+}
+
+function renderLesson(index) {
+  const lesson = flatLessons[index];
+  const sectionLabel = sections[lesson.sectionIndex].label;
+  const num = String(index + 1).padStart(2, '0');
+
+  const content = document.getElementById('lesson-content');
+  content.innerHTML = `
+    <div class="lesson-body" id="lesson-body">
+      <div class="breadcrumb">
+        <span>CAD Tutorials</span>
+        <span class="breadcrumb-sep">›</span>
+        <span>${sectionLabel}</span>
+      </div>
+      <div class="lesson-header">
+        <div class="lesson-meta-row">
+          <span class="lesson-number-badge">Lesson ${num}</span>
+          <span class="lesson-type-pill ${lesson.type}">${lesson.type}</span>
+        </div>
+        <div class="lesson-title">${lesson.title}</div>
+      </div>
+      ${videoEmbed(lesson.video)}
+      ${lesson.content}
+    </div>
+  `;
+  content.scrollTop = 0;
+  window.scrollTo(0, 0);
+
+  renderNav(index);
+  renderSidebar();
+
+  // scroll active sidebar item into view
+  const btn = document.getElementById(`sidebar-btn-${index}`);
+  if (btn) btn.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+}
+
+function renderNav(index) {
+  const prev = index > 0 ? flatLessons[index - 1] : null;
+  const next = index < flatLessons.length - 1 ? flatLessons[index + 1] : null;
+  const nav = document.getElementById('lesson-nav');
+
+  nav.innerHTML = `
+    <button class="nav-btn prev" onclick="goTo(${index - 1})" ${!prev ? 'disabled' : ''}>
+      <span class="nav-arrow">←</span>
+      <div class="nav-text-wrap">
+        <div class="nav-direction">Previous</div>
+        <div class="nav-lesson-title">${prev ? prev.title : '—'}</div>
+      </div>
+    </button>
+    <button class="nav-btn next" onclick="goTo(${index + 1})" ${!next ? 'disabled' : ''}>
+      <span class="nav-arrow">→</span>
+      <div class="nav-text-wrap">
+        <div class="nav-direction">Next</div>
+        <div class="nav-lesson-title">${next ? next.title : '—'}</div>
+      </div>
+    </button>
+  `;
+}
+
+function goTo(index) {
+  if (index < 0 || index >= flatLessons.length) return;
+  currentIndex = index;
+  renderLesson(index);
+  closeSidebar();
+  // update URL hash for bookmarking
+  history.replaceState(null, '', '#lesson-' + (index + 1));
+}
+
+// ── Mobile sidebar ─────────────────────────────
+function toggleSidebar() {
+  document.getElementById('sidebar').classList.toggle('open');
+  document.getElementById('sidebar-overlay').classList.toggle('open');
+}
+function closeSidebar() {
+  document.getElementById('sidebar').classList.remove('open');
+  document.getElementById('sidebar-overlay').classList.remove('open');
+}
+
+// ── Keyboard nav ───────────────────────────────
+document.addEventListener('keydown', e => {
+  if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
+  if (e.key === 'ArrowRight' || e.key === 'l') goTo(currentIndex + 1);
+  if (e.key === 'ArrowLeft'  || e.key === 'h') goTo(currentIndex - 1);
+});
+
+// ── Init ───────────────────────────────────────
+const hash = window.location.hash.match(/lesson-(\d+)/);
+currentIndex = hash ? Math.min(Math.max(parseInt(hash[1]) - 1, 0), flatLessons.length - 1) : 0;
+renderLesson(currentIndex);
+</script>
+</body>
+</html>
