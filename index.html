@@ -488,16 +488,38 @@
     }
     .modal-backdrop.open .modal { transform: translateY(0); }
 
-    .modal-close {
+    .modal-actions {
       position: absolute;
-      top: 18px; right: 20px;
+      top: 18px; right: 16px;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .modal-copy-link {
+      background: none;
+      border: 1px solid var(--border2);
+      border-radius: 4px;
+      color: var(--muted);
+      cursor: pointer;
+      font-family: var(--mono);
+      font-size: 9px;
+      letter-spacing: 0.12em;
+      padding: 4px 10px;
+      transition: color 0.2s, border-color 0.2s;
+    }
+    .modal-copy-link:hover { color: var(--text); border-color: var(--muted); }
+    .modal-copy-link.copied { color: var(--accent2); border-color: var(--accent2); }
+
+    .modal-close {
+      position: static;
       background: none;
       border: none;
       cursor: pointer;
       color: var(--muted);
-      font-size: 20px;
+      font-size: 18px;
       line-height: 1;
-      padding: 4px 8px;
+      padding: 4px 6px;
       border-radius: var(--radius);
       transition: color 0.2s;
     }
@@ -723,9 +745,9 @@
           <div class="skill-item"><span class="skill-dot"></span>Autodesk Fusion 360</div>
           <div class="skill-item"><span class="skill-dot"></span>FDM 3D Printing</div>
           <div class="skill-item"><span class="skill-dot"></span>2 &amp; 3-axis CNC Milling</div>
-          <div class="skill-item"><span class="skill-dot"></span>Robot Design &amp; Build</div>
           <div class="skill-item"><span class="skill-dot"></span>Prototyping &amp; Fabrication</div>
-          <div class="skill-item"><span class="skill-dot"></span>Basic Electronics</div>
+          <div class="skill-item"><span class="skill-dot"></span>MATLAB</div>
+          <div class="skill-item"><span class="skill-dot"></span>CV &amp; RL Models</div>
         </div>
       </div>
 
@@ -752,7 +774,12 @@
 ════════════════════════════════════════════ -->
 <div class="modal-backdrop" id="modal-backdrop" onclick="closeModalBackdrop(event)">
   <div class="modal" id="modal">
-    <button class="modal-close" onclick="closeModal()" title="Close">✕</button>
+    <div class="modal-actions">
+      <button class="modal-copy-link" onclick="copyPostLink()" title="Copy link to this post">
+        <span id="copy-link-label">⌁ Copy link</span>
+      </button>
+      <button class="modal-close" onclick="closeModal()" title="Close">✕</button>
+    </div>
     <div class="modal-meta" id="modal-meta"></div>
     <div class="modal-title" id="modal-title"></div>
     <div class="modal-body" id="modal-body"></div>
@@ -794,6 +821,7 @@
 
 const POSTS = [
   {
+    slug: "welcome",            // ← direct link: natthebag.github.io/#post-welcome
     date: "2025-07-26",
     display: "Jul 2025",
     title: "Welcome to my site",
@@ -807,6 +835,7 @@ const POSTS = [
   },
 
   {
+    slug: "bowls",              // ← direct link: natthebag.github.io/#post-bowls
     date: "2026-03-17",
     display: "Mar 2026",
     title: "Bowls",
@@ -818,6 +847,8 @@ const POSTS = [
     `
   },
 ];
+// NOTE: When adding a new post, include a slug — a short lowercase hyphenated
+// ID, e.g. slug: "my-new-post" → links as natthebag.github.io/#post-my-new-post
 
 /* ════════════════════════════════════════════════════════════
    ██████╗ ██████╗  ██████╗      ██╗███████╗ ██████╗████████╗███████╗
@@ -855,24 +886,58 @@ const PROJECTS = [
   {
     name: "Robotics Club Competition Bot",
     status: "ongoing",
-    desc: "Annual competition robot designed and built from scratch. Responsible for mechanical design in Fusion 360 and FDM-printed structural components.",
-    image: "",
+    desc: "Primary hardware designer for our school's FTC team for 3 years, leading our hardware team and assisting in software. ",
+    image: "./figures/ftc.png",
     links: []
   },
   {
     name: "3D Printing Curriculum",
-    status: "complete",
-    desc: "Developed and ran a multi-week workshop series teaching Autodesk Fusion 360 and FDM printing fundamentals to high school peers.",
-    image: "",
-    links: []
+    status: "ongoing",
+    desc: "Created online CAD and design tutorials for team and public use. Presented in hardware and software workshops for our school community.",
+    image: "./cad/interface.png",
+    links: [
+      { label: "Tutorial", url: "https://natthebag.github.io/cad"}
+    ]
   },
   {
-    name: "Robotics Outreach Program",
-    status: "ongoing",
-    desc: "Community program introducing K–8 students to engineering concepts through hands-on robot-building activities.",
-    image: "",
-    links: []
+    name: "Science Bowl Parser", 
+    status: "complete",
+    desc: "Created a parsing script for the NSB (National Science Bowl) official practice sets for team practice and statistic aggregation. Source code coming soon!",
+    image: "./figures/scibowl_parser.png",
+    links: [
+      { label: "Example Data", url: "https://docs.google.com/spreadsheets/d/1H5yYqJy9vRo-qf2FjsicQErGzZdf9KKcZ6Rw0_CoL-A/edit?usp=sharing"},
+    ]
   },
+  {
+    name: "MATLAB ARM Challenge",
+    status: "complete",
+    desc: "Participated in the MathWorks ARM Challenge, learning MATLAB's Robotics, Computer Vision, and Optimization toolboxes. Lent great understanding of MATLAB and Simulink, despite broken environment.",
+    image: "./figures/arm.png",
+    links: [],
+  },
+  {
+    name: "Robotics Outreach",
+    status: "ongoing",
+    desc: "Mentored a FLL team in Kigali, Rwanda for 3 years, assisting them in design, programming, and presentation skills.",
+    image: "./figures/workshop.png",
+    links: [],
+  },
+
+
+  // {
+  //   name: "3D Printing Curriculum",
+  //   status: "complete",
+  //   desc: "Developed and ran a multi-week workshop series teaching Autodesk Fusion 360 and FDM printing fundamentals to high school peers.",
+  //   image: "",
+  //   links: []
+  // },
+  // {
+  //   name: "Robotics Outreach Program",
+  //   status: "ongoing",
+  //   desc: "Community program introducing K–8 students to engineering concepts through hands-on robot-building activities.",
+  //   image: "",
+  //   links: []
+  // },
 ];
 
 /* ════════════════════════════════════
@@ -925,11 +990,29 @@ function openPost(idx) {
   document.getElementById('modal-body').innerHTML = p.body;
   document.getElementById('modal-backdrop').classList.add('open');
   document.body.style.overflow = 'hidden';
+  // update URL hash so this post is directly linkable
+  if (p.slug) history.replaceState(null, '', '#post-' + p.slug);
+}
+
+function copyPostLink() {
+  const url = window.location.href.split('#')[0] + window.location.hash;
+  navigator.clipboard.writeText(url).then(() => {
+    const btn = document.querySelector('.modal-copy-link');
+    const label = document.getElementById('copy-link-label');
+    btn.classList.add('copied');
+    label.textContent = '✓ Copied!';
+    setTimeout(() => {
+      btn.classList.remove('copied');
+      label.textContent = '⌁ Copy link';
+    }, 2000);
+  });
 }
 
 function closeModal() {
   document.getElementById('modal-backdrop').classList.remove('open');
   document.body.style.overflow = '';
+  // clear the hash without scrolling
+  history.replaceState(null, '', window.location.pathname);
 }
 
 function closeModalBackdrop(e) {
@@ -957,6 +1040,14 @@ function showPage(name) {
 /* ── INIT ─────────────────────────────── */
 renderPosts();
 renderProjects();
+
+// If URL contains #post-<slug>, open that post immediately
+const hashMatch = window.location.hash.match(/^#post-(.+)$/);
+if (hashMatch) {
+  const slug = hashMatch[1];
+  const idx = POSTS.findIndex(p => p.slug === slug);
+  if (idx !== -1) openPost(idx);
+}
 </script>
 </body>
 </html>
