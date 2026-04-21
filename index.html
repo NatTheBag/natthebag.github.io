@@ -595,6 +595,160 @@
     }
     .footer-email a:hover { color: var(--accent); }
 
+    /* ═══════════════════════════════════════
+       PUBLICATIONS PAGE
+    ═══════════════════════════════════════ */
+    .publications-page { padding: 48px 0 0; }
+
+    .pub-list { display: flex; flex-direction: column; gap: 12px; }
+
+    .pub-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 20px 24px;
+      cursor: pointer;
+      transition: border-color 0.2s, background 0.2s;
+      animation: fadeUp 0.35s ease both;
+      display: flex;
+      gap: 20px;
+      align-items: flex-start;
+    }
+    .pub-card:hover {
+      border-color: var(--border2);
+      background: var(--surface2);
+    }
+    .pub-card:hover .pub-title { color: var(--accent); }
+
+    .pub-year-col {
+      flex-shrink: 0;
+      width: 44px;
+      padding-top: 2px;
+    }
+    .pub-year {
+      font-family: var(--mono);
+      font-size: 10px;
+      letter-spacing: 0.1em;
+      color: var(--muted);
+    }
+
+    .pub-main { flex: 1; min-width: 0; }
+
+    .pub-title {
+      font-size: 0.95rem;
+      font-weight: 400;
+      color: var(--bright);
+      line-height: 1.35;
+      margin-bottom: 5px;
+      transition: color 0.2s;
+    }
+
+    .pub-authors {
+      font-size: 0.82rem;
+      color: var(--dim);
+      font-style: italic;
+      margin-bottom: 5px;
+      line-height: 1.4;
+    }
+
+    .pub-venue-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .pub-venue {
+      font-family: var(--mono);
+      font-size: 10px;
+      letter-spacing: 0.1em;
+      color: var(--muted);
+    }
+
+    .pub-tag {
+      font-family: var(--mono);
+      font-size: 9px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      padding: 1px 7px;
+      border-radius: 20px;
+    }
+    .pub-tag.conference {
+      color: var(--accent);
+      background: rgba(200,168,107,0.08);
+      border: 1px solid rgba(200,168,107,0.2);
+    }
+    .pub-tag.journal {
+      color: var(--accent2);
+      background: rgba(143,184,154,0.08);
+      border: 1px solid rgba(143,184,154,0.2);
+    }
+    .pub-tag.preprint {
+      color: var(--dim);
+      background: var(--surface2);
+      border: 1px solid var(--border2);
+    }
+    .pub-tag.workshop {
+      color: #a89fd4;
+      background: rgba(168,159,212,0.08);
+      border: 1px solid rgba(168,159,212,0.2);
+    }
+
+    .pub-arrow {
+      flex-shrink: 0;
+      color: var(--muted);
+      font-size: 14px;
+      padding-top: 3px;
+      transition: color 0.2s, transform 0.2s;
+    }
+    .pub-card:hover .pub-arrow { color: var(--accent); transform: translateX(2px); }
+
+    /* pub modal sections */
+    .pub-modal-authors {
+      font-size: 0.88rem;
+      color: var(--dim);
+      font-style: italic;
+      margin-bottom: 20px;
+      line-height: 1.5;
+    }
+
+    .pub-modal-section-label {
+      font-family: var(--mono);
+      font-size: 9px;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin: 24px 0 8px;
+    }
+
+    .pub-modal-abstract {
+      font-size: 0.88rem;
+      color: var(--dim);
+      line-height: 1.75;
+      font-style: italic;
+      padding: 14px 18px;
+      background: var(--surface2);
+      border-left: 2px solid var(--border2);
+      border-radius: 0 4px 4px 0;
+    }
+
+    .pub-modal-comments {
+      font-size: 0.9rem;
+      color: var(--text);
+      line-height: 1.75;
+    }
+    .pub-modal-comments p { margin-bottom: 10px; }
+    .pub-modal-comments p:last-child { margin-bottom: 0; }
+
+    .pub-modal-links {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-top: 24px;
+      padding-top: 20px;
+      border-top: 1px solid var(--border);
+    }
+
     /* ── RESPONSIVE ──────────────────────────── */
     @media (max-width: 520px) {
       .shell { padding: 0 20px; }
@@ -613,9 +767,10 @@
   <div class="topbar">
     <div class="topbar-logo" onclick="showPage('home')">Han Lu</div>
     <nav class="topbar-nav">
-      <button class="tab-btn active" data-page="home"    onclick="showPage('home')">Home</button>
-      <button class="tab-btn"        data-page="about"   onclick="showPage('about')">About</button>
-      <button class="tab-btn"        data-page="projects" onclick="showPage('projects')">Projects</button>
+      <button class="tab-btn active" data-page="home"         onclick="showPage('home')">Home</button>
+      <button class="tab-btn"        data-page="about"        onclick="showPage('about')">About</button>
+      <button class="tab-btn"        data-page="projects"     onclick="showPage('projects')">Projects</button>
+      <button class="tab-btn"        data-page="publications" onclick="showPage('publications')">Publications</button>
     </nav>
   </div>
 
@@ -766,6 +921,18 @@
     </div>
   </div>
 
+  <!-- ═══════════════════════════════════════════
+       PUBLICATIONS PAGE
+  ════════════════════════════════════════════ -->
+  <div id="page-publications" class="page">
+    <div class="publications-page">
+      <div class="section-label" style="margin-bottom:24px;">Publications</div>
+      <div class="pub-list" id="pub-list">
+        <!-- Rendered by JS from PUBLICATIONS array -->
+      </div>
+    </div>
+  </div>
+
 </div><!-- /shell -->
 
 
@@ -786,6 +953,20 @@
   </div>
 </div>
 
+
+<!-- ═══════════════════════════════════════════
+     PUBLICATION MODAL
+════════════════════════════════════════════ -->
+<div class="modal-backdrop" id="pub-modal-backdrop" onclick="closePubModalBackdrop(event)">
+  <div class="modal" id="pub-modal">
+    <div class="modal-actions">
+      <button class="modal-close" onclick="closePubModal()" title="Close">✕</button>
+    </div>
+    <div class="modal-meta" id="pub-modal-venue"></div>
+    <div class="modal-title" id="pub-modal-title"></div>
+    <div class="modal-body" id="pub-modal-body"></div>
+  </div>
+</div>
 
 <script>
 /* ════════════════════════════════════════════════════════════
@@ -1019,7 +1200,7 @@ function closeModalBackdrop(e) {
   if (e.target === document.getElementById('modal-backdrop')) closeModal();
 }
 
-document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
+// Escape closes whichever modal is open (handled in PUBLICATIONS section above)
 
 /* ── PAGE SWITCHING ──────────────────── */
 function showPage(name) {
@@ -1037,9 +1218,126 @@ function showPage(name) {
   });
 }
 
+/* ════════════════════════════════════════════════════════════
+    ██████╗ ██╗   ██╗██████╗ ███████╗
+   ██╔══██╗██║   ██║██╔══██╗██╔════╝
+   ██████╔╝██║   ██║██████╔╝███████╗
+   ██╔═══╝ ██║   ██║██╔══██╗╚════██║
+   ██║     ╚██████╔╝██████╔╝███████║
+   ╚═╝      ╚═════╝ ╚═════╝ ╚══════╝
+
+   HOW TO ADD A PUBLICATION
+   ─────────────────────────
+   Copy one object below and paste it at the TOP of the array.
+   Fields:
+
+     title    → full paper title
+     authors  → author list string, use <strong>your name</strong> to highlight yourself
+     year     → "2026"
+     venue    → conference / journal name, e.g. "ICRA 2026"
+     type     → "conference" | "journal" | "preprint" | "workshop"
+     abstract → paste the abstract here (plain text or HTML)
+     comments → your personal notes — what you found interesting,
+                 how it relates to your work, etc. (HTML string)
+     links    → array of { label, url } — e.g. paper PDF, code, project page
+                 (can be empty [])
+
+   Example:
+   {
+     title: "Learning to Sequence Aircraft Arrivals with PPO",
+     authors: "<strong>Han Lu</strong>, Jane Smith",
+     year: "2026",
+     venue: "AIAA Aviation Forum 2026",
+     type: "conference",
+     abstract: "We present a reinforcement learning approach...",
+     comments: `<p>This is the paper I wrote on my KSFO arrival sequencing project...</p>`,
+     links: [
+       { label: "PDF", url: "https://arxiv.org/..." },
+       { label: "Code", url: "https://github.com/natthebag/..." },
+     ]
+   },
+════════════════════════════════════════════════════════════ */
+
+const PUBLICATIONS = [
+  // ← paste your publications here
+  // Remove this placeholder once you add real entries:
+  {
+    title: "Assessment of Rule-Based and Reinforcement Learning Control Methods with Evaluation of Reward Parameters in Terminal Space: Empirical Comparison Using ADS-B Data",
+    authors: "<strong>Han Lu</strong>",
+    year: "2026",
+    venue: "",
+    type: "preprint",
+    abstract: "The aircraft landing problem (ALP), whose goal is to schedule airplane landings such that their landing times are consistent with legal separation minimums, poses a unique challenge to algorithm development because of its high stakes applications and its interaction with unideal human factors. Although both rule-based (RB) and reinforcement-learning-based (RL) solutions exist, evaluation of their effectiveness is often minimal. Similarly, philosophizing the impact of the implementation of these models is important and well-researched, yet is contingent on the effectiveness of such solutions. By constructing no-operation, human historical, rule-based, and reinforcement learning based models and assessing them against ADS-B data obtained from OpenSky, we are able to evaluate the effectiveness of these models in the real world. All models must adhere to the standard for zero separation violations to be valid, and their delays differ. The rule-based algorithm can achieve a 96% improvement in delay from historical human data, while the RL model differs in effectiveness based on reward tuning. We then used Bayesian optimization to tune these rewards to be close to historical, with the end goal of identifying the priorities of these models through the RL approach. We find the importance of not causing violations to be at least, quantitatively, 8.22 times as important as a successful landing and 71 times as important as not causing a delay.",
+    comments: `<p>This was my first paper, and I am excited to finally announce it! Many more to come. </p>`,
+    links: [
+      { label: "Archive", url: "https://doi.org/10.13140/RG.2.2.20163.16160"}
+    ]
+  },
+];
+
+/* ── PUB RENDER ──────────────────────── */
+function renderPublications() {
+  const list = document.getElementById('pub-list');
+  list.innerHTML = PUBLICATIONS.map((p, i) => `
+    <div class="pub-card" style="animation-delay:${i * 0.06}s" onclick="openPub(${i})">
+      <div class="pub-year-col">
+        <div class="pub-year">${p.year}</div>
+      </div>
+      <div class="pub-main">
+        <div class="pub-title">${p.title}</div>
+        <div class="pub-authors">${p.authors}</div>
+        <div class="pub-venue-row">
+          <span class="pub-venue">${p.venue}</span>
+          <span class="pub-tag ${p.type}">${p.type}</span>
+        </div>
+      </div>
+      <div class="pub-arrow">→</div>
+    </div>
+  `).join('');
+}
+
+/* ── PUB MODAL ───────────────────────── */
+function openPub(idx) {
+  const p = PUBLICATIONS[idx];
+  document.getElementById('pub-modal-venue').textContent = p.venue + ' · ' + p.year;
+  document.getElementById('pub-modal-title').textContent = p.title;
+
+  let body = `<div class="pub-modal-authors">${p.authors}</div>`;
+
+  if (p.abstract) {
+    body += `<div class="pub-modal-section-label">Abstract</div>
+             <div class="pub-modal-abstract">${p.abstract}</div>`;
+  }
+  if (p.comments) {
+    body += `<div class="pub-modal-section-label">My Notes</div>
+             <div class="pub-modal-comments">${p.comments}</div>`;
+  }
+  if (p.links && p.links.length) {
+    body += `<div class="pub-modal-links">
+      ${p.links.map(l => `<a class="project-link" href="${l.url}" target="_blank">${l.label} ↗</a>`).join('')}
+    </div>`;
+  }
+
+  document.getElementById('pub-modal-body').innerHTML = body;
+  document.getElementById('pub-modal-backdrop').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+
+function closePubModal() {
+  document.getElementById('pub-modal-backdrop').classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+function closePubModalBackdrop(e) {
+  if (e.target === document.getElementById('pub-modal-backdrop')) closePubModal();
+}
+
+document.addEventListener('keydown', e => { if (e.key === 'Escape') { closeModal(); closePubModal(); } });
+
 /* ── INIT ─────────────────────────────── */
 renderPosts();
 renderProjects();
+renderPublications();
 
 // If URL contains #post-<slug>, open that post immediately
 const hashMatch = window.location.hash.match(/^#post-(.+)$/);
