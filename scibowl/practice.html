@@ -715,6 +715,7 @@
     }
 
     // Display current question
+    // Display current question
     function showQuestion() {
         if (currentQuestionIndex >= questions.length) {
             showComplete();
@@ -761,11 +762,12 @@
                 return `<button class="choice-btn" onclick="selectChoice(${i})">${cleanChoice}</button>`;
             }).join('');
         } else {
-            // Short answer
+            // Short answer - RESET THE INPUT PROPERLY
             answerInput.style.display = 'block';
             choicesDiv.style.display = 'none';
             answerInput.value = '';
-            answerInput.className = 'answer-input';
+            answerInput.className = 'answer-input';  // Remove correct/incorrect classes
+            answerInput.disabled = false;  // ← ADD THIS LINE
             answerInput.focus();
         }
         
