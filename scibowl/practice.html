@@ -507,12 +507,21 @@
     // Load CSV from Google Sheets
     async function loadQuestions() {
         try {
-            // Google Sheets CSV export URL
-            const sheetId = '10LbTULKaAwzsRKOTfxqTinxXaDud2bR9gYmG9Wy08Ss';
-            const csvUrl = `https://docs.google.com/spreadsheets/d/${sheetId}/export?format=csv`;
-            
+            console.log('Attempting to load questions.csv...');
             const response = await fetch('questions.csv');
+            
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            
             const csvText = await response.text();
+            
+            // DEBUG: Show raw CSV
+            console.log('CSV loaded! Length:', csvText.length);
+            console.log('First 500 characters of CSV:');
+            console.log(csvText.substring(0, 500));
+            console.log('---');
+        
             
             // Parse all questions
             const allQuestions = parseCSV(csvText);
@@ -530,11 +539,7 @@
             
             // Filter by concept if specified
             if (concept !== 'all') {
-                const categoryName = categoryMap[concept];
-                questions = allQuestions.filter(q => {
-                    console.log(`Comparing: "${q.Category}" === "${categoryName}"`);
-                    return q.Category === categoryName;
-                });
+                questions = allQuestions.filter(q => q.predicted_concept === concept);
             } else {
                 questions = allQuestions;
             }
@@ -561,54 +566,100 @@
 
     // Parse CSV data
     function parseCSV(csv) {
-        const lines = csv.trim().split('\n');
-        const headers = lines[0].split(',').map(h => h.trim().replace(/"/g, ''));
+        // Remove BOM if present
+        csv = csv.replace(/^\uFEFF/, '');
+        
+        const lines = csv.split(/\r?\n/);
+        
+        // Find the header row
+        let headerIndex = 0;
+        while (headerIndex < lines.length && !lines[headerIndex].trim()) {
+            headerIndex++;
+        }
+        
+        if (headerIndex >= lines.length) {
+            console.error('No header row found');
+            return [];
+        }
+        
+        const headerLine = lines[headerIndex];
+        const headers = parseCSVLine(headerLine);
+        
+        console.log('CSV Headers found:', headers);
         
         const parsed = [];
-        for (let i = 1; i < lines.length; i++) {
-            const values = parseCSVLine(lines[i]);
-            if (values.length < headers.length) continue;
+        
+        for (let i = headerIndex + 1; i < lines.length; i++) {
+            const line = lines[i].trim();
+            if (!line) continue; // Skip empty lines
+            
+            const values = parseCSVLine(line);
+            
+            // Pad values array to match headers length
+            while (values.length < headers.length) {
+                values.push('');
+            }
             
             const obj = {};
             headers.forEach((header, index) => {
-                obj[header] = values[index] ? values[index].trim().replace(/^"|"$/g, '') : '';
+                obj[header] = values[index] || '';
             });
             
             // Only add if it has a question and answer
-            if (obj.Question && obj.Answer) {
+            // Only add if it has a question and answer
+            if (obj.question_text && obj.question_text.trim() && obj.answer && obj.answer.trim()) {
                 parsed.push(obj);
+            } else {
+                console.log(`Skipping row ${i + 1}: missing question or answer`);
             }
         }
         
+        console.log(`Parsed ${parsed.length} valid questions from ${lines.length} lines`);
         return parsed;
     }
-
-    // Handle CSV line parsing (handles quoted fields)
+    // Handle CSV line parsing (properly handles quoted fields with commas)
     function parseCSVLine(line) {
         const result = [];
         let current = '';
         let inQuotes = false;
+        let i = 0;
         
-        for (let i = 0; i < line.length; i++) {
+        while (i < line.length) {
             const char = line[i];
+            const nextChar = line[i + 1];
             
             if (char === '"') {
-                if (inQuotes && line[i + 1] === '"') {
-                    // Escaped quote
+                if (inQuotes && nextChar === '"') {
+                    // Escaped quote (two quotes in a row)
                     current += '"';
-                    i++;
+                    i += 2;
+                    continue;
                 } else {
+                    // Toggle quote state
                     inQuotes = !inQuotes;
+                    i++;
+                    continue;
                 }
-            } else if (char === ',' && !inQuotes) {
-                result.push(current);
-                current = '';
-            } else {
-                current += char;
             }
+            
+            if (char === ',' && !inQuotes) {
+                // End of field
+                result.push(current.trim());
+                current = '';
+                i++;
+                continue;
+            }
+            
+            // Regular character
+            current += char;
+            i++;
         }
-        result.push(current);
         
+        // Push the last field
+        result.push(current.trim());
+        
+        // Pad with empty strings if we don't have enough fields
+        // This handles trailing commas
         return result;
     }
 
@@ -629,9 +680,9 @@
             `Question ${currentQuestionIndex + 1} of ${questions.length}`;
         
         // Set question type and text
-        const questionType = q.Type || 'Short Answer';
+        const questionType = q.format || q.question_type || 'Short Answer';
         document.getElementById('question-type').textContent = questionType.toUpperCase();
-        document.getElementById('question-text').textContent = q.Question;
+        document.getElementById('question-text').textContent = q.question_text;
         
         // Reset feedback
         const feedback = document.getElementById('feedback');
@@ -642,26 +693,22 @@
         const answerInput = document.getElementById('answer-input');
         const choicesDiv = document.getElementById('choices');
         
-        // Check if it's multiple choice (has W, X, Y, Z options)
-        const hasChoices = q.W && q.X && q.Y && q.Z;
+        // Check if it's multiple choice
+        const hasChoices = q.choices && q.choices.trim() !== '';
         
         if (hasChoices) {
-            // Multiple choice
+            // Multiple choice - parse the choices
             answerInput.style.display = 'none';
             choicesDiv.style.display = 'flex';
             
-            const choices = [
-                { letter: 'W', text: q.W },
-                { letter: 'X', text: q.X },
-                { letter: 'Y', text: q.Y },
-                { letter: 'Z', text: q.Z }
-            ];
+            // Split choices by pipe, clean up the format
+            const choicesParts = q.choices.split('|').map(c => c.trim());
             
-            choicesDiv.innerHTML = choices.map((choice, i) => 
-                `<button class="choice-btn" onclick="selectChoice('${choice.letter}')">
-                    <strong>${choice.letter}:</strong> ${choice.text}
-                </button>`
-            ).join('');
+            choicesDiv.innerHTML = choicesParts.map((choice, i) => {
+                // Clean up format like "W) basic X) acidic" -> just the choice text
+                const cleanChoice = choice.replace(/^[WXYZ]\)\s*/i, '');
+                return `<button class="choice-btn" onclick="selectChoice(${i})">${cleanChoice}</button>`;
+            }).join('');
         } else {
             // Short answer
             answerInput.style.display = 'block';
@@ -676,17 +723,17 @@
         document.getElementById('submit-btn').disabled = false;
         document.getElementById('next-btn').style.display = 'none';
     }
-
     // Select a multiple choice answer
-    function selectChoice(letter) {
-        selectedAnswer = letter;
+    function selectChoice(index) {
+        selectedAnswer = index;
         const buttons = document.querySelectorAll('.choice-btn');
-        buttons.forEach(btn => {
-            const btnLetter = btn.textContent.trim().charAt(0);
-            btn.classList.toggle('selected', btnLetter === letter);
+        buttons.forEach((btn, i) => {
+            btn.classList.toggle('selected', i === index);
         });
     }
 
+    // Check the answer
+    // Check the answer
     // Check the answer
     function checkAnswer() {
         const q = questions[currentQuestionIndex];
@@ -694,14 +741,17 @@
         let userAnswer;
         let isCorrect = false;
 
-        const hasChoices = q.W && q.X && q.Y && q.Z;
+        const hasChoices = q.choices && q.choices.trim() !== '';
 
         if (hasChoices) {
             if (selectedAnswer === null) {
                 alert('Please select an answer');
                 return;
             }
-            userAnswer = selectedAnswer;
+            
+            // Get the choice text
+            const choicesParts = q.choices.split('|').map(c => c.trim());
+            userAnswer = choicesParts[selectedAnswer].replace(/^[WXYZ]\)\s*/i, '').trim();
         } else {
             userAnswer = document.getElementById('answer-input').value.trim();
             if (!userAnswer) {
@@ -711,15 +761,10 @@
         }
 
         // Check correctness
-        const correctAnswer = q.Answer.trim();
+        const correctAnswer = q.answer.trim();
         
-        if (hasChoices) {
-            // For multiple choice, compare letters
-            isCorrect = userAnswer.toUpperCase() === correctAnswer.toUpperCase();
-        } else {
-            // For short answer, case-insensitive comparison
-            isCorrect = userAnswer.toLowerCase() === correctAnswer.toLowerCase();
-        }
+        // Case-insensitive comparison
+        isCorrect = userAnswer.toLowerCase() === correctAnswer.toLowerCase();
 
         // Update stats
         if (isCorrect) {
@@ -729,26 +774,20 @@
         } else {
             incorrectCount++;
             feedback.className = 'feedback incorrect show';
-            
-            if (hasChoices) {
-                const correctText = q[correctAnswer];
-                feedback.innerHTML = `✗ Incorrect<div class="correct-answer">Correct answer: <strong>${correctAnswer}</strong>: ${correctText}</div>`;
-            } else {
-                feedback.innerHTML = `✗ Incorrect<div class="correct-answer">Correct answer: ${correctAnswer}</div>`;
-            }
+            feedback.innerHTML = `✗ Incorrect<div class="correct-answer">Correct answer: ${correctAnswer}</div>`;
         }
 
         // Update visual feedback
         if (hasChoices) {
             const buttons = document.querySelectorAll('.choice-btn');
+            const choicesParts = q.choices.split('|').map(c => c.trim().replace(/^[WXYZ]\)\s*/i, '').trim());
+            const correctIndex = choicesParts.findIndex(c => c.toLowerCase() === correctAnswer.toLowerCase());
             
-            buttons.forEach(btn => {
+            buttons.forEach((btn, i) => {
                 btn.disabled = true;
-                const btnLetter = btn.textContent.trim().charAt(0);
-                
-                if (btnLetter === correctAnswer.toUpperCase()) {
+                if (i === correctIndex) {
                     btn.classList.add('correct');
-                } else if (btnLetter === selectedAnswer && !isCorrect) {
+                } else if (i === selectedAnswer && !isCorrect) {
                     btn.classList.add('incorrect');
                 }
             });
@@ -765,7 +804,6 @@
         document.getElementById('submit-btn').style.display = 'none';
         document.getElementById('next-btn').style.display = 'block';
     }
-
     // Move to next question
     function nextQuestion() {
         currentQuestionIndex++;
