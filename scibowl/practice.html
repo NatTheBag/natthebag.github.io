@@ -504,43 +504,60 @@
     };
 
     // Load CSV from Google Sheets
+    // Load CSV from Google Sheets
     async function loadQuestions() {
         try {
             // Google Sheets CSV export URL
             const sheetId = '10LbTULKaAwzsRKOTfxqTinxXaDud2bR9gYmG9Wy08Ss';
             const csvUrl = `https://docs.google.com/spreadsheets/d/${sheetId}/export?format=csv`;
             
-            const response = await fetch(csvUrl);
+            const response = await fetch('questions.csv');
             const csvText = await response.text();
             
-            // Parse and filter questions
+            // Parse all questions
             const allQuestions = parseCSV(csvText);
+            
+            console.log('Total questions loaded:', allQuestions.length);
+            console.log('Looking for concept:', concept);
+            console.log('Mapped category name:', categoryMap[concept]);
+            
+            // Log unique categories to see what's in the data
+            const uniqueCategories = [...new Set(allQuestions.map(q => q.Category))];
+            console.log('Available categories in CSV:', uniqueCategories);
+            
+            // Log first few questions to see structure
+            console.log('Sample questions:', allQuestions.slice(0, 3));
             
             // Filter by concept if specified
             if (concept !== 'all') {
                 const categoryName = categoryMap[concept];
-                questions = allQuestions.filter(q => q.Category === categoryName);
+                questions = allQuestions.filter(q => {
+                    console.log(`Comparing: "${q.Category}" === "${categoryName}"`);
+                    return q.Category === categoryName;
+                });
             } else {
                 questions = allQuestions;
             }
             
+            console.log('Filtered questions:', questions.length);
+            
             if (questions.length === 0) {
-                document.getElementById('loading').textContent = 'No questions found for this concept.';
+                document.getElementById('loading').textContent = 'No questions found for this concept. Check console for details.';
                 return;
             }
 
-            // Update UI
-            const displayName = concept === 'all' ? 'All Concepts' : concept.replace(/_/g, ' ').toUpperCase();
-            document.getElementById('concept-name').textContent = displayName;
-            document.getElementById('loading').style.display = 'none';
-            document.getElementById('question-container').style.display = 'block';
-            
-            showQuestion();
-        } catch (error) {
-            console.error('Error loading questions:', error);
-            document.getElementById('loading').textContent = 'Error loading questions. Please check your internet connection and try again.';
-        }
+        // Update UI
+        const displayName = concept === 'all' ? 'All Concepts' : concept.replace(/_/g, ' ').toUpperCase();
+        document.getElementById('concept-name').textContent = displayName;
+        document.getElementById('loading').style.display = 'none';
+        document.getElementById('question-container').style.display = 'block';
+        
+        showQuestion();
+    } catch (error) {
+        console.error('Error loading questions:', error);
+        document.getElementById('loading').textContent = 'Error loading questions. Please check your internet connection and try again.';
     }
+}
 
     // Parse CSV data
     function parseCSV(csv) {
