@@ -470,38 +470,58 @@
     const concept = urlParams.get('concept') || 'all';
 
     // Category mapping to match your spreadsheet
+    // Category mapping to match your spreadsheet
     const categoryMap = {
+        // BIOLOGY
+        'zoology': 'Zoology',
+        'cytology': 'Cytology',
+        'biochemistry': 'Biochemistry',
         'genetics': 'Genetics',
-        'cell_biology': 'Cell Biology',
-        'acids_bases': 'Acids & Bases',
-        'stoichiometry': 'Stoichiometry',
-        'optics': 'Optics',
-        'trigonometry': 'Trigonometry',
+        'botany': 'Botany',
+        'heredity': 'Heredity',
+        'immunology': 'Immunology',
+        
+        // CHEMISTRY
+        'acids': 'Acids',
+        'composition': 'Composition',
+        'thermodynamics': 'Thermodynamics',
+        
+        // EARTH AND SPACE
+        'oceanography': 'Oceanography',
         'astronomy': 'Astronomy',
         'geology': 'Geology',
-        'thermodynamics': 'Thermodynamics',
-        'redox': 'Redox',
-        'mechanics': 'Mechanics',
-        'ecology': 'Ecology',
-        'bonding': 'Bonding',
-        'rotational_motion': 'Rotational Motion',
-        'geometry': 'Geometry',
-        'oceanography': 'Oceanography',
-        'thermodynamics_physics': 'Thermodynamics (Physics)',
-        'biochemistry': 'Biochemistry',
-        'anatomy_physiology': 'Anatomy & Physiology',
-        'organic_chemistry': 'Organic Chemistry',
-        'algebra': 'Algebra',
-        'modern_physics': 'Modern Physics',
-        'meteorology': 'Meteorology',
-        'waves': 'Waves',
-        'calculus': 'Calculus',
+        
+        // PHYSICS
+        'acceleration': 'Acceleration',
+        'particles': 'Particles',
         'electromagnetism': 'Electromagnetism',
-        'atomic_structure': 'Atomic Structure',
-        'kinetics': 'Kinetics',
-        'evolution': 'Evolution',
-        'statistics_probability': 'Statistics & Probability'
+        'velocity': 'Velocity',
+        
+        // MATH
+        'coordinates': 'Coordinates',
+        'sequences': 'Sequences',
+        'geometry': 'Geometry',
+        'algebra': 'Algebra',
+        'probability': 'Probability',
+        'trigonometry': 'Trigonometry',
+        'functions': 'Functions',
+        'equations': 'Equations',
+        'rates': 'Rates',
+        'calculus': 'Calculus',
+        'evaluation': 'Evaluation',
+        'exponentials': 'Exponentials',
+        
+        // ENERGY
+        'classification': 'Classification',
+        'potential': 'Potential',
+        'efficiency': 'Efficiency',
+        
+        // GENERAL SCIENCE
+        'conversion': 'Conversion',
+        'environment': 'Environment',
+        'elements': 'Elements'
     };
+
 
     // Load CSV from Google Sheets
     // Load CSV from Google Sheets
