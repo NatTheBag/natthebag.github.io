@@ -545,29 +545,60 @@
             
             // Parse all questions
             const allQuestions = parseCSV(csvText);
-            
+
             console.log('Total questions loaded:', allQuestions.length);
             console.log('Looking for concept:', concept);
             console.log('Mapped category name:', categoryMap[concept]);
-            
-            // Log unique categories to see what's in the data
-            const uniqueCategories = [...new Set(allQuestions.map(q => q.Category))];
-            console.log('Available categories in CSV:', uniqueCategories);
-            
-            // Log first few questions to see structure
-            console.log('Sample questions:', allQuestions.slice(0, 3));
-            
-            // Filter by concept if specified
+
+            // Debug: Check what columns exist
+            if (allQuestions.length > 0) {
+                console.log('Available columns:', Object.keys(allQuestions[0]));
+                console.log('First question full data:', allQuestions[0]);
+            }
+
+            // Log unique predicted concepts to see what's in the data
+            const uniqueConcepts = [...new Set(allQuestions.map(q => q.predicted_concept || q.cluster_id || 'unknown'))];
+            console.log('Available predicted_concept values:', uniqueConcepts);
+
+            // Filter by concept if specified - try multiple possible column names
             if (concept !== 'all') {
-                questions = allQuestions.filter(q => q.predicted_concept === concept);
+                questions = allQuestions.filter(q => {
+                    // Try different possible column names
+                    const predictedConcept = q.predicted_concept || q.cluster_id || q.concept || '';
+                    return predictedConcept.toLowerCase() === concept.toLowerCase();
+                });
+                
+                console.log(`Filtered questions for "${concept}":`, questions.length);
+                
+                // If no matches, try partial matching
+                if (questions.length === 0) {
+                    console.log('No exact matches, trying partial match...');
+                    questions = allQuestions.filter(q => {
+                        const predictedConcept = q.predicted_concept || q.cluster_id || q.concept || '';
+                        return predictedConcept.toLowerCase().includes(concept.toLowerCase());
+                    });
+                    console.log('Partial match results:', questions.length);
+                }
             } else {
                 questions = allQuestions;
             }
-            
-            console.log('Filtered questions:', questions.length);
-            
+
+            console.log('Final filtered questions:', questions.length);
+
             if (questions.length === 0) {
-                document.getElementById('loading').textContent = 'No questions found for this concept. Check console for details.';
+                const availableConcepts = [...new Set(allQuestions.map(q => q.predicted_concept || q.cluster_id))].filter(Boolean);
+                document.getElementById('loading').innerHTML = `
+                    <div style="color: var(--dim);">
+                        <p>No questions found for concept: <strong>${concept}</strong></p>
+                        <p style="margin-top: 16px; font-size: 0.9em;">Available concepts:</p>
+                        <ul style="list-style: none; padding: 0; margin-top: 8px;">
+                            ${availableConcepts.slice(0, 10).map(c => `<li style="padding: 4px 0;">• ${c}</li>`).join('')}
+                        </ul>
+                        <button class="btn" onclick="window.location.href='index.html'" style="margin-top: 20px;">
+                            Back to Study Guide
+                        </button>
+                    </div>
+                `;
                 return;
             }
 
