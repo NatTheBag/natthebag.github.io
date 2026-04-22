@@ -1,0 +1,834 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Practice Questions · Han Lu</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=DM+Mono:ital,wght@0,300;0,400;0,500;1,300&family=Newsreader:ital,opsz,wght@0,6..72,300;0,6..72,400;1,6..72,300;1,6..72,400&display=swap" rel="stylesheet">
+    <style>
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+        :root {
+            --bg:        #0c0c0b;
+            --surface:   #131310;
+            --surface2:  #191916;
+            --border:    #222220;
+            --border2:   #2e2e2a;
+            --muted:     #484840;
+            --dim:       #7a7a70;
+            --text:      #cec9be;
+            --bright:    #edeae2;
+            --accent:    #c8a86b;
+            --accent2:   #8fb89a;
+            --correct:   #51cf66;
+            --incorrect: #ff6b6b;
+            --mono:      'DM Mono', monospace;
+            --serif:     'Newsreader', Georgia, serif;
+            --radius:    4px;
+        }
+
+        html { scroll-behavior: smooth; }
+
+        body {
+            background: var(--bg);
+            color: var(--text);
+            font-family: var(--serif);
+            font-size: 16px;
+            line-height: 1.72;
+            min-height: 100vh;
+        }
+
+        body::after {
+            content: '';
+            position: fixed; inset: 0;
+            pointer-events: none;
+            z-index: 9000;
+            opacity: 0.03;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+            background-size: 256px;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 0 32px;
+        }
+
+        /* ── NAV BAR ───────────────────────────── */
+        .topbar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 24px 0 20px;
+            border-bottom: 1px solid var(--border);
+            margin-bottom: 0;
+        }
+
+        .topbar-logo {
+            font-family: var(--mono);
+            font-size: 11px;
+            letter-spacing: 0.16em;
+            text-transform: uppercase;
+            color: var(--dim);
+            cursor: pointer;
+            transition: color 0.2s;
+            text-decoration: none;
+        }
+        .topbar-logo:hover { color: var(--accent); }
+
+        .topbar-nav {
+            display: flex;
+            gap: 0;
+            align-items: center;
+        }
+
+        .tab-link {
+            font-family: var(--mono);
+            font-size: 10px;
+            letter-spacing: 0.16em;
+            text-transform: uppercase;
+            color: var(--dim);
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 6px 14px;
+            border-radius: var(--radius);
+            transition: color 0.2s, background 0.2s;
+            text-decoration: none;
+        }
+        .tab-link:hover { color: var(--text); }
+
+        /* ── HEADER ────────────────────────────── */
+        .header {
+            padding: 40px 0 28px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .header h1 {
+            font-family: var(--serif);
+            font-size: 1.8rem;
+            font-weight: 300;
+            color: var(--bright);
+            letter-spacing: -0.01em;
+            line-height: 1.2;
+            margin-bottom: 8px;
+        }
+
+        .concept-name {
+            font-family: var(--mono);
+            font-size: 10px;
+            letter-spacing: 0.14em;
+            text-transform: uppercase;
+            color: var(--dim);
+        }
+
+        /* ── PROGRESS ──────────────────────────── */
+        .progress-section {
+            padding: 32px 0;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .progress-bar-wrap {
+            width: 100%;
+            height: 6px;
+            background: var(--surface2);
+            border-radius: 3px;
+            overflow: hidden;
+            margin-bottom: 12px;
+        }
+
+        .progress-bar {
+            height: 100%;
+            background: linear-gradient(90deg, var(--accent) 0%, var(--accent2) 100%);
+            border-radius: 3px;
+            transition: width 0.3s ease;
+        }
+
+        .progress-text {
+            font-family: var(--mono);
+            font-size: 10px;
+            letter-spacing: 0.12em;
+            color: var(--dim);
+            text-align: center;
+        }
+
+        /* ── QUESTION CARD ─────────────────────── */
+        .question-section {
+            padding: 40px 0;
+        }
+
+        .question-card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            padding: 32px;
+            margin-bottom: 24px;
+        }
+
+        .question-type {
+            font-family: var(--mono);
+            font-size: 9px;
+            letter-spacing: 0.14em;
+            text-transform: uppercase;
+            color: var(--accent);
+            margin-bottom: 16px;
+        }
+
+        .question-text {
+            font-size: 1.05rem;
+            color: var(--bright);
+            line-height: 1.6;
+            margin-bottom: 24px;
+        }
+
+        .answer-input {
+            width: 100%;
+            padding: 14px 16px;
+            background: var(--surface2);
+            border: 1px solid var(--border2);
+            border-radius: var(--radius);
+            color: var(--text);
+            font-family: var(--serif);
+            font-size: 1rem;
+            margin-bottom: 16px;
+            transition: border-color 0.2s;
+        }
+
+        .answer-input:focus {
+            outline: none;
+            border-color: var(--accent);
+        }
+
+        .answer-input.correct {
+            border-color: var(--correct);
+            background: rgba(81, 207, 102, 0.05);
+        }
+
+        .answer-input.incorrect {
+            border-color: var(--incorrect);
+            background: rgba(255, 107, 107, 0.05);
+        }
+
+        .choices {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin-bottom: 16px;
+        }
+
+        .choice-btn {
+            width: 100%;
+            padding: 14px 18px;
+            background: var(--surface2);
+            border: 1px solid var(--border2);
+            border-radius: var(--radius);
+            color: var(--text);
+            font-family: var(--serif);
+            font-size: 0.95rem;
+            text-align: left;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .choice-btn:hover {
+            background: var(--surface);
+            border-color: var(--muted);
+        }
+
+        .choice-btn.selected {
+            border-color: var(--accent);
+            background: rgba(200, 168, 107, 0.08);
+        }
+
+        .choice-btn.correct {
+            border-color: var(--correct);
+            background: rgba(81, 207, 102, 0.1);
+        }
+
+        .choice-btn.incorrect {
+            border-color: var(--incorrect);
+            background: rgba(255, 107, 107, 0.1);
+        }
+
+        .choice-btn:disabled {
+            cursor: not-allowed;
+            opacity: 0.6;
+        }
+
+        /* ── FEEDBACK ──────────────────────────── */
+        .feedback {
+            padding: 16px 20px;
+            border-radius: var(--radius);
+            margin-bottom: 16px;
+            font-size: 0.9rem;
+            display: none;
+        }
+
+        .feedback.show {
+            display: block;
+            animation: slideDown 0.3s ease;
+        }
+
+        .feedback.correct {
+            background: rgba(81, 207, 102, 0.1);
+            border: 1px solid rgba(81, 207, 102, 0.3);
+            color: var(--correct);
+        }
+
+        .feedback.incorrect {
+            background: rgba(255, 107, 107, 0.1);
+            border: 1px solid rgba(255, 107, 107, 0.3);
+            color: var(--incorrect);
+        }
+
+        .correct-answer {
+            margin-top: 8px;
+            color: var(--text);
+            font-style: italic;
+        }
+
+        @keyframes slideDown {
+            from { opacity: 0; transform: translateY(-10px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+
+        /* ── BUTTONS ───────────────────────────── */
+        .button-group {
+            display: flex;
+            gap: 12px;
+        }
+
+        .btn {
+            padding: 12px 24px;
+            background: var(--surface2);
+            border: 1px solid var(--border2);
+            border-radius: var(--radius);
+            color: var(--text);
+            font-family: var(--mono);
+            font-size: 10px;
+            letter-spacing: 0.14em;
+            text-transform: uppercase;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn:hover {
+            background: var(--accent);
+            color: var(--bg);
+            border-color: var(--accent);
+        }
+
+        .btn:disabled {
+            opacity: 0.4;
+            cursor: not-allowed;
+        }
+
+        .btn:disabled:hover {
+            background: var(--surface2);
+            color: var(--text);
+            border-color: var(--border2);
+        }
+
+        .btn-primary {
+            background: var(--accent);
+            color: var(--bg);
+            border-color: var(--accent);
+        }
+
+        .btn-primary:hover {
+            background: var(--bright);
+            border-color: var(--bright);
+        }
+
+        /* ── STATS ─────────────────────────────── */
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 16px;
+            margin-top: 32px;
+        }
+
+        .stat-box {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 20px;
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 1.8rem;
+            font-weight: 300;
+            color: var(--bright);
+            margin-bottom: 6px;
+        }
+
+        .stat-label {
+            font-family: var(--mono);
+            font-size: 9px;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            color: var(--dim);
+        }
+
+        /* ── LOADING ───────────────────────────── */
+        .loading {
+            text-align: center;
+            padding: 60px 20px;
+            color: var(--dim);
+            font-style: italic;
+        }
+
+        @media (max-width: 768px) {
+            .container { padding: 0 20px; }
+            .stats { grid-template-columns: 1fr; }
+            .button-group { flex-direction: column; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+
+    <!-- ── TOP NAV ──────────────────────────────── -->
+    <div class="topbar">
+        <a class="topbar-logo" href="/">Han Lu</a>
+        <nav class="topbar-nav">
+            <a class="tab-link" href="/">Home</a>
+            <a class="tab-link" href="/scibowl">Study Guide</a>
+        </nav>
+    </div>
+
+    <!-- ── HEADER ───────────────────────────────── -->
+    <div class="header">
+        <div class="concept-name" id="concept-name">Loading...</div>
+        <h1>Practice Questions</h1>
+    </div>
+
+    <!-- ── PROGRESS ─────────────────────────────── -->
+    <div class="progress-section">
+        <div class="progress-bar-wrap">
+            <div class="progress-bar" id="progress-bar" style="width: 0%"></div>
+        </div>
+        <div class="progress-text" id="progress-text">Question 0 of 0</div>
+    </div>
+
+    <!-- ── QUESTION ─────────────────────────────── -->
+    <div class="question-section">
+        <div id="loading" class="loading">Loading questions...</div>
+        <div id="question-container" style="display: none;">
+            <div class="question-card">
+                <div class="question-type" id="question-type"></div>
+                <div class="question-text" id="question-text"></div>
+                
+                <!-- For short answer -->
+                <input type="text" id="answer-input" class="answer-input" placeholder="Type your answer..." style="display: none;">
+                
+                <!-- For multiple choice -->
+                <div id="choices" class="choices" style="display: none;"></div>
+                
+                <div id="feedback" class="feedback"></div>
+                
+                <div class="button-group">
+                    <button class="btn btn-primary" id="submit-btn" onclick="checkAnswer()">Submit Answer</button>
+                    <button class="btn" id="next-btn" onclick="nextQuestion()" style="display: none;">Next Question</button>
+                    <button class="btn" onclick="window.location.href='/scibowl'">Back to Guide</button>
+                </div>
+            </div>
+
+            <!-- Stats -->
+            <div class="stats">
+                <div class="stat-box">
+                    <div class="stat-value" id="correct-count">0</div>
+                    <div class="stat-label">Correct</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-value" id="incorrect-count">0</div>
+                    <div class="stat-label">Incorrect</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-value" id="accuracy">0%</div>
+                    <div class="stat-label">Accuracy</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div><!-- /container -->
+
+<script>
+    // Global state
+    let questions = [];
+    let currentQuestionIndex = 0;
+    let correctCount = 0;
+    let incorrectCount = 0;
+    let selectedAnswer = null;
+
+    // Get concept from URL
+    const urlParams = new URLSearchParams(window.location.search);
+    const concept = urlParams.get('concept') || 'all';
+
+    // Category mapping to match your spreadsheet
+    const categoryMap = {
+        'genetics': 'Genetics',
+        'cell_biology': 'Cell Biology',
+        'acids_bases': 'Acids & Bases',
+        'stoichiometry': 'Stoichiometry',
+        'optics': 'Optics',
+        'trigonometry': 'Trigonometry',
+        'astronomy': 'Astronomy',
+        'geology': 'Geology',
+        'thermodynamics': 'Thermodynamics',
+        'redox': 'Redox',
+        'mechanics': 'Mechanics',
+        'ecology': 'Ecology',
+        'bonding': 'Bonding',
+        'rotational_motion': 'Rotational Motion',
+        'geometry': 'Geometry',
+        'oceanography': 'Oceanography',
+        'thermodynamics_physics': 'Thermodynamics (Physics)',
+        'biochemistry': 'Biochemistry',
+        'anatomy_physiology': 'Anatomy & Physiology',
+        'organic_chemistry': 'Organic Chemistry',
+        'algebra': 'Algebra',
+        'modern_physics': 'Modern Physics',
+        'meteorology': 'Meteorology',
+        'waves': 'Waves',
+        'calculus': 'Calculus',
+        'electromagnetism': 'Electromagnetism',
+        'atomic_structure': 'Atomic Structure',
+        'kinetics': 'Kinetics',
+        'evolution': 'Evolution',
+        'statistics_probability': 'Statistics & Probability'
+    };
+
+    // Load CSV from Google Sheets
+    async function loadQuestions() {
+        try {
+            // Google Sheets CSV export URL
+            const sheetId = '10LbTULKaAwzsRKOTfxqTinxXaDud2bR9gYmG9Wy08Ss';
+            const csvUrl = `https://docs.google.com/spreadsheets/d/${sheetId}/export?format=csv`;
+            
+            const response = await fetch(csvUrl);
+            const csvText = await response.text();
+            
+            // Parse and filter questions
+            const allQuestions = parseCSV(csvText);
+            
+            // Filter by concept if specified
+            if (concept !== 'all') {
+                const categoryName = categoryMap[concept];
+                questions = allQuestions.filter(q => q.Category === categoryName);
+            } else {
+                questions = allQuestions;
+            }
+            
+            if (questions.length === 0) {
+                document.getElementById('loading').textContent = 'No questions found for this concept.';
+                return;
+            }
+
+            // Update UI
+            const displayName = concept === 'all' ? 'All Concepts' : concept.replace(/_/g, ' ').toUpperCase();
+            document.getElementById('concept-name').textContent = displayName;
+            document.getElementById('loading').style.display = 'none';
+            document.getElementById('question-container').style.display = 'block';
+            
+            showQuestion();
+        } catch (error) {
+            console.error('Error loading questions:', error);
+            document.getElementById('loading').textContent = 'Error loading questions. Please check your internet connection and try again.';
+        }
+    }
+
+    // Parse CSV data
+    function parseCSV(csv) {
+        const lines = csv.trim().split('\n');
+        const headers = lines[0].split(',').map(h => h.trim().replace(/"/g, ''));
+        
+        const parsed = [];
+        for (let i = 1; i < lines.length; i++) {
+            const values = parseCSVLine(lines[i]);
+            if (values.length < headers.length) continue;
+            
+            const obj = {};
+            headers.forEach((header, index) => {
+                obj[header] = values[index] ? values[index].trim().replace(/^"|"$/g, '') : '';
+            });
+            
+            // Only add if it has a question and answer
+            if (obj.Question && obj.Answer) {
+                parsed.push(obj);
+            }
+        }
+        
+        return parsed;
+    }
+
+    // Handle CSV line parsing (handles quoted fields)
+    function parseCSVLine(line) {
+        const result = [];
+        let current = '';
+        let inQuotes = false;
+        
+        for (let i = 0; i < line.length; i++) {
+            const char = line[i];
+            
+            if (char === '"') {
+                if (inQuotes && line[i + 1] === '"') {
+                    // Escaped quote
+                    current += '"';
+                    i++;
+                } else {
+                    inQuotes = !inQuotes;
+                }
+            } else if (char === ',' && !inQuotes) {
+                result.push(current);
+                current = '';
+            } else {
+                current += char;
+            }
+        }
+        result.push(current);
+        
+        return result;
+    }
+
+    // Display current question
+    function showQuestion() {
+        if (currentQuestionIndex >= questions.length) {
+            showComplete();
+            return;
+        }
+
+        const q = questions[currentQuestionIndex];
+        selectedAnswer = null;
+        
+        // Update progress
+        const progress = ((currentQuestionIndex) / questions.length) * 100;
+        document.getElementById('progress-bar').style.width = progress + '%';
+        document.getElementById('progress-text').textContent = 
+            `Question ${currentQuestionIndex + 1} of ${questions.length}`;
+        
+        // Set question type and text
+        const questionType = q.Type || 'Short Answer';
+        document.getElementById('question-type').textContent = questionType.toUpperCase();
+        document.getElementById('question-text').textContent = q.Question;
+        
+        // Reset feedback
+        const feedback = document.getElementById('feedback');
+        feedback.className = 'feedback';
+        feedback.textContent = '';
+        
+        // Show appropriate input type
+        const answerInput = document.getElementById('answer-input');
+        const choicesDiv = document.getElementById('choices');
+        
+        // Check if it's multiple choice (has W, X, Y, Z options)
+        const hasChoices = q.W && q.X && q.Y && q.Z;
+        
+        if (hasChoices) {
+            // Multiple choice
+            answerInput.style.display = 'none';
+            choicesDiv.style.display = 'flex';
+            
+            const choices = [
+                { letter: 'W', text: q.W },
+                { letter: 'X', text: q.X },
+                { letter: 'Y', text: q.Y },
+                { letter: 'Z', text: q.Z }
+            ];
+            
+            choicesDiv.innerHTML = choices.map((choice, i) => 
+                `<button class="choice-btn" onclick="selectChoice('${choice.letter}')">
+                    <strong>${choice.letter}:</strong> ${choice.text}
+                </button>`
+            ).join('');
+        } else {
+            // Short answer
+            answerInput.style.display = 'block';
+            choicesDiv.style.display = 'none';
+            answerInput.value = '';
+            answerInput.className = 'answer-input';
+            answerInput.focus();
+        }
+        
+        // Reset buttons
+        document.getElementById('submit-btn').style.display = 'block';
+        document.getElementById('submit-btn').disabled = false;
+        document.getElementById('next-btn').style.display = 'none';
+    }
+
+    // Select a multiple choice answer
+    function selectChoice(letter) {
+        selectedAnswer = letter;
+        const buttons = document.querySelectorAll('.choice-btn');
+        buttons.forEach(btn => {
+            const btnLetter = btn.textContent.trim().charAt(0);
+            btn.classList.toggle('selected', btnLetter === letter);
+        });
+    }
+
+    // Check the answer
+    function checkAnswer() {
+        const q = questions[currentQuestionIndex];
+        const feedback = document.getElementById('feedback');
+        let userAnswer;
+        let isCorrect = false;
+
+        const hasChoices = q.W && q.X && q.Y && q.Z;
+
+        if (hasChoices) {
+            if (selectedAnswer === null) {
+                alert('Please select an answer');
+                return;
+            }
+            userAnswer = selectedAnswer;
+        } else {
+            userAnswer = document.getElementById('answer-input').value.trim();
+            if (!userAnswer) {
+                alert('Please enter an answer');
+                return;
+            }
+        }
+
+        // Check correctness
+        const correctAnswer = q.Answer.trim();
+        
+        if (hasChoices) {
+            // For multiple choice, compare letters
+            isCorrect = userAnswer.toUpperCase() === correctAnswer.toUpperCase();
+        } else {
+            // For short answer, case-insensitive comparison
+            isCorrect = userAnswer.toLowerCase() === correctAnswer.toLowerCase();
+        }
+
+        // Update stats
+        if (isCorrect) {
+            correctCount++;
+            feedback.className = 'feedback correct show';
+            feedback.innerHTML = '✓ Correct!';
+        } else {
+            incorrectCount++;
+            feedback.className = 'feedback incorrect show';
+            
+            if (hasChoices) {
+                const correctText = q[correctAnswer];
+                feedback.innerHTML = `✗ Incorrect<div class="correct-answer">Correct answer: <strong>${correctAnswer}</strong>: ${correctText}</div>`;
+            } else {
+                feedback.innerHTML = `✗ Incorrect<div class="correct-answer">Correct answer: ${correctAnswer}</div>`;
+            }
+        }
+
+        // Update visual feedback
+        if (hasChoices) {
+            const buttons = document.querySelectorAll('.choice-btn');
+            
+            buttons.forEach(btn => {
+                btn.disabled = true;
+                const btnLetter = btn.textContent.trim().charAt(0);
+                
+                if (btnLetter === correctAnswer.toUpperCase()) {
+                    btn.classList.add('correct');
+                } else if (btnLetter === selectedAnswer && !isCorrect) {
+                    btn.classList.add('incorrect');
+                }
+            });
+        } else {
+            const input = document.getElementById('answer-input');
+            input.classList.add(isCorrect ? 'correct' : 'incorrect');
+            input.disabled = true;
+        }
+
+        // Update stats display
+        updateStats();
+
+        // Show next button
+        document.getElementById('submit-btn').style.display = 'none';
+        document.getElementById('next-btn').style.display = 'block';
+    }
+
+    // Move to next question
+    function nextQuestion() {
+        currentQuestionIndex++;
+        showQuestion();
+    }
+
+    // Update statistics
+    function updateStats() {
+        document.getElementById('correct-count').textContent = correctCount;
+        document.getElementById('incorrect-count').textContent = incorrectCount;
+        
+        const total = correctCount + incorrectCount;
+        const accuracy = total > 0 ? Math.round((correctCount / total) * 100) : 0;
+        document.getElementById('accuracy').textContent = accuracy + '%';
+    }
+
+    // Show completion message
+    function showComplete() {
+        const container = document.getElementById('question-container');
+        const total = correctCount + incorrectCount;
+        const accuracy = total > 0 ? Math.round((correctCount / total) * 100) : 0;
+        
+        container.innerHTML = `
+            <div class="question-card" style="text-align: center;">
+                <h2 style="color: var(--bright); margin-bottom: 20px;">🎉 Practice Complete!</h2>
+                <p style="color: var(--dim); margin-bottom: 32px; font-style: italic;">
+                    You've completed all ${total} questions in this set.
+                </p>
+                <div class="stats">
+                    <div class="stat-box">
+                        <div class="stat-value">${correctCount}</div>
+                        <div class="stat-label">Correct</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-value">${incorrectCount}</div>
+                        <div class="stat-label">Incorrect</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-value">${accuracy}%</div>
+                        <div class="stat-label">Accuracy</div>
+                    </div>
+                </div>
+                <div class="button-group" style="justify-content: center; margin-top: 32px;">
+                    <button class="btn btn-primary" onclick="restartPractice()">Practice Again</button>
+                    <button class="btn" onclick="window.location.href='/scibowl'">Back to Guide</button>
+                </div>
+            </div>
+        `;
+    }
+
+    // Restart practice
+    function restartPractice() {
+        currentQuestionIndex = 0;
+        correctCount = 0;
+        incorrectCount = 0;
+        selectedAnswer = null;
+        
+        // Shuffle questions for variety
+        questions = questions.sort(() => Math.random() - 0.5);
+        
+        location.reload();
+    }
+
+    // Handle Enter key for answer input
+    document.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') {
+            const submitBtn = document.getElementById('submit-btn');
+            const nextBtn = document.getElementById('next-btn');
+            
+            if (submitBtn && submitBtn.style.display !== 'none' && !submitBtn.disabled) {
+                checkAnswer();
+            } else if (nextBtn && nextBtn.style.display !== 'none') {
+                nextQuestion();
+            }
+        }
+    });
+
+    // Initialize
+    loadQuestions();
+</script>
+
+</body>
+</html>
