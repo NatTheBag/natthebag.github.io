@@ -596,73 +596,66 @@
     .footer-email a:hover { color: var(--accent); }
 
     /* ═══════════════════════════════════════
-       PUBLICATIONS PAGE
+       PUBLICATIONS (under Projects)
     ═══════════════════════════════════════ */
-    .publications-page { padding: 48px 0 0; }
-
-    .pub-list { display: flex; flex-direction: column; gap: 12px; }
+    .pub-list { display: grid; gap: 16px; }
 
     .pub-card {
       background: var(--surface);
       border: 1px solid var(--border);
       border-radius: 6px;
-      padding: 20px 24px;
+      overflow: hidden;
       cursor: pointer;
-      transition: border-color 0.2s, background 0.2s;
+      transition: border-color 0.2s, transform 0.2s;
       animation: fadeUp 0.35s ease both;
-      display: flex;
-      gap: 20px;
-      align-items: flex-start;
     }
     .pub-card:hover {
       border-color: var(--border2);
-      background: var(--surface2);
+      transform: translateY(-2px);
     }
     .pub-card:hover .pub-title { color: var(--accent); }
 
-    .pub-year-col {
-      flex-shrink: 0;
-      width: 44px;
-      padding-top: 2px;
+    .pub-img-wrap {
+      width: 100%;
+      height: 180px;
+      background: var(--surface2);
+      overflow: hidden;
     }
-    .pub-year {
+    .pub-img-wrap img {
+      width: 100%; height: 100%;
+      object-fit: cover;
+      filter: grayscale(20%);
+      transition: filter 0.3s;
+    }
+    .pub-card:hover .pub-img-wrap img { filter: grayscale(0%); }
+    .pub-img-placeholder {
+      width: 100%; height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
       font-family: var(--mono);
-      font-size: 10px;
-      letter-spacing: 0.1em;
+      font-size: 11px;
+      letter-spacing: 0.14em;
       color: var(--muted);
+      text-transform: uppercase;
     }
 
-    .pub-main { flex: 1; min-width: 0; }
+    .pub-body { padding: 20px 22px 22px; }
+
+    .pub-header {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 10px;
+      margin-bottom: 5px;
+    }
 
     .pub-title {
       font-size: 0.95rem;
       font-weight: 400;
       color: var(--bright);
       line-height: 1.35;
-      margin-bottom: 5px;
       transition: color 0.2s;
-    }
-
-    .pub-authors {
-      font-size: 0.82rem;
-      color: var(--dim);
-      font-style: italic;
-      margin-bottom: 5px;
-      line-height: 1.4;
-    }
-
-    .pub-venue-row {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      flex-wrap: wrap;
-    }
-
-    .pub-venue {
-      font-family: var(--mono);
-      font-size: 10px;
-      letter-spacing: 0.1em;
-      color: var(--muted);
     }
 
     .pub-tag {
@@ -670,8 +663,10 @@
       font-size: 9px;
       letter-spacing: 0.1em;
       text-transform: uppercase;
-      padding: 1px 7px;
+      padding: 2px 8px;
       border-radius: 20px;
+      flex-shrink: 0;
+      margin-top: 2px;
     }
     .pub-tag.conference {
       color: var(--accent);
@@ -694,14 +689,20 @@
       border: 1px solid rgba(168,159,212,0.2);
     }
 
-    .pub-arrow {
-      flex-shrink: 0;
-      color: var(--muted);
-      font-size: 14px;
-      padding-top: 3px;
-      transition: color 0.2s, transform 0.2s;
+    .pub-authors {
+      font-size: 0.82rem;
+      color: var(--dim);
+      font-style: italic;
+      margin-bottom: 6px;
+      line-height: 1.4;
     }
-    .pub-card:hover .pub-arrow { color: var(--accent); transform: translateX(2px); }
+
+    .pub-venue {
+      font-family: var(--mono);
+      font-size: 10px;
+      letter-spacing: 0.1em;
+      color: var(--muted);
+    }
 
     /* pub modal sections */
     .pub-modal-authors {
@@ -711,7 +712,6 @@
       margin-bottom: 20px;
       line-height: 1.5;
     }
-
     .pub-modal-section-label {
       font-family: var(--mono);
       font-size: 9px;
@@ -720,7 +720,6 @@
       color: var(--muted);
       margin: 24px 0 8px;
     }
-
     .pub-modal-abstract {
       font-size: 0.88rem;
       color: var(--dim);
@@ -731,7 +730,6 @@
       border-left: 2px solid var(--border2);
       border-radius: 0 4px 4px 0;
     }
-
     .pub-modal-comments {
       font-size: 0.9rem;
       color: var(--text);
@@ -739,7 +737,6 @@
     }
     .pub-modal-comments p { margin-bottom: 10px; }
     .pub-modal-comments p:last-child { margin-bottom: 0; }
-
     .pub-modal-links {
       display: flex;
       gap: 10px;
@@ -770,7 +767,6 @@
       <button class="tab-btn active" data-page="home"         onclick="showPage('home')">Home</button>
       <button class="tab-btn"        data-page="about"        onclick="showPage('about')">About</button>
       <button class="tab-btn"        data-page="projects"     onclick="showPage('projects')">Projects</button>
-      <button class="tab-btn"        data-page="publications" onclick="showPage('publications')">Publications</button>
     </nav>
   </div>
 
@@ -915,22 +911,15 @@
   ════════════════════════════════════════════ -->
   <div id="page-projects" class="page">
     <div class="projects-page">
-      <div class="section-label" style="margin-bottom:24px;">Projects</div>
-      <div class="projects-grid" id="projects-grid">
-        <!-- Rendered by JS from PROJECTS array -->
-      </div>
-    </div>
-  </div>
+      <div class="section-label" style="margin-top:48px; margin-bottom:24px;">Publications</div>
+      <div class="pub-list" id="pub-list"></div>
 
-  <!-- ═══════════════════════════════════════════
-       PUBLICATIONS PAGE
-  ════════════════════════════════════════════ -->
-  <div id="page-publications" class="page">
-    <div class="publications-page">
-      <div class="section-label" style="margin-bottom:24px;">Publications</div>
-      <div class="pub-list" id="pub-list">
-        <!-- Rendered by JS from PUBLICATIONS array -->
-      </div>
+      <hr style="border: 1px solid var(--border); margin: 32px 0;"/>
+
+      <div class="section-label" style="margin-bottom:24px;">Projects</div>
+      <div class="projects-grid" id="projects-grid"></div>
+
+      <hr style="border: 1px solid var(--border); margin: 32px 0;"/>
     </div>
   </div>
 
@@ -1237,11 +1226,10 @@ function showPage(name) {
      year     → "2026"
      venue    → conference / journal name, e.g. "ICRA 2026"
      type     → "conference" | "journal" | "preprint" | "workshop"
+     image    → path or URL to an image, or "" for no image
      abstract → paste the abstract here (plain text or HTML)
-     comments → your personal notes — what you found interesting,
-                 how it relates to your work, etc. (HTML string)
-     links    → array of { label, url } — e.g. paper PDF, code, project page
-                 (can be empty [])
+     comments → your personal notes (HTML string)
+     links    → array of { label, url } (can be empty [])
 
    Example:
    {
@@ -1250,6 +1238,7 @@ function showPage(name) {
      year: "2026",
      venue: "AIAA Aviation Forum 2026",
      type: "conference",
+     image: "./figures/paper_fig.png",
      abstract: "We present a reinforcement learning approach...",
      comments: `<p>This is the paper I wrote on my KSFO arrival sequencing project...</p>`,
      links: [
@@ -1268,10 +1257,11 @@ const PUBLICATIONS = [
     year: "2026",
     venue: "",
     type: "preprint",
+    image: "./figures/atc.png",
     abstract: "The aircraft landing problem (ALP), whose goal is to schedule airplane landings such that their landing times are consistent with legal separation minimums, poses a unique challenge to algorithm development because of its high stakes applications and its interaction with unideal human factors. Although both rule-based (RB) and reinforcement-learning-based (RL) solutions exist, evaluation of their effectiveness is often minimal. Similarly, philosophizing the impact of the implementation of these models is important and well-researched, yet is contingent on the effectiveness of such solutions. By constructing no-operation, human historical, rule-based, and reinforcement learning based models and assessing them against ADS-B data obtained from OpenSky, we are able to evaluate the effectiveness of these models in the real world. All models must adhere to the standard for zero separation violations to be valid, and their delays differ. The rule-based algorithm can achieve a 96% improvement in delay from historical human data, while the RL model differs in effectiveness based on reward tuning. We then used Bayesian optimization to tune these rewards to be close to historical, with the end goal of identifying the priorities of these models through the RL approach. We find the importance of not causing violations to be at least, quantitatively, 8.22 times as important as a successful landing and 71 times as important as not causing a delay.",
-    comments: `<p>This was my first paper, and I am excited to finally announce it! Many more to come. </p>`,
+    comments: `<p> This is my first paper, and I hope you enjoy it! I will likely publish this properly when I am in college. </p>`,
     links: [
-      { label: "Archive", url: "https://doi.org/10.13140/RG.2.2.20163.16160"}
+      {label: "Article", url: "https://doi.org/10.13140/RG.2.2.20163.16160"}
     ]
   },
 ];
@@ -1281,18 +1271,20 @@ function renderPublications() {
   const list = document.getElementById('pub-list');
   list.innerHTML = PUBLICATIONS.map((p, i) => `
     <div class="pub-card" style="animation-delay:${i * 0.06}s" onclick="openPub(${i})">
-      <div class="pub-year-col">
-        <div class="pub-year">${p.year}</div>
+      <div class="pub-img-wrap">
+        ${p.image
+          ? `<img src="${p.image}" alt="${p.title}" loading="lazy" />`
+          : `<div class="pub-img-placeholder">No image</div>`
+        }
       </div>
-      <div class="pub-main">
-        <div class="pub-title">${p.title}</div>
-        <div class="pub-authors">${p.authors}</div>
-        <div class="pub-venue-row">
-          <span class="pub-venue">${p.venue}</span>
+      <div class="pub-body">
+        <div class="pub-header">
+          <div class="pub-title">${p.title}</div>
           <span class="pub-tag ${p.type}">${p.type}</span>
         </div>
+        <div class="pub-authors">${p.authors}</div>
+        <div class="pub-venue">${p.venue} · ${p.year}</div>
       </div>
-      <div class="pub-arrow">→</div>
     </div>
   `).join('');
 }
