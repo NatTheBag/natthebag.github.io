@@ -1064,11 +1064,11 @@ const PROJECTS = [
   {
     name: "Science Bowl Evaluation Algorithm",
     status: "complete", 
-    desc: "Evaluated Science Bowl practice questions by embedding practice sets into vectors and extracting cluster concepts. From this, a practice website that is in progress was created.",
+    desc: "Evaluated Science Bowl practice questions by embedding practice sets into vectors and extracting cluster concepts using K-means. From this, a practice website that is in progress was created.",
     image: "./figures/scibowl_class.png",
     links:[
       {label: "Website", url: "https://natthebag.github.io/scibowl/"},
-      {label: "Sheet (figure on second sheet)", url: "https://docs.google.com/spreadsheets/d/1gi6SPJ1PdRKf6dZ4bhA9bPc9e7W67gVHu_E9xR6NbK4/edit?usp=sharing"}
+      {label: "Sheet (figure on second sheet)", url: "https://docs.google.com/spreadsheets/d/1fbgxsfTC8Aesu3y8xYr4Y9aWwOZ3VnZKyBkKwof_8mY/edit?usp=sharing"}
     ]
   },
   {
@@ -1080,14 +1080,22 @@ const PROJECTS = [
       { label: "Tutorial", url: "https://natthebag.github.io/cad"}
     ]
   },
+  
   {
-    name: "Science Bowl Parser", 
-    status: "complete",
-    desc: "Created a parsing script for the NSB (National Science Bowl) official practice sets for team practice and statistic aggregation. Source code coming soon!",
-    image: "./figures/scibowl_parser.png",
-    links: [
-      { label: "Example Data", url: "https://docs.google.com/spreadsheets/d/1H5yYqJy9vRo-qf2FjsicQErGzZdf9KKcZ6Rw0_CoL-A/edit?usp=sharing"},
-    ]
+    name: "Robotics Outreach",
+    status: "ongoing",
+    desc: "Mentored a FLL team in Kigali, Rwanda for 3 years, assisting them in design, programming, and presentation skills.",
+    image: "./figures/workshop.png",
+    links: [],
+  },
+  {
+    name: "LaTeX Writer",
+    status: "complete", 
+    desc: "Created tool to convert LaTeX to mouse inputs so that they can be created on any platform.",
+    image: "./figures/latex.png",
+    links:[
+      {label: "Repository", url: "https://github.com/NatTheBag/LaTeX-for-Whiteboards/tree/master"},
+    ],
   },
   {
     name: "MATLAB ARM Challenge",
@@ -1097,13 +1105,14 @@ const PROJECTS = [
     links: [],
   },
   {
-    name: "Robotics Outreach",
-    status: "ongoing",
-    desc: "Mentored a FLL team in Kigali, Rwanda for 3 years, assisting them in design, programming, and presentation skills.",
-    image: "./figures/workshop.png",
-    links: [],
-  },
-
+      name: "Science Bowl Parser", 
+      status: "complete",
+      desc: "Created a parsing script for the NSB (National Science Bowl) official practice sets for team practice and statistic aggregation. Source code coming soon!",
+      image: "./figures/scibowl_parser.png",
+      links: [
+        { label: "Example Data", url: "https://docs.google.com/spreadsheets/d/1H5yYqJy9vRo-qf2FjsicQErGzZdf9KKcZ6Rw0_CoL-A/edit?usp=sharing"},
+      ]
+    },
 
   // {
   //   name: "3D Printing Curriculum",
