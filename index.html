@@ -746,6 +746,101 @@
       border-top: 1px solid var(--border);
     }
 
+    /* ═══════════════════════════════════════
+       HOME CAROUSEL
+    ═══════════════════════════════════════ */
+    .home-carousel {
+      padding: 40px 0 36px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .carousel-wrap {
+      position: relative;
+      width: 100%;
+      aspect-ratio: 16 / 9;
+      overflow: hidden;
+      border-radius: 6px;
+      background: var(--surface2);
+      cursor: pointer;
+      margin-top: 16px;
+      user-select: none;
+    }
+
+    .carousel-slide {
+      position: absolute;
+      inset: 0;
+      opacity: 0;
+      transition: opacity 0.6s ease;
+    }
+    .carousel-slide.active { opacity: 1; z-index: 1; }
+
+    .carousel-slide img {
+      width: 100%; height: 100%;
+      object-fit: cover;
+      display: block;
+      filter: grayscale(10%);
+    }
+
+    .carousel-caption {
+      position: absolute;
+      bottom: 0; left: 0; right: 0;
+      padding: 36px 18px 14px;
+      background: linear-gradient(to top, rgba(10,10,9,0.82) 0%, transparent 100%);
+      z-index: 2;
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    .carousel-caption-text { min-width: 0; }
+
+    .carousel-caption-title {
+      font-family: var(--serif);
+      font-size: 0.95rem;
+      color: var(--bright);
+      line-height: 1.3;
+      margin-bottom: 2px;
+    }
+
+    .carousel-caption-sub {
+      font-family: var(--mono);
+      font-size: 9px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--dim);
+    }
+
+    .carousel-dots {
+      display: flex;
+      gap: 5px;
+      flex-shrink: 0;
+      align-items: center;
+      padding-bottom: 2px;
+    }
+
+    .carousel-dot {
+      width: 5px; height: 5px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.25);
+      transition: background 0.25s, transform 0.25s;
+      cursor: pointer;
+    }
+    .carousel-dot.active {
+      background: var(--accent);
+      transform: scale(1.3);
+    }
+
+    .carousel-prev-zone,
+    .carousel-next-zone {
+      position: absolute;
+      top: 0; bottom: 40px;
+      width: 45%;
+      z-index: 3;
+    }
+    .carousel-prev-zone { left: 0; cursor: w-resize; }
+    .carousel-next-zone { right: 0; cursor: e-resize; }
+
     /* ── RESPONSIVE ──────────────────────────── */
     @media (max-width: 520px) {
       .shell { padding: 0 20px; }
@@ -792,10 +887,26 @@
         </div>
       </div>
       <div class="hero-links">
-        <a class="pill-link" href="https://drive.google.com/file/d/126iD2QpgK5JmunKySybLHMXaEBGWAuKc/view?usp=sharing" target="_blank">Résumé ↗</a>
+        <a class="pill-link" href="./resume.pdf" target="_blank">Résumé ↗</a>
         <a class="pill-link" href="/cad">CAD Tutorials ↗</a>
         <a class="pill-link" href="/scibowl">Science Bowl Practice ↗</a>
         <a class="pill-link" href="mailto:hanlu0427@gmail.com">hanlu0427@gmail.com</a>
+      </div>
+    </div>
+
+    <div class="home-carousel">
+      <div class="section-label">Work</div>
+      <div class="carousel-wrap" id="carousel-wrap">
+        <!-- slides rendered by JS -->
+        <div class="carousel-prev-zone" onclick="carouselStep(-1)"></div>
+        <div class="carousel-next-zone" onclick="carouselStep(1)"></div>
+        <div class="carousel-caption">
+          <div class="carousel-caption-text">
+            <div class="carousel-caption-title" id="carousel-title"></div>
+            <div class="carousel-caption-sub"   id="carousel-sub"></div>
+          </div>
+          <div class="carousel-dots" id="carousel-dots"></div>
+        </div>
       </div>
     </div>
 
@@ -1346,10 +1457,94 @@ function closePubModalBackdrop(e) {
 
 document.addEventListener('keydown', e => { if (e.key === 'Escape') { closeModal(); closePubModal(); } });
 
+/* ════════════════════════════════════════════════════════════
+   GALLERY — home page carousel
+   ────────────────────────────
+   Add images here. Each entry:
+
+     image   → path to image file, e.g. "./figures/myproject.jpg"
+     title   → caption title shown on hover
+     sub     → small subtitle line (optional, e.g. "FTC 2025")
+
+   Images auto-rotate every 4 seconds.
+   Click the left half to go back, right half to go forward.
+
+   Example:
+   { image: "./figures/robot.jpg", title: "FTC Competition Bot", sub: "2025" },
+════════════════════════════════════════════════════════════ */
+
+const GALLERY = [
+  { image: "./carousel/ftc2026.png", title: "FTC 2026 Competition Bot", sub: ""},
+  { image: "./carousel/paper1.png", title: "ALP Publication", sub: "See Projects..."},
+  { image: "./carousel/scibowl.png", title: "Science Bowl Classifier", sub: "See Projects..."},
+  { image: "./carousel/servechassis.png", title: "Swerve Drive Chassis for FTC", sub: ""},
+  { image: "./carousel/swerve2.png", title: "New Swerve Design", sub: ""},
+];
+
+/* ── CAROUSEL ────────────────────────── */
+let carouselIdx = 0;
+let carouselTimer = null;
+let carouselSlides = [];
+
+function buildCarousel() {
+  const wrap = document.getElementById('carousel-wrap');
+  const dots = document.getElementById('carousel-dots');
+
+  // insert slide divs before the click zones
+  const prevZone = wrap.querySelector('.carousel-prev-zone');
+  GALLERY.forEach((item, i) => {
+    const slide = document.createElement('div');
+    slide.className = 'carousel-slide' + (i === 0 ? ' active' : '');
+    slide.innerHTML = `<img src="${item.image}" alt="${item.title}" loading="${i === 0 ? 'eager' : 'lazy'}" />`;
+    wrap.insertBefore(slide, prevZone);
+    carouselSlides.push(slide);
+
+    const dot = document.createElement('div');
+    dot.className = 'carousel-dot' + (i === 0 ? ' active' : '');
+    dot.onclick = (e) => { e.stopPropagation(); carouselGoTo(i); };
+    dots.appendChild(dot);
+  });
+
+  carouselUpdateCaption();
+  carouselStartTimer();
+}
+
+function carouselGoTo(idx) {
+  carouselSlides[carouselIdx].classList.remove('active');
+  document.querySelectorAll('.carousel-dot')[carouselIdx].classList.remove('active');
+
+  carouselIdx = (idx + GALLERY.length) % GALLERY.length;
+
+  carouselSlides[carouselIdx].classList.add('active');
+  document.querySelectorAll('.carousel-dot')[carouselIdx].classList.add('active');
+  carouselUpdateCaption();
+  carouselResetTimer();
+}
+
+function carouselStep(dir) {
+  carouselGoTo(carouselIdx + dir);
+}
+
+function carouselUpdateCaption() {
+  const item = GALLERY[carouselIdx];
+  document.getElementById('carousel-title').textContent = item.title;
+  document.getElementById('carousel-sub').textContent   = item.sub || '';
+}
+
+function carouselStartTimer() {
+  carouselTimer = setInterval(() => carouselStep(1), 4000);
+}
+
+function carouselResetTimer() {
+  clearInterval(carouselTimer);
+  carouselStartTimer();
+}
+
 /* ── INIT ─────────────────────────────── */
 renderPosts();
 renderProjects();
 renderPublications();
+buildCarousel();
 
 // If URL contains #post-<slug>, open that post immediately
 const hashMatch = window.location.hash.match(/^#post-(.+)$/);
