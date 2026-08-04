@@ -334,8 +334,21 @@
     .edu-school { font-size: 12px; font-weight: bold; color: #0d3b7a; }
     .edu-detail { font-size: 11px; color: var(--xp-dim); margin-top: 1px; }
 
+    /* organisation logos — real marks, fitted rather than cropped, so
+       square seals and wide wordmarks both sit in one tidy column.
+       Rows without a logo keep an empty box so everything stays aligned. */
+    .org-logo {
+      width: 54px;
+      height: 40px;
+      flex-shrink: 0;
+      display: block;
+      margin-top: 1px;
+      object-fit: contain;
+      object-position: center;
+    }
+
     .club-list { list-style: none; }
-    .club-role { flex-shrink: 0; margin-top: 1px; width: 140px; }
+    .club-role { flex-shrink: 0; margin-top: 2px; width: 132px; }
     .club-name { font-size: 12px; font-weight: bold; color: #0d3b7a; }
     .club-desc { font-size: 11px; color: var(--xp-dim); margin-top: 2px; line-height: 1.5; }
 
@@ -550,7 +563,14 @@
       .profile { flex-direction: column; gap: 12px; }
       .skills-grid { grid-template-columns: 1fr; }
       .club-role { width: auto; }
-      .listbox .row { flex-direction: column; gap: 4px; }
+      /* education rows stay logo-beside-text; club rows put the logo and
+         role badge on one line with the description wrapping beneath */
+      .listbox .row { gap: 9px; }
+      .club-item { flex-wrap: wrap; align-items: center; gap: 8px; }
+      .club-item > div { flex: 1 1 100%; }
+      /* the empty alignment box earns nothing once rows stack — drop it
+         so a logo-less row's badge starts at the left edge */
+      span.org-logo { display: none; }
       .footer-inner { flex-direction: column; align-items: flex-start; }
       .xp-toolbar .label-text { display: none; }
       .modal-scroll { max-height: 55vh; }
@@ -569,6 +589,24 @@
 </script>
 
 <body class="xp-desktop">
+
+<!-- ═══════════════════════════════════════════
+     ORGANISATION LOGOS
+     ──────────────────
+     Used in About → Education and Clubs & Activities. The files
+     live in ./logos/ with their backgrounds stripped out; the
+     untouched originals are kept in ./logos/source/.
+
+     TO ADD ONE
+     ──────────
+     Drop a transparent PNG (or SVG) in ./logos/ and put this in
+     the row, in place of the empty <span class="org-logo">:
+
+       <img class="org-logo" src="./logos/name.png" alt="Org name" />
+
+     Any aspect ratio works — logos are fitted inside the box
+     rather than cropped, so nothing gets squashed.
+════════════════════════════════════════════ -->
 
 <!-- ═══════════════════════════════════════════
      MAIN WINDOW — "Internet Explorer"
@@ -737,14 +775,14 @@
             <div class="section-label">Education</div>
             <div class="listbox">
               <div class="row">
-                <span class="post-icon">🎓</span>
+                <img class="org-logo" src="./logos/stanford.png" alt="Stanford University seal" />
                 <div>
                   <div class="edu-school">Stanford Online High School</div>
                   <div class="edu-detail">High School Diploma · Expected 2027</div>
                 </div>
               </div>
               <div class="row">
-                <span class="post-icon">🎓</span>
+                <img class="org-logo" src="./logos/bwsi.png" alt="MIT Beaver Works Summer Institute" />
                 <div>
                   <div class="edu-school">MIT Beaver Works Summer Institute (BWSI)</div>
                   <div class="edu-detail">Basics of ASICS (Summer Program) · Class of 2026</div>
@@ -758,6 +796,7 @@
             <div class="section-label">Clubs &amp; Activities</div>
             <ul class="club-list listbox">
               <li class="club-item row">
+                <img class="org-logo" src="./logos/ftc.png" alt="FIRST Tech Challenge" />
                 <span class="xp-badge info club-role">Captain, Hardware Lead</span>
                 <div>
                   <div class="club-name">FTC Robotics Club</div>
@@ -765,6 +804,7 @@
                 </div>
               </li>
               <li class="club-item row">
+                <img class="org-logo" src="./logos/jowua.png" alt="JOWUA" />
                 <span class="xp-badge info club-role">Product Design Engineer</span>
                 <div>
                   <div class="club-name">JOWUA Taiwan</div>
@@ -772,6 +812,7 @@
                 </div>
               </li>
               <li class="club-item row">
+                <span class="org-logo" aria-hidden="true"></span>
                 <span class="xp-badge info club-role">President</span>
                 <div>
                   <div class="club-name">3D Printing Club</div>
@@ -779,6 +820,7 @@
                 </div>
               </li>
               <li class="club-item row">
+                <span class="org-logo" aria-hidden="true"></span>
                 <span class="xp-badge info club-role">Member</span>
                 <div>
                   <div class="club-name">Robotics Outreach</div>
@@ -786,6 +828,7 @@
                 </div>
               </li>
               <li class="club-item row">
+                <img class="org-logo" src="./logos/nsb.png" alt="National Science Bowl" />
                 <span class="xp-badge info club-role">Member</span>
                 <div>
                   <div class="club-name">Science Bowl &amp; Quiz Bowl</div>
@@ -793,6 +836,7 @@
                 </div>
               </li>
               <li class="club-item row">
+                <span class="org-logo" aria-hidden="true"></span>
                 <span class="xp-badge info club-role">Co-president</span>
                 <div>
                   <div class="club-name">Poker Society, Coffee Society</div>
@@ -814,6 +858,7 @@
                 <div class="skill-item"><span class="skill-box">✓</span>Prototyping &amp; Fabrication</div>
                 <div class="skill-item"><span class="skill-box">✓</span>MATLAB</div>
                 <div class="skill-item"><span class="skill-box">✓</span>CV &amp; RL Models</div>
+                <div class="skill-item"><span class="skill-box">✓</span>SystemVerilog</div>
               </div>
             </div>
           </div>
@@ -1010,19 +1055,7 @@ const POSTS = [
       <a href="mailto:hanlu0427@gmail.com">hanlu0427@gmail.com</a>.</p>
     `
   },
-
-  {
-    slug: "bowls",              // ← direct link: natthebag.github.io/#post-bowls
-    date: "2026-03-17",
-    display: "Mar 2026",
-    title: "Bowls",
-    excerpt: "Thoughts on science bowl competitions I attended this year, a general reflection on academic competitions.",
-    body: `
-      <p>After a rather unengaged two years of high school, something prompted me to more actively pursue competitions.
-        Although I have always participated in robotics competitions, my main high school activity, I never really understood
-        the appeal to [incomplete] <p>
-    `
-  },
+  
 ];
 // NOTE: When adding a new post, include a slug — a short lowercase hyphenated
 // ID, e.g. slug: "my-new-post" → links as natthebag.github.io/#post-my-new-post
@@ -1070,11 +1103,10 @@ const PROJECTS = [
   {
     name: "Convolution Neural Network Matrix Accelerator",
     status: "complete",
-    desc: "For our BWSI Capstone project, we created a matrix multiplier and created a ",
-    image: "./figures/scibowl_class.png",
+    desc: "For our BWSI Capstone project, we created a matrix multiplier and integrated that into a CNN accelerator by programming memory re-addressers and parallel MAC processes. Went through the full RTL to GDSII flow, expected tapeout Sept. 2026",
+    image: "./figures/cnn.png",
     links:[
-      {label: "Website", url: "https://natthebag.github.io/scibowl/"},
-      {label: "Sheet (figure on second sheet)", url: "https://docs.google.com/spreadsheets/d/1fbgxsfTC8Aesu3y8xYr4Y9aWwOZ3VnZKyBkKwof_8mY/edit?usp=sharing"}
+      {label: "SystemVerilog source file", url: "https://drive.google.com/file/d/1ExY5TptdJf2CDCwyN8SYbIh9Rj9XhtzK/view?usp=sharing"}
     ]
   },
   {
@@ -1408,6 +1440,7 @@ const GALLERY = [
   { image: "./carousel/paper1.png", title: "ALP Publication", sub: "See Projects..."},
   { image: "./carousel/scibowl.png", title: "Science Bowl Classifier", sub: "See Projects..."},
   { image: "./carousel/servechassis.png", title: "Swerve Drive Chassis for FTC", sub: ""},
+  { image: "./carousel/cnn.png", title: "CNN Accelerator Chip", sub: "Completed for BWSI Capstone"},
   { image: "./carousel/swerve2.png", title: "New Swerve Design", sub: ""},
 ];
 
