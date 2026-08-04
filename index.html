@@ -4,766 +4,163 @@
   <meta name="google-site-verification" content="gBm49BoI48dyccXvhrTaO9Rii6PB5wKcNCPyiEqeGr4" />
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="theme-color" content="#245edb" />
   <title>Han Lu</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=DM+Mono:ital,wght@0,300;0,400;0,500;1,300&family=Newsreader:ital,opsz,wght@0,6..72,300;0,6..72,400;1,6..72,300;1,6..72,400&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="./xp.css" />
+  <script src="./xp-wallpaper.js" defer></script>
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
-    :root {
-      --bg:        #0c0c0b;
-      --surface:   #131310;
-      --surface2:  #191916;
-      --border:    #222220;
-      --border2:   #2e2e2a;
-      --muted:     #484840;
-      --dim:       #7a7a70;
-      --text:      #cec9be;
-      --bright:    #edeae2;
-      --accent:    #c8a86b;
-      --accent2:   #8fb89a;
-      --mono:      'DM Mono', monospace;
-      --serif:     'Newsreader', Georgia, serif;
-      --radius:    4px;
-    }
 
     html { scroll-behavior: smooth; }
 
     body {
-      background: var(--bg);
-      color: var(--text);
-      font-family: var(--serif);
-      font-size: 16px;
-      line-height: 1.72;
       min-height: 100vh;
+      padding: 20px 20px calc(var(--xp-taskbar-h) + 24px);
+      line-height: 1.5;
     }
 
-    /* subtle grain */
-    body::after {
-      content: '';
-      position: fixed; inset: 0;
-      pointer-events: none;
-      z-index: 9000;
-      opacity: 0.03;
-      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
-      background-size: 256px;
-    }
-
-    /* ── SHELL ─────────────────────────────── */
-    .shell {
-      max-width: 700px;
+    /* ── THE BROWSER WINDOW ─────────────────── */
+    .main-window {
+      max-width: 860px;
       margin: 0 auto;
-      padding: 0 32px;
+      transition: max-width 0.15s;
+    }
+    .main-window.maximized { max-width: 100%; }
+    .main-window.minimized { display: none; }
+
+    .browser-body {
+      background: #fff;
+      overflow: hidden;
     }
 
-    /* ── NAV BAR ───────────────────────────── */
-    .topbar {
+    .shell {
+      max-width: 720px;
+      margin: 0 auto;
+      padding: 0 26px;
+    }
+
+    /* ── TAB STRIP (site nav) ───────────────── */
+    .nav-tabs {
+      background: var(--xp-face);
+      border-bottom: 1px solid var(--xp-shadow);
+      padding: 6px 0 0;
+    }
+    .nav-tabs .inner {
+      max-width: 720px;
+      margin: 0 auto;
+      padding: 0 20px;
       display: flex;
-      align-items: center;
+      align-items: flex-end;
       justify-content: space-between;
-      padding: 24px 0 20px;
-      border-bottom: 1px solid var(--border);
-      margin-bottom: 0;
+      gap: 12px;
+      flex-wrap: wrap;
     }
-
-    .topbar-logo {
-      font-family: var(--mono);
+    .site-mark {
       font-size: 11px;
-      letter-spacing: 0.16em;
-      text-transform: uppercase;
-      color: var(--dim);
+      font-weight: bold;
+      color: #0d3b7a;
       cursor: pointer;
-      transition: color 0.2s;
-    }
-    .topbar-logo:hover { color: var(--accent); }
-
-    .topbar-nav {
+      padding-bottom: 5px;
       display: flex;
-      gap: 0;
       align-items: center;
+      gap: 6px;
     }
+    .site-mark:hover { text-decoration: underline; }
 
-    .tab-btn {
-      font-family: var(--mono);
-      font-size: 10px;
-      letter-spacing: 0.16em;
-      text-transform: uppercase;
-      color: var(--dim);
-      background: none;
-      border: none;
-      cursor: pointer;
-      padding: 6px 14px;
-      border-radius: var(--radius);
-      transition: color 0.2s, background 0.2s;
-    }
-    .tab-btn:hover { color: var(--text); }
-    .tab-btn.active {
-      color: var(--bright);
-      background: var(--surface2);
-    }
-
-    /* ── PAGES ─────────────────────────────── */
-    .page { display: none; animation: pageIn 0.3s ease both; }
+    /* ── PAGES ──────────────────────────────── */
+    .page { display: none; animation: pageIn 0.18s ease-out both; }
     .page.active { display: block; }
 
     @keyframes pageIn {
-      from { opacity: 0; transform: translateY(8px); }
-      to   { opacity: 1; transform: translateY(0); }
+      from { opacity: 0; }
+      to   { opacity: 1; }
+    }
+
+    .section-label {
+      font-size: 11px;
+      font-weight: bold;
+      color: #0d3b7a;
+      margin-bottom: 9px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .section-label::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: var(--xp-face2);
     }
 
     /* ═══════════════════════════════════════
-       HOME PAGE
+       HOME
     ═══════════════════════════════════════ */
     .hero {
-      padding: 52px 0 36px;
-      border-bottom: 1px solid var(--border);
+      background: var(--xp-face);
+      border: 1px solid var(--xp-shadow);
+      box-shadow: inset 1px 1px 0 var(--xp-white);
+      border-radius: 3px;
+      padding: 16px 18px;
+      margin: 22px 0 24px;
     }
 
     .profile {
       display: flex;
       align-items: flex-start;
-      gap: 28px;
-    }
-
-    .avatar {
-      width: 76px; height: 76px;
-      border-radius: 50%;
-      object-fit: cover;
-      flex-shrink: 0;
-      filter: grayscale(15%);
-      border: 1px solid var(--border2);
-    }
-
-    .profile-text h1 {
-      font-family: var(--serif);
-      font-size: 1.65rem;
-      font-weight: 300;
-      color: var(--bright);
-      letter-spacing: -0.01em;
-      line-height: 1.2;
-      margin-bottom: 7px;
-    }
-
-    .profile-text .tagline {
-      font-size: 0.88rem;
-      color: var(--dim);
-      font-style: italic;
-      line-height: 1.55;
-    }
-
-    .hero-links {
-      margin-top: 24px;
-      display: flex;
-      gap: 8px;
-      flex-wrap: wrap;
-    }
-
-    .pill-link {
-      font-family: var(--mono);
-      font-size: 10px;
-      letter-spacing: 0.14em;
-      text-transform: uppercase;
-      color: var(--dim);
-      text-decoration: none;
-      padding: 5px 12px;
-      border: 1px solid var(--border2);
-      border-radius: 20px;
-      transition: color 0.2s, border-color 0.2s;
-    }
-    .pill-link:hover { color: var(--accent); border-color: var(--accent); }
-
-    /* posts on home */
-    .home-posts { padding: 40px 0 0; }
-
-    .section-label {
-      font-family: var(--mono);
-      font-size: 10px;
-      letter-spacing: 0.2em;
-      text-transform: uppercase;
-      color: var(--muted);
-      margin-bottom: 20px;
-    }
-
-    .post-list { list-style: none; }
-
-    .post-item {
-      padding: 20px 0;
-      border-bottom: 1px solid var(--border);
-      cursor: pointer;
-      transition: background 0.15s;
-      animation: fadeUp 0.35s ease both;
-    }
-    .post-item:last-child { border-bottom: none; }
-    .post-item:hover .post-title { color: var(--accent); }
-
-    @keyframes fadeUp {
-      from { opacity: 0; transform: translateY(8px); }
-      to   { opacity: 1; transform: translateY(0); }
-    }
-
-    .post-meta {
-      font-family: var(--mono);
-      font-size: 10px;
-      letter-spacing: 0.12em;
-      color: var(--muted);
-      margin-bottom: 5px;
-    }
-
-    .post-title {
-      font-size: 1.05rem;
-      font-weight: 400;
-      color: var(--bright);
-      line-height: 1.35;
-      margin-bottom: 5px;
-      transition: color 0.2s;
-    }
-
-    .post-excerpt {
-      font-size: 0.86rem;
-      color: var(--dim);
-      font-style: italic;
-      line-height: 1.55;
-    }
-
-    /* ═══════════════════════════════════════
-       ABOUT PAGE
-    ═══════════════════════════════════════ */
-    .about-page { padding: 48px 0 0; }
-
-    .about-name {
-      font-size: 1.5rem;
-      font-weight: 300;
-      color: var(--bright);
-      margin-bottom: 4px;
-    }
-
-    .about-subtitle {
-      font-family: var(--mono);
-      font-size: 11px;
-      letter-spacing: 0.14em;
-      color: var(--dim);
-      margin-bottom: 40px;
-    }
-
-    .about-block {
-      margin-bottom: 44px;
-    }
-
-    .about-block p {
-      font-size: 0.92rem;
-      color: var(--text);
-      margin-bottom: 12px;
-    }
-    .about-block p:last-child { margin-bottom: 0; }
-
-    /* Skills grid */
-    .skills-grid {
-      display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap: 10px;
-      margin-top: 4px;
-    }
-
-    .skill-item {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      padding: 10px 14px;
-      background: var(--surface2);
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      font-size: 0.83rem;
-      color: var(--text);
-    }
-
-    .skill-dot {
-      width: 5px; height: 5px;
-      border-radius: 50%;
-      background: var(--accent);
-      flex-shrink: 0;
-    }
-
-    /* Education */
-    .edu-item {
-      padding: 14px 0;
-      border-bottom: 1px solid var(--border);
-    }
-    .edu-item:last-child { border-bottom: none; }
-
-    .edu-school {
-      font-size: 0.95rem;
-      color: var(--bright);
-      font-weight: 400;
-      margin-bottom: 3px;
-    }
-
-    .edu-detail {
-      font-family: var(--mono);
-      font-size: 10px;
-      letter-spacing: 0.1em;
-      color: var(--dim);
-    }
-
-    /* Clubs */
-    .club-list { list-style: none; }
-
-    .club-item {
-      display: flex;
-      align-items: flex-start;
-      gap: 12px;
-      padding: 12px 0;
-      border-bottom: 1px solid var(--border);
-      font-size: 0.9rem;
-    }
-    .club-item:last-child { border-bottom: none; }
-
-    .club-role {
-      font-family: var(--mono);
-      font-size: 9px;
-      letter-spacing: 0.12em;
-      text-transform: uppercase;
-      color: var(--accent2);
-      padding: 2px 7px;
-      border: 1px solid var(--accent2);
-      border-radius: 20px;
-      flex-shrink: 0;
-      margin-top: 2px;
-      opacity: 0.75;
-    }
-
-    .club-name { color: var(--bright); }
-    .club-desc { font-size: 0.82rem; color: var(--dim); font-style: italic; margin-top: 2px; }
-
-    /* ═══════════════════════════════════════
-       PROJECTS PAGE
-    ═══════════════════════════════════════ */
-    .projects-page { padding: 48px 0 0; }
-
-    .projects-grid {
-      display: grid;
       gap: 16px;
     }
 
-    .project-card {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: 6px;
-      overflow: hidden;
-      transition: border-color 0.2s, transform 0.2s;
-      animation: fadeUp 0.35s ease both;
-    }
-    .project-card:hover {
-      border-color: var(--border2);
-      transform: translateY(-2px);
-    }
-
-    .project-img-wrap {
-      width: 100%;
-      height: 180px;
-      background: var(--surface2);
-      overflow: hidden;
-      position: relative;
-    }
-
-    .project-img-wrap img {
-      width: 100%; height: 100%;
+    .avatar {
+      width: 68px; height: 68px;
       object-fit: cover;
-      filter: grayscale(20%);
-      transition: filter 0.3s;
-    }
-    .project-card:hover .project-img-wrap img { filter: grayscale(0%); }
-
-    .project-img-placeholder {
-      width: 100%; height: 100%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-family: var(--mono);
-      font-size: 11px;
-      letter-spacing: 0.14em;
-      color: var(--muted);
-      text-transform: uppercase;
-    }
-
-    .project-body {
-      padding: 20px 22px 22px;
-    }
-
-    .project-header {
-      display: flex;
-      align-items: flex-start;
-      justify-content: space-between;
-      gap: 12px;
-      margin-bottom: 8px;
-    }
-
-    .project-name {
-      font-size: 1rem;
-      font-weight: 400;
-      color: var(--bright);
-      line-height: 1.3;
-    }
-
-    .status-badge {
-      font-family: var(--mono);
-      font-size: 9px;
-      letter-spacing: 0.12em;
-      text-transform: uppercase;
-      padding: 2px 8px;
-      border-radius: 20px;
       flex-shrink: 0;
-      margin-top: 3px;
-    }
-    .status-badge.ongoing {
-      color: var(--accent2);
-      background: rgba(143,184,154,0.1);
-      border: 1px solid rgba(143,184,154,0.25);
-    }
-    .status-badge.complete {
-      color: var(--dim);
-      background: var(--surface2);
-      border: 1px solid var(--border2);
+      background: var(--xp-white);
+      border: 1px solid var(--xp-fieldline);
+      padding: 2px;
+      border-radius: 2px;
     }
 
-    .project-desc {
-      font-size: 0.87rem;
-      color: var(--dim);
-      font-style: italic;
-      line-height: 1.55;
-      margin-bottom: 14px;
-    }
-
-    .project-links {
-      display: flex;
-      gap: 10px;
-      flex-wrap: wrap;
-    }
-
-    .project-link {
-      font-family: var(--mono);
-      font-size: 10px;
-      letter-spacing: 0.12em;
-      text-transform: uppercase;
-      color: var(--dim);
-      text-decoration: none;
-      padding: 4px 10px;
-      border: 1px solid var(--border2);
-      border-radius: var(--radius);
-      transition: color 0.2s, border-color 0.2s;
-    }
-    .project-link:hover { color: var(--accent); border-color: var(--accent); }
-
-    /* ═══════════════════════════════════════
-       POST MODAL
-    ═══════════════════════════════════════ */
-    .modal-backdrop {
-      position: fixed; inset: 0;
-      background: rgba(10,10,9,0.88);
-      backdrop-filter: blur(6px);
-      z-index: 8000;
-      display: flex;
-      align-items: flex-start;
-      justify-content: center;
-      padding: 40px 24px 40px;
-      opacity: 0;
-      pointer-events: none;
-      transition: opacity 0.25s;
-      overflow-y: auto;
-    }
-    .modal-backdrop.open {
-      opacity: 1;
-      pointer-events: all;
-    }
-
-    .modal {
-      background: var(--surface);
-      border: 1px solid var(--border2);
-      border-radius: 8px;
-      width: 100%;
-      max-width: 640px;
-      padding: 44px 48px 52px;
-      transform: translateY(16px);
-      transition: transform 0.28s ease;
-      position: relative;
-      margin: auto;
-    }
-    .modal-backdrop.open .modal { transform: translateY(0); }
-
-    .modal-actions {
-      position: absolute;
-      top: 18px; right: 16px;
-      display: flex;
-      align-items: center;
-      gap: 4px;
-    }
-
-    .modal-copy-link {
-      background: none;
-      border: 1px solid var(--border2);
-      border-radius: 4px;
-      color: var(--muted);
-      cursor: pointer;
-      font-family: var(--mono);
-      font-size: 9px;
-      letter-spacing: 0.12em;
-      padding: 4px 10px;
-      transition: color 0.2s, border-color 0.2s;
-    }
-    .modal-copy-link:hover { color: var(--text); border-color: var(--muted); }
-    .modal-copy-link.copied { color: var(--accent2); border-color: var(--accent2); }
-
-    .modal-close {
-      position: static;
-      background: none;
-      border: none;
-      cursor: pointer;
-      color: var(--muted);
-      font-size: 18px;
-      line-height: 1;
-      padding: 4px 6px;
-      border-radius: var(--radius);
-      transition: color 0.2s;
-    }
-    .modal-close:hover { color: var(--text); }
-
-    .modal-meta {
-      font-family: var(--mono);
-      font-size: 10px;
-      letter-spacing: 0.14em;
-      color: var(--muted);
-      margin-bottom: 14px;
-    }
-
-    .modal-title {
-      font-size: 1.5rem;
-      font-weight: 300;
-      color: var(--bright);
-      line-height: 1.3;
-      margin-bottom: 28px;
-      padding-bottom: 24px;
-      border-bottom: 1px solid var(--border);
-    }
-
-    .modal-body {
-      font-size: 0.93rem;
-      line-height: 1.8;
-      color: var(--text);
-    }
-
-    .modal-body p { margin-bottom: 16px; }
-    .modal-body p:last-child { margin-bottom: 0; }
-    .modal-body h2 {
-      font-size: 1rem;
-      font-weight: 400;
-      color: var(--bright);
-      margin: 28px 0 10px;
-      font-family: var(--mono);
-      letter-spacing: 0.1em;
-      text-transform: uppercase;
-      font-size: 11px;
-    }
-    .modal-body a { color: var(--accent); text-decoration: underline; text-decoration-color: rgba(200,168,107,0.3); }
-
-    /* ── FOOTER ─────────────────────────────── */
-    footer {
-      margin-top: 60px;
-      padding: 28px 0 36px;
-      border-top: 1px solid var(--border);
-    }
-
-    .footer-inner {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 12px;
-      flex-wrap: wrap;
-    }
-
-    .footer-copy {
-      font-family: var(--mono);
-      font-size: 10px;
-      letter-spacing: 0.1em;
-      color: var(--muted);
-    }
-
-    .footer-email a {
-      font-family: var(--mono);
-      font-size: 10px;
-      letter-spacing: 0.1em;
-      color: var(--muted);
-      text-decoration: none;
-      transition: color 0.2s;
-    }
-    .footer-email a:hover { color: var(--accent); }
-
-    /* ═══════════════════════════════════════
-       PUBLICATIONS (under Projects)
-    ═══════════════════════════════════════ */
-    .pub-list { display: grid; gap: 16px; }
-
-    .pub-card {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: 6px;
-      overflow: hidden;
-      cursor: pointer;
-      transition: border-color 0.2s, transform 0.2s;
-      animation: fadeUp 0.35s ease both;
-    }
-    .pub-card:hover {
-      border-color: var(--border2);
-      transform: translateY(-2px);
-    }
-    .pub-card:hover .pub-title { color: var(--accent); }
-
-    .pub-img-wrap {
-      width: 100%;
-      height: 180px;
-      background: var(--surface2);
-      overflow: hidden;
-    }
-    .pub-img-wrap img {
-      width: 100%; height: 100%;
-      object-fit: cover;
-      filter: grayscale(20%);
-      transition: filter 0.3s;
-    }
-    .pub-card:hover .pub-img-wrap img { filter: grayscale(0%); }
-    .pub-img-placeholder {
-      width: 100%; height: 100%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-family: var(--mono);
-      font-size: 11px;
-      letter-spacing: 0.14em;
-      color: var(--muted);
-      text-transform: uppercase;
-    }
-
-    .pub-body { padding: 20px 22px 22px; }
-
-    .pub-header {
-      display: flex;
-      align-items: flex-start;
-      justify-content: space-between;
-      gap: 10px;
+    .profile-text h1 {
+      font-size: 17px;
+      font-weight: bold;
+      color: #0d3b7a;
+      line-height: 1.25;
       margin-bottom: 5px;
     }
 
-    .pub-title {
-      font-size: 0.95rem;
-      font-weight: 400;
-      color: var(--bright);
-      line-height: 1.35;
-      transition: color 0.2s;
+    .profile-text .tagline {
+      font-size: 11px;
+      color: var(--xp-dim);
+      line-height: 1.6;
+      max-width: 46em;
     }
 
-    .pub-tag {
-      font-family: var(--mono);
-      font-size: 9px;
-      letter-spacing: 0.1em;
-      text-transform: uppercase;
-      padding: 2px 8px;
-      border-radius: 20px;
-      flex-shrink: 0;
-      margin-top: 2px;
-    }
-    .pub-tag.conference {
-      color: var(--accent);
-      background: rgba(200,168,107,0.08);
-      border: 1px solid rgba(200,168,107,0.2);
-    }
-    .pub-tag.journal {
-      color: var(--accent2);
-      background: rgba(143,184,154,0.08);
-      border: 1px solid rgba(143,184,154,0.2);
-    }
-    .pub-tag.preprint {
-      color: var(--dim);
-      background: var(--surface2);
-      border: 1px solid var(--border2);
-    }
-    .pub-tag.workshop {
-      color: #a89fd4;
-      background: rgba(168,159,212,0.08);
-      border: 1px solid rgba(168,159,212,0.2);
-    }
-
-    .pub-authors {
-      font-size: 0.82rem;
-      color: var(--dim);
-      font-style: italic;
-      margin-bottom: 6px;
-      line-height: 1.4;
-    }
-
-    .pub-venue {
-      font-family: var(--mono);
-      font-size: 10px;
-      letter-spacing: 0.1em;
-      color: var(--muted);
-    }
-
-    /* pub modal sections */
-    .pub-modal-authors {
-      font-size: 0.88rem;
-      color: var(--dim);
-      font-style: italic;
-      margin-bottom: 20px;
-      line-height: 1.5;
-    }
-    .pub-modal-section-label {
-      font-family: var(--mono);
-      font-size: 9px;
-      letter-spacing: 0.18em;
-      text-transform: uppercase;
-      color: var(--muted);
-      margin: 24px 0 8px;
-    }
-    .pub-modal-abstract {
-      font-size: 0.88rem;
-      color: var(--dim);
-      line-height: 1.75;
-      font-style: italic;
-      padding: 14px 18px;
-      background: var(--surface2);
-      border-left: 2px solid var(--border2);
-      border-radius: 0 4px 4px 0;
-    }
-    .pub-modal-comments {
-      font-size: 0.9rem;
-      color: var(--text);
-      line-height: 1.75;
-    }
-    .pub-modal-comments p { margin-bottom: 10px; }
-    .pub-modal-comments p:last-child { margin-bottom: 0; }
-    .pub-modal-links {
+    .hero-links {
+      margin-top: 14px;
+      padding-top: 12px;
+      border-top: 1px solid var(--xp-face2);
+      box-shadow: 0 -1px 0 var(--xp-white) inset;
       display: flex;
-      gap: 10px;
+      gap: 6px;
       flex-wrap: wrap;
-      margin-top: 24px;
-      padding-top: 20px;
-      border-top: 1px solid var(--border);
     }
 
-    /* ═══════════════════════════════════════
-       HOME CAROUSEL
-    ═══════════════════════════════════════ */
-    .home-carousel {
-      padding: 40px 0 36px;
-      border-bottom: 1px solid var(--border);
-    }
+    /* home carousel — "Picture and Fax Viewer" */
+    .home-carousel { margin-bottom: 26px; }
+
+    .viewer-window { margin-top: 10px; }
 
     .carousel-wrap {
       position: relative;
       width: 100%;
       aspect-ratio: 16 / 9;
       overflow: hidden;
-      border-radius: 6px;
-      background: var(--surface2);
+      background: #4a4a48;
+      border: 1px solid var(--xp-shadow);
+      box-shadow: inset 1px 1px 0 var(--xp-shadow2);
+      margin: 3px;
+      width: calc(100% - 6px);
       cursor: pointer;
-      margin-top: 16px;
       user-select: none;
     }
 
@@ -771,7 +168,7 @@
       position: absolute;
       inset: 0;
       opacity: 0;
-      transition: opacity 0.6s ease;
+      transition: opacity 0.35s linear;
     }
     .carousel-slide.active { opacity: 1; z-index: 1; }
 
@@ -779,76 +176,384 @@
       width: 100%; height: 100%;
       object-fit: cover;
       display: block;
-      filter: grayscale(10%);
-    }
-
-    .carousel-caption {
-      position: absolute;
-      bottom: 0; left: 0; right: 0;
-      padding: 36px 18px 14px;
-      background: linear-gradient(to top, rgba(10,10,9,0.82) 0%, transparent 100%);
-      z-index: 2;
-      display: flex;
-      align-items: flex-end;
-      justify-content: space-between;
-      gap: 12px;
-    }
-
-    .carousel-caption-text { min-width: 0; }
-
-    .carousel-caption-title {
-      font-family: var(--serif);
-      font-size: 0.95rem;
-      color: var(--bright);
-      line-height: 1.3;
-      margin-bottom: 2px;
-    }
-
-    .carousel-caption-sub {
-      font-family: var(--mono);
-      font-size: 9px;
-      letter-spacing: 0.12em;
-      text-transform: uppercase;
-      color: var(--dim);
-    }
-
-    .carousel-dots {
-      display: flex;
-      gap: 5px;
-      flex-shrink: 0;
-      align-items: center;
-      padding-bottom: 2px;
-    }
-
-    .carousel-dot {
-      width: 5px; height: 5px;
-      border-radius: 50%;
-      background: rgba(255,255,255,0.25);
-      transition: background 0.25s, transform 0.25s;
-      cursor: pointer;
-    }
-    .carousel-dot.active {
-      background: var(--accent);
-      transform: scale(1.3);
     }
 
     .carousel-prev-zone,
     .carousel-next-zone {
       position: absolute;
-      top: 0; bottom: 40px;
+      top: 0; bottom: 0;
       width: 45%;
       z-index: 3;
     }
     .carousel-prev-zone { left: 0; cursor: w-resize; }
     .carousel-next-zone { right: 0; cursor: e-resize; }
 
+    .viewer-toolbar {
+      background: var(--xp-face);
+      border-top: 1px solid var(--xp-white);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 3px;
+      padding: 3px;
+    }
+
+    .carousel-dots {
+      display: flex;
+      gap: 3px;
+      align-items: center;
+      padding: 0 8px;
+    }
+    .carousel-dot {
+      width: 9px; height: 9px;
+      background: var(--xp-face2);
+      border: 1px solid var(--xp-shadow);
+      box-shadow: inset 1px 1px 0 var(--xp-white);
+      cursor: pointer;
+    }
+    .carousel-dot.active {
+      background: var(--xp-blue);
+      border-color: var(--xp-blue-edge);
+      box-shadow: none;
+    }
+
+    /* writing list — Explorer style */
+    .post-listbox {
+      background: var(--xp-white);
+      border: 1px solid var(--xp-fieldline);
+      padding: 2px;
+    }
+    .post-list { list-style: none; }
+
+    .post-item {
+      padding: 8px 10px;
+      cursor: pointer;
+      display: flex;
+      gap: 10px;
+      align-items: flex-start;
+      border: 1px dotted transparent;
+    }
+    .post-item + .post-item { border-top: 1px solid #eeece2; }
+    .post-item:hover {
+      background: var(--xp-sel);
+      border-color: transparent;
+    }
+    .post-item:hover .post-title,
+    .post-item:hover .post-meta,
+    .post-item:hover .post-excerpt { color: var(--xp-sel-text); }
+
+    .post-icon { font-size: 16px; line-height: 1.2; flex-shrink: 0; }
+    .post-text { min-width: 0; }
+
+    .post-meta {
+      font-size: 10px;
+      color: var(--xp-muted);
+      margin-bottom: 1px;
+    }
+
+    .post-title {
+      font-size: 12px;
+      font-weight: bold;
+      color: #0d3b7a;
+      line-height: 1.3;
+      margin-bottom: 2px;
+    }
+
+    .post-excerpt {
+      font-size: 11px;
+      color: var(--xp-dim);
+      line-height: 1.5;
+    }
+
+    /* ═══════════════════════════════════════
+       ABOUT
+    ═══════════════════════════════════════ */
+    .about-page { padding: 24px 0 0; }
+
+    .about-head {
+      background: var(--xp-face);
+      border: 1px solid var(--xp-shadow);
+      box-shadow: inset 1px 1px 0 var(--xp-white);
+      border-radius: 3px;
+      padding: 12px 16px;
+      margin-bottom: 22px;
+    }
+    .about-name { font-size: 16px; font-weight: bold; color: #0d3b7a; }
+    .about-subtitle { font-size: 11px; color: var(--xp-dim); margin-top: 2px; }
+
+    .about-block { margin-bottom: 26px; }
+
+    .about-block p {
+      font-size: 11px;
+      color: var(--xp-text);
+      line-height: 1.65;
+      margin-bottom: 9px;
+    }
+    .about-block p:last-child { margin-bottom: 0; }
+
+    /* skills — checkbox list */
+    .skills-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 6px 18px;
+    }
+    .skill-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 11px;
+      color: var(--xp-text);
+    }
+    .skill-box {
+      width: 13px; height: 13px;
+      flex-shrink: 0;
+      background: var(--xp-white);
+      border: 1px solid var(--xp-fieldline);
+      color: #1c5c1c;
+      font-size: 11px;
+      line-height: 11px;
+      text-align: center;
+      font-weight: bold;
+    }
+
+    /* education / clubs — listbox rows */
+    .listbox {
+      background: var(--xp-white);
+      border: 1px solid var(--xp-fieldline);
+      padding: 2px;
+    }
+    .listbox .row {
+      padding: 8px 10px;
+      display: flex;
+      gap: 10px;
+      align-items: flex-start;
+    }
+    .listbox .row + .row { border-top: 1px solid #eeece2; }
+    .listbox .row:hover { background: var(--xp-sel-soft); }
+
+    .edu-school { font-size: 12px; font-weight: bold; color: #0d3b7a; }
+    .edu-detail { font-size: 11px; color: var(--xp-dim); margin-top: 1px; }
+
+    .club-list { list-style: none; }
+    .club-role { flex-shrink: 0; margin-top: 1px; width: 140px; }
+    .club-name { font-size: 12px; font-weight: bold; color: #0d3b7a; }
+    .club-desc { font-size: 11px; color: var(--xp-dim); margin-top: 2px; line-height: 1.5; }
+
+    /* ═══════════════════════════════════════
+       PROJECTS / PUBLICATIONS
+    ═══════════════════════════════════════ */
+    .projects-page { padding: 24px 0 0; }
+
+    .projects-grid,
+    .pub-list {
+      display: grid;
+      gap: 14px;
+    }
+
+    /* each project / publication is its own little XP window */
+    .item-window { }
+    .item-window .xp-titlebar { cursor: default; }
+    .item-window.clickable { cursor: pointer; }
+    .item-window.clickable:hover .xp-titlebar { background: #0a6bff; }
+
+    .item-body { padding: 10px 11px 11px; }
+
+    .item-img-wrap {
+      width: 100%;
+      height: 170px;
+      background: var(--xp-white);
+      border: 1px solid var(--xp-fieldline);
+      overflow: hidden;
+      margin-bottom: 10px;
+    }
+    .item-img-wrap img {
+      width: 100%; height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+    .item-img-placeholder {
+      width: 100%; height: 100%;
+      display: grid;
+      place-items: center;
+      font-size: 11px;
+      color: var(--xp-muted);
+      background: var(--xp-face2);
+    }
+
+    .item-desc {
+      font-size: 11px;
+      color: var(--xp-text);
+      line-height: 1.6;
+      margin-bottom: 10px;
+    }
+
+    .item-meta-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-bottom: 8px;
+    }
+
+    .pub-authors { font-size: 11px; color: var(--xp-dim); line-height: 1.5; }
+    .pub-venue { font-size: 10px; color: var(--xp-muted); font-family: var(--xp-mono); }
+
+    .item-links {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+    }
+
+    /* ═══════════════════════════════════════
+       DIALOGS (post + publication modals)
+    ═══════════════════════════════════════ */
+    .modal-backdrop {
+      position: fixed; inset: 0;
+      background: rgba(20,40,80,0.35);
+      z-index: 8000;
+      display: flex;
+      align-items: flex-start;
+      justify-content: center;
+      padding: 40px 20px calc(var(--xp-taskbar-h) + 30px);
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.12s linear;
+      overflow-y: auto;
+    }
+    .modal-backdrop.open { opacity: 1; pointer-events: all; }
+
+    .modal {
+      width: 100%;
+      max-width: 620px;
+      margin: auto;
+    }
+
+    .modal-scroll {
+      background: var(--xp-white);
+      border: 1px solid var(--xp-fieldline);
+      margin: 8px;
+      padding: 16px 18px;
+      max-height: 62vh;
+      overflow-y: auto;
+    }
+
+    .modal-meta { font-size: 10px; color: var(--xp-muted); margin-bottom: 4px; }
+
+    .modal-title {
+      font-size: 15px;
+      font-weight: bold;
+      color: #0d3b7a;
+      line-height: 1.3;
+      margin-bottom: 12px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid var(--xp-face2);
+    }
+
+    .modal-body { font-size: 11px; line-height: 1.7; color: var(--xp-text); }
+    .modal-body p { margin-bottom: 11px; }
+    .modal-body p:last-child { margin-bottom: 0; }
+    .modal-body h2 {
+      font-size: 11px;
+      font-weight: bold;
+      color: #0d3b7a;
+      margin: 18px 0 7px;
+    }
+    .modal-body a { color: var(--xp-link); }
+
+    .dialog-buttons {
+      display: flex;
+      justify-content: flex-end;
+      gap: 6px;
+      padding: 0 10px 10px;
+    }
+
+    .pub-modal-authors { font-size: 11px; color: var(--xp-dim); margin-bottom: 14px; line-height: 1.5; }
+    .pub-modal-section-label {
+      font-size: 11px;
+      font-weight: bold;
+      color: #0d3b7a;
+      margin: 16px 0 6px;
+    }
+    .pub-modal-abstract {
+      font-size: 11px;
+      color: var(--xp-text);
+      line-height: 1.7;
+      padding: 10px 12px;
+      background: var(--xp-face);
+      border: 1px solid var(--xp-shadow);
+      box-shadow: inset 1px 1px 0 var(--xp-white);
+    }
+    .pub-modal-comments { font-size: 11px; color: var(--xp-text); line-height: 1.7; }
+    .pub-modal-links {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+      margin-top: 16px;
+      padding-top: 12px;
+      border-top: 1px solid var(--xp-face2);
+    }
+
+    /* system message box (title bar buttons) */
+    .msgbox-backdrop {
+      position: fixed; inset: 0;
+      z-index: 9700;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+    .msgbox-backdrop.open { display: flex; }
+    .msgbox { width: 100%; max-width: 380px; }
+    .msgbox-body {
+      display: flex;
+      gap: 14px;
+      align-items: flex-start;
+      padding: 18px 18px 14px;
+      font-size: 11px;
+      line-height: 1.6;
+    }
+    .msgbox-icon {
+      width: 32px; height: 32px;
+      border-radius: 50%;
+      background: var(--xp-red);
+      color: #fff;
+      font-size: 20px;
+      font-weight: bold;
+      display: grid;
+      place-items: center;
+      flex-shrink: 0;
+    }
+
+    /* ── FOOTER ─────────────────────────────── */
+    footer {
+      margin-top: 32px;
+      padding: 10px 0 22px;
+      border-top: 1px solid var(--xp-face2);
+    }
+    .footer-inner {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+      font-size: 10px;
+      color: var(--xp-muted);
+    }
+    .footer-inner a { color: var(--xp-link); }
+
     /* ── RESPONSIVE ──────────────────────────── */
-    @media (max-width: 520px) {
-      .shell { padding: 0 20px; }
-      .profile { flex-direction: column; gap: 16px; }
-      .modal { padding: 36px 24px 40px; }
+    @media (max-width: 560px) {
+      body { padding: 8px 8px calc(var(--xp-taskbar-h) + 12px); }
+      .shell { padding: 0 14px; }
+      .nav-tabs .inner { padding: 0 10px; }
+      .profile { flex-direction: column; gap: 12px; }
       .skills-grid { grid-template-columns: 1fr; }
+      .club-role { width: auto; }
+      .listbox .row { flex-direction: column; gap: 4px; }
       .footer-inner { flex-direction: column; align-items: flex-start; }
+      .xp-toolbar .label-text { display: none; }
+      .modal-scroll { max-height: 55vh; }
     }
   </style>
 </head>
@@ -863,232 +568,399 @@
   gtag('config', 'G-Z0DDH6EQDD');
 </script>
 
-<body>
+<body class="xp-desktop">
 
-<div class="shell">
+<!-- ═══════════════════════════════════════════
+     MAIN WINDOW — "Internet Explorer"
+════════════════════════════════════════════ -->
+<div class="xp-window main-window" id="main-window">
 
-  <!-- ── TOP NAV ──────────────────────────────── -->
-  <div class="topbar">
-    <div class="topbar-logo" onclick="showPage('home')">Han Lu</div>
-    <nav class="topbar-nav">
-      <button class="tab-btn active" data-page="home"         onclick="showPage('home')">Home</button>
-      <button class="tab-btn"        data-page="about"        onclick="showPage('about')">About</button>
-      <button class="tab-btn"        data-page="projects"     onclick="showPage('projects')">Projects</button>
-    </nav>
+  <div class="xp-titlebar">
+    <span class="xp-title-icon">e</span>
+    <span class="xp-title-text" id="window-title">Han Lu — Microsoft Internet Explorer</span>
+    <span class="xp-title-btns">
+      <button class="xp-tb" onclick="minimizeMain()" title="Minimize">_</button>
+      <button class="xp-tb" onclick="toggleMaximize()" title="Maximize">□</button>
+      <button class="xp-tb close" onclick="attemptClose()" title="Close">✕</button>
+    </span>
   </div>
 
-  <!-- ═══════════════════════════════════════════
-       HOME PAGE
-  ════════════════════════════════════════════ -->
-  <div id="page-home" class="page active">
+  <div class="xp-menubar">
+    <button class="xp-menu-item" onclick="showPage('home')"><u>F</u>ile</button>
+    <button class="xp-menu-item" onclick="showPage('about')"><u>E</u>dit</button>
+    <button class="xp-menu-item" onclick="showPage('projects')"><u>V</u>iew</button>
+    <button class="xp-menu-item" onclick="window.open('./resume.pdf','_blank')">F<u>a</u>vorites</button>
+    <button class="xp-menu-item" onclick="window.open('/cad','_self')"><u>T</u>ools</button>
+    <button class="xp-menu-item" onclick="location.href='mailto:hanlu0427@gmail.com'"><u>H</u>elp</button>
+  </div>
 
-    <div class="hero">
-      <div class="profile">
-        <img
-          class="avatar"
-          src="https://natthebag.github.io/avatar.jpg"
-          alt="Han Lu"
-          onerror="this.style.display='none'"
-        />
-        <div class="profile-text">
-          <h1>Han Lu</h1>
-          <p class="tagline">
-            Student at Stanford Online High School — interested in engineering,
-            robotics, and building things that exist in the physical world.
-          </p>
+  <div class="xp-toolbar">
+    <button class="xp-tool" onclick="history.back()"><span class="xp-tool-glyph">◀</span><span class="label-text">Back</span></button>
+    <button class="xp-tool" onclick="history.forward()"><span class="xp-tool-glyph">▶</span><span class="label-text">Forward</span></button>
+    <span class="xp-sep"></span>
+    <button class="xp-tool" onclick="location.reload()"><span class="xp-tool-glyph">⟳</span><span class="label-text">Refresh</span></button>
+    <button class="xp-tool" onclick="showPage('home')"><span class="xp-tool-glyph">⌂</span><span class="label-text">Home</span></button>
+    <span class="xp-sep"></span>
+    <a class="xp-tool" href="./resume.pdf" target="_blank"><span class="xp-tool-glyph">▤</span><span class="label-text">Résumé</span></a>
+    <a class="xp-tool" href="/cad"><span class="xp-tool-glyph">▩</span><span class="label-text">CAD Tutorials</span></a>
+    <a class="xp-tool" href="mailto:hanlu0427@gmail.com"><span class="xp-tool-glyph">✉</span><span class="label-text">Mail</span></a>
+  </div>
+
+  <div class="xp-addressbar">
+    <span class="lbl">Address</span>
+    <span class="xp-address-field"><span style="color:var(--xp-blue);">e</span><span id="address-text">https://natthebag.github.io/</span></span>
+    <button class="xp-button narrow" style="padding:2px 10px;" onclick="location.reload()">Go</button>
+  </div>
+
+  <div class="browser-body">
+
+    <!-- ── TAB STRIP ─────────────────────────── -->
+    <div class="nav-tabs">
+      <div class="inner">
+        <div class="site-mark" onclick="showPage('home')">📁 Han Lu</div>
+        <div class="xp-tabstrip" style="margin-bottom:-7px;">
+          <button class="xp-tab active" data-page="home"     onclick="showPage('home')">Home</button>
+          <button class="xp-tab"        data-page="about"    onclick="showPage('about')">About</button>
+          <button class="xp-tab"        data-page="projects" onclick="showPage('projects')">Projects</button>
         </div>
-      </div>
-      <div class="hero-links">
-        <a class="pill-link" href="./resume.pdf" target="_blank">Résumé ↗</a>
-        <a class="pill-link" href="/cad">CAD Tutorials ↗</a>
-        <a class="pill-link" href="mailto:hanlu0427@gmail.com">hanlu0427@gmail.com</a>
       </div>
     </div>
 
-    <div class="home-carousel">
-      <div class="section-label">Work</div>
-      <div class="carousel-wrap" id="carousel-wrap">
-        <!-- slides rendered by JS -->
-        <div class="carousel-prev-zone" onclick="carouselStep(-1)"></div>
-        <div class="carousel-next-zone" onclick="carouselStep(1)"></div>
-        <div class="carousel-caption">
-          <div class="carousel-caption-text">
-            <div class="carousel-caption-title" id="carousel-title"></div>
-            <div class="carousel-caption-sub"   id="carousel-sub"></div>
+    <div class="shell">
+
+      <!-- ═══════════════════════════════════════════
+           HOME PAGE
+      ════════════════════════════════════════════ -->
+      <div id="page-home" class="page active">
+
+        <div class="hero">
+          <div class="profile">
+            <img
+              class="avatar"
+              src="https://natthebag.github.io/avatar.jpg"
+              alt="Han Lu"
+              onerror="this.style.display='none'"
+            />
+            <div class="profile-text">
+              <h1>Han Lu</h1>
+              <p class="tagline">
+                Student at Stanford Online High School — interested in engineering,
+                robotics, and building things that exist in the physical world.
+              </p>
+            </div>
           </div>
-          <div class="carousel-dots" id="carousel-dots"></div>
+          <div class="hero-links">
+            <a class="xp-button" href="./resume.pdf" target="_blank">Résumé</a>
+            <a class="xp-button" href="/cad">CAD Tutorials</a>
+            <a class="xp-button" href="mailto:hanlu0427@gmail.com">hanlu0427@gmail.com</a>
+          </div>
+        </div>
+
+        <div class="home-carousel">
+          <div class="section-label">Work</div>
+
+          <div class="xp-window viewer-window">
+            <div class="xp-titlebar sm">
+              <span class="xp-title-icon">▣</span>
+              <span class="xp-title-text" id="viewer-title">My Pictures — Windows Picture and Fax Viewer</span>
+              <span class="xp-title-btns">
+                <button class="xp-tb" onclick="carouselStep(-1)" title="Previous image">‹</button>
+                <button class="xp-tb" onclick="carouselStep(1)" title="Next image">›</button>
+              </span>
+            </div>
+
+            <div class="carousel-wrap" id="carousel-wrap">
+              <!-- slides rendered by JS -->
+              <div class="carousel-prev-zone" onclick="carouselStep(-1)"></div>
+              <div class="carousel-next-zone" onclick="carouselStep(1)"></div>
+            </div>
+
+            <div class="viewer-toolbar">
+              <button class="xp-tool" onclick="carouselStep(-1)" title="Previous image"><span class="xp-tool-glyph">◀</span></button>
+              <div class="carousel-dots" id="carousel-dots"></div>
+              <button class="xp-tool" onclick="carouselStep(1)" title="Next image"><span class="xp-tool-glyph">▶</span></button>
+            </div>
+
+            <div class="xp-statusbar">
+              <span class="xp-status-cell grow" id="carousel-title"></span>
+              <span class="xp-status-cell" id="carousel-sub" style="min-width:120px;"></span>
+            </div>
+          </div>
+        </div>
+
+        <div class="home-posts">
+          <div class="section-label">Writing</div>
+          <div class="post-listbox">
+            <ul class="post-list" id="post-list">
+              <!-- Posts are rendered by JS from the POSTS array below -->
+            </ul>
+          </div>
+        </div>
+
+        <footer>
+          <div class="footer-inner">
+            <span class="footer-copy">© 2026 Han Lu — All rights reserved.</span>
+            <span class="footer-email"><a href="mailto:hanlu0427@gmail.com">hanlu0427@gmail.com</a></span>
+          </div>
+        </footer>
+      </div>
+
+      <!-- ═══════════════════════════════════════════
+           ABOUT PAGE
+      ════════════════════════════════════════════ -->
+      <div id="page-about" class="page">
+        <div class="about-page">
+
+          <div class="about-head">
+            <div class="about-name">Han Lu</div>
+            <div class="about-subtitle">Stanford Online High School · Class of 2027</div>
+          </div>
+
+          <!-- BIO -->
+          <div class="about-block">
+            <div class="section-label">Bio</div>
+            <p>
+              I'm a high school student at Stanford Online High School, planning to pursue
+              an undergraduate degree in an engineering discipline — likely mechanical,
+              electrical, or robotics engineering.
+            </p>
+            <p>
+              My interests center on the intersection of hardware and software: designing
+              physical systems that actually work in the real world. I've spent time on
+              robotics outreach, where I help introduce younger students to hands-on
+              engineering.
+            </p>
+          </div>
+
+          <!-- EDUCATION -->
+          <div class="about-block">
+            <div class="section-label">Education</div>
+            <div class="listbox">
+              <div class="row">
+                <span class="post-icon">🎓</span>
+                <div>
+                  <div class="edu-school">Stanford Online High School</div>
+                  <div class="edu-detail">High School Diploma · Expected 2027</div>
+                </div>
+              </div>
+              <div class="row">
+                <span class="post-icon">🎓</span>
+                <div>
+                  <div class="edu-school">MIT Beaver Works Summer Institute (BWSI)</div>
+                  <div class="edu-detail">Basics of ASICS (Summer Program) · Class of 2026</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- CLUBS -->
+          <div class="about-block">
+            <div class="section-label">Clubs &amp; Activities</div>
+            <ul class="club-list listbox">
+              <li class="club-item row">
+                <span class="xp-badge info club-role">Captain, Hardware Lead</span>
+                <div>
+                  <div class="club-name">FTC Robotics Club</div>
+                  <div class="club-desc">Design, build, and program competitive robots. Lead a team through ideation to fabrication.</div>
+                </div>
+              </li>
+              <li class="club-item row">
+                <span class="xp-badge info club-role">Product Design Engineer</span>
+                <div>
+                  <div class="club-name">JOWUA Taiwan</div>
+                  <div class="club-desc">Working on the Mech. Engineering team to develop Tesla accessories (Part Time).</div>
+                </div>
+              </li>
+              <li class="club-item row">
+                <span class="xp-badge info club-role">President</span>
+                <div>
+                  <div class="club-name">3D Printing Club</div>
+                  <div class="club-desc">FDM printing projects and curriculum; teach peers modeling in Autodesk Fusion 360.</div>
+                </div>
+              </li>
+              <li class="club-item row">
+                <span class="xp-badge info club-role">Member</span>
+                <div>
+                  <div class="club-name">Robotics Outreach</div>
+                  <div class="club-desc">Community programs introducing K–8 students to engineering and robotics concepts.</div>
+                </div>
+              </li>
+              <li class="club-item row">
+                <span class="xp-badge info club-role">Member</span>
+                <div>
+                  <div class="club-name">Science Bowl &amp; Quiz Bowl</div>
+                  <div class="club-desc">Competitor in the regional Science Bowl Competition and regional Quiz Bowl Competition in California for Stanford OHS.</div>
+                </div>
+              </li>
+              <li class="club-item row">
+                <span class="xp-badge info club-role">Co-president</span>
+                <div>
+                  <div class="club-name">Poker Society, Coffee Society</div>
+                  <div class="club-desc">Formed non-engineering related clubs to foster community in personal interests, although I am not very good at either.</div>
+                </div>
+              </li>
+            </ul>
+          </div>
+
+          <!-- SKILLS -->
+          <div class="about-block">
+            <div class="section-label">Skills &amp; Tools</div>
+            <div class="xp-group">
+              <span class="xp-group-label">Installed components</span>
+              <div class="skills-grid">
+                <div class="skill-item"><span class="skill-box">✓</span>Autodesk Fusion 360</div>
+                <div class="skill-item"><span class="skill-box">✓</span>FDM 3D Printing</div>
+                <div class="skill-item"><span class="skill-box">✓</span>2 &amp; 3-axis CNC Milling</div>
+                <div class="skill-item"><span class="skill-box">✓</span>Prototyping &amp; Fabrication</div>
+                <div class="skill-item"><span class="skill-box">✓</span>MATLAB</div>
+                <div class="skill-item"><span class="skill-box">✓</span>CV &amp; RL Models</div>
+              </div>
+            </div>
+          </div>
+
         </div>
       </div>
-    </div>
 
-    <div class="home-posts">
-      <div class="section-label">Writing</div>
-      <ul class="post-list" id="post-list">
-        <!-- Posts are rendered by JS from the POSTS array below -->
-      </ul>
-    </div>
+      <!-- ═══════════════════════════════════════════
+           PROJECTS PAGE
+      ════════════════════════════════════════════ -->
+      <div id="page-projects" class="page">
+        <div class="projects-page">
+          <div class="section-label">Publications</div>
+          <div class="pub-list" id="pub-list"></div>
 
-    <footer>
-      <div class="footer-inner">
-        <span class="footer-copy">© 2026 Han Lu — All rights reserved.</span>
-        <span class="footer-email"><a href="mailto:hanlu0427@gmail.com">hanlu0427@gmail.com</a></span>
+          <hr class="xp-hr" style="margin: 26px 0;"/>
+
+          <div class="section-label">Projects</div>
+          <div class="projects-grid" id="projects-grid"></div>
+
+          <footer>
+            <div class="footer-inner">
+              <span class="footer-copy">© 2026 Han Lu — All rights reserved.</span>
+              <span class="footer-email"><a href="mailto:hanlu0427@gmail.com">hanlu0427@gmail.com</a></span>
+            </div>
+          </footer>
+        </div>
       </div>
-    </footer>
+
+    </div><!-- /shell -->
+  </div><!-- /browser-body -->
+
+  <div class="xp-statusbar">
+    <span class="xp-status-cell grow" id="status-text">Done</span>
+    <span class="xp-status-cell" style="min-width:110px;">🌐 Internet</span>
   </div>
-
-  <!-- ═══════════════════════════════════════════
-       ABOUT PAGE
-  ════════════════════════════════════════════ -->
-  <div id="page-about" class="page">
-    <div class="about-page">
-
-      <div class="about-name">Han Lu</div>
-      <div class="about-subtitle">Stanford Online High School · Class of 2027</div>
-
-      <!-- BIO -->
-      <div class="about-block">
-        <div class="section-label">Bio</div>
-        <p>
-          I'm a high school student at Stanford Online High School, planning to pursue
-          an undergraduate degree in an engineering discipline — likely mechanical,
-          electrical, or robotics engineering.
-        </p>
-        <p>
-          My interests center on the intersection of hardware and software: designing
-          physical systems that actually work in the real world. I've spent time on
-          robotics outreach, where I help introduce younger students to hands-on
-          engineering.
-        </p>
-      </div>
-
-      <!-- EDUCATION -->
-      <div class="about-block">
-        <div class="section-label">Education</div>
-        <div class="edu-item">
-          <div class="edu-school">Stanford Online High School</div>
-          <div class="edu-detail">High School Diploma · Expected 2027</div>
-        </div>
-        <div class="edu-item">
-          <div class="edu-school">MIT Beaver Works Summer Institute (BWSI)</div>
-          <div class="edu-detail">Basics of ASICS (Summer Program) · Class of 2026</div>
-        </div>
-        
-      </div>
-
-      <!-- CLUBS -->
-      <div class="about-block">
-        <div class="section-label">Clubs &amp; Activities</div>
-        <ul class="club-list">
-          <li class="club-item">
-            <span class="club-role">Captain, Hardware Lead</span>
-            <div>
-              <div class="club-name">FTC Robotics Club</div>
-              <div class="club-desc">Design, build, and program competitive robots. Lead a team through ideation to fabrication.</div>
-            </div>
-          </li>
-          <li class="club-item">
-            <span class="club-role">Product Design Engineer</span>
-            <div>
-              <div class="club-name">JOWUA Taiwan</div>
-              <div class="club-desc">Working on the Mech. Engineering team to develop Tesla accessories (Part Time).</div>
-            </div>
-          </li>
-          <li class="club-item">
-            <span class="club-role">President</span>
-            <div>
-              <div class="club-name">3D Printing Club</div>
-              <div class="club-desc">FDM printing projects and curriculum; teach peers modeling in Autodesk Fusion 360.</div>
-            </div>
-          </li>
-          <li class="club-item">
-            <span class="club-role">Member</span>
-            <div>
-              <div class="club-name">Robotics Outreach</div>
-              <div class="club-desc">Community programs introducing K–8 students to engineering and robotics concepts.</div>
-            </div>
-          </li>
-          <li class="club-item">
-            <span class="club-role">Member</span>
-            <div>
-              <div class="club-name">Science Bowl &amp; Quiz Bowl</div>
-              <div class="club-desc">Competitor in the regional Science Bowl Competition and regional Quiz Bowl Competition in California for Stanford OHS.</div>
-            </div>
-          </li>
-          <li class="club-item">
-            <span class="club-role">Co-president</span>
-            <div>
-              <div class="club-name">Poker Society, Coffee Society</div>
-              <div class="club-desc">Formed non-engineering related clubs to foster community in personal interests, although I am not very good at either.</div>
-            </div>
-          </li>
-        </ul>
-      </div>
-
-      <!-- SKILLS -->
-      <div class="about-block">
-        <div class="section-label">Skills &amp; Tools</div>
-        <div class="skills-grid">
-          <div class="skill-item"><span class="skill-dot"></span>Autodesk Fusion 360</div>
-          <div class="skill-item"><span class="skill-dot"></span>FDM 3D Printing</div>
-          <div class="skill-item"><span class="skill-dot"></span>2 &amp; 3-axis CNC Milling</div>
-          <div class="skill-item"><span class="skill-dot"></span>Prototyping &amp; Fabrication</div>
-          <div class="skill-item"><span class="skill-dot"></span>MATLAB</div>
-          <div class="skill-item"><span class="skill-dot"></span>CV &amp; RL Models</div>
-        </div>
-      </div>
-
-    </div>
-  </div>
-
-  <!-- ═══════════════════════════════════════════
-       PROJECTS PAGE
-  ════════════════════════════════════════════ -->
-  <div id="page-projects" class="page">
-    <div class="projects-page">
-      <div class="section-label" style="margin-top:48px; margin-bottom:24px;">Publications</div>
-      <div class="pub-list" id="pub-list"></div>
-
-      <hr style="border: 1px solid var(--border); margin: 32px 0;"/>
-
-      <div class="section-label" style="margin-bottom:24px;">Projects</div>
-      <div class="projects-grid" id="projects-grid"></div>
-
-      <hr style="border: 1px solid var(--border); margin: 32px 0;"/>
-    </div>
-  </div>
-
-</div><!-- /shell -->
+</div><!-- /main-window -->
 
 
 <!-- ═══════════════════════════════════════════
-     POST MODAL
+     POST DIALOG
 ════════════════════════════════════════════ -->
 <div class="modal-backdrop" id="modal-backdrop" onclick="closeModalBackdrop(event)">
-  <div class="modal" id="modal">
-    <div class="modal-actions">
-      <button class="modal-copy-link" onclick="copyPostLink()" title="Copy link to this post">
-        <span id="copy-link-label">⌁ Copy link</span>
-      </button>
-      <button class="modal-close" onclick="closeModal()" title="Close">✕</button>
+  <div class="xp-window modal" id="modal">
+    <div class="xp-titlebar">
+      <span class="xp-title-icon">▤</span>
+      <span class="xp-title-text" id="modal-window-title">Notepad</span>
+      <span class="xp-title-btns">
+        <button class="xp-tb close" onclick="closeModal()" title="Close">✕</button>
+      </span>
     </div>
-    <div class="modal-meta" id="modal-meta"></div>
-    <div class="modal-title" id="modal-title"></div>
-    <div class="modal-body" id="modal-body"></div>
+    <div class="modal-scroll">
+      <div class="modal-meta" id="modal-meta"></div>
+      <div class="modal-title" id="modal-title"></div>
+      <div class="modal-body" id="modal-body"></div>
+    </div>
+    <div class="dialog-buttons">
+      <button class="xp-button" onclick="copyPostLink()"><span id="copy-link-label">Copy link</span></button>
+      <button class="xp-button default" onclick="closeModal()">OK</button>
+    </div>
   </div>
 </div>
 
 
 <!-- ═══════════════════════════════════════════
-     PUBLICATION MODAL
+     PUBLICATION DIALOG
 ════════════════════════════════════════════ -->
 <div class="modal-backdrop" id="pub-modal-backdrop" onclick="closePubModalBackdrop(event)">
-  <div class="modal" id="pub-modal">
-    <div class="modal-actions">
-      <button class="modal-close" onclick="closePubModal()" title="Close">✕</button>
+  <div class="xp-window modal" id="pub-modal">
+    <div class="xp-titlebar">
+      <span class="xp-title-icon">◈</span>
+      <span class="xp-title-text" id="pub-modal-window-title">Publication</span>
+      <span class="xp-title-btns">
+        <button class="xp-tb close" onclick="closePubModal()" title="Close">✕</button>
+      </span>
     </div>
-    <div class="modal-meta" id="pub-modal-venue"></div>
-    <div class="modal-title" id="pub-modal-title"></div>
-    <div class="modal-body" id="pub-modal-body"></div>
+    <div class="modal-scroll">
+      <div class="modal-meta" id="pub-modal-venue"></div>
+      <div class="modal-title" id="pub-modal-title"></div>
+      <div class="modal-body" id="pub-modal-body"></div>
+    </div>
+    <div class="dialog-buttons">
+      <button class="xp-button default" onclick="closePubModal()">OK</button>
+    </div>
+  </div>
+</div>
+
+
+<!-- ═══════════════════════════════════════════
+     SYSTEM MESSAGE BOX
+════════════════════════════════════════════ -->
+<div class="msgbox-backdrop" id="msgbox-backdrop">
+  <div class="xp-window msgbox">
+    <div class="xp-titlebar sm">
+      <span class="xp-title-text" id="msgbox-title">Internet Explorer</span>
+      <span class="xp-title-btns">
+        <button class="xp-tb close" onclick="closeMsgBox()" title="Close">✕</button>
+      </span>
+    </div>
+    <div class="msgbox-body">
+      <div class="msgbox-icon" id="msgbox-icon">✕</div>
+      <div id="msgbox-text"></div>
+    </div>
+    <div class="dialog-buttons">
+      <button class="xp-button default" onclick="closeMsgBox()">OK</button>
+    </div>
+  </div>
+</div>
+
+
+<!-- ═══════════════════════════════════════════
+     START MENU
+════════════════════════════════════════════ -->
+<div class="xp-startmenu" id="start-menu">
+  <div class="xp-startmenu-head">
+    <img src="https://natthebag.github.io/avatar.jpg" alt="" onerror="this.outerHTML='&lt;span class=&quot;ph&quot;&gt;&lt;/span&gt;'"/>
+    <span>Han Lu</span>
+  </div>
+  <div class="xp-startmenu-list">
+    <button class="xp-startmenu-item" onclick="startGo('home')"><span class="ico">⌂</span>Home</button>
+    <button class="xp-startmenu-item" onclick="startGo('about')"><span class="ico">👤</span>About</button>
+    <button class="xp-startmenu-item" onclick="startGo('projects')"><span class="ico">🗂</span>Projects &amp; Publications</button>
+    <div class="xp-startmenu-rule"></div>
+    <a class="xp-startmenu-item" href="./resume.pdf" target="_blank"><span class="ico">▤</span>Résumé.pdf</a>
+    <a class="xp-startmenu-item" href="/cad"><span class="ico">▩</span>CAD Tutorials</a>
+    <a class="xp-startmenu-item" href="/scibowl"><span class="ico">🔬</span>Science Bowl Study Guide</a>
+    <div class="xp-startmenu-rule"></div>
+    <a class="xp-startmenu-item" href="mailto:hanlu0427@gmail.com"><span class="ico">✉</span>Send mail…</a>
+  </div>
+  <div class="xp-startmenu-foot">⏻ Log Off &nbsp;·&nbsp; Turn Off Computer</div>
+</div>
+
+
+<!-- ═══════════════════════════════════════════
+     TASKBAR
+════════════════════════════════════════════ -->
+<div class="xp-taskbar">
+  <button class="xp-start" id="start-button" onclick="toggleStartMenu(event)">
+    <span class="xp-start-flag"><i></i><i></i><i></i><i></i></span>start
+  </button>
+  <div class="xp-tasks" id="taskbar-tasks">
+    <button class="xp-task active" id="task-main" onclick="toggleMainWindow()">e &nbsp;Han Lu — Microsoft Int…</button>
+  </div>
+  <div class="xp-tray">
+    <span class="xp-tray-icon">🔊</span>
+    <span class="xp-tray-icon">🖧</span>
+    <span class="xp-clock" id="taskbar-clock"></span>
   </div>
 </div>
 
@@ -1146,7 +1018,7 @@ const POSTS = [
     title: "Bowls",
     excerpt: "Thoughts on science bowl competitions I attended this year, a general reflection on academic competitions.",
     body: `
-      <p>After a rather unengaged two years of high school, something prompted me to more actively pursue competitions. 
+      <p>After a rather unengaged two years of high school, something prompted me to more actively pursue competitions.
         Although I have always participated in robotics competitions, my main high school activity, I never really understood
         the appeal to [incomplete] <p>
     `
@@ -1196,8 +1068,18 @@ const PROJECTS = [
     links: []
   },
   {
+    name: "Convolution Neural Network Matrix Accelerator",
+    status: "complete",
+    desc: "For our BWSI Capstone project, we created a matrix multiplier and created a ",
+    image: "./figures/scibowl_class.png",
+    links:[
+      {label: "Website", url: "https://natthebag.github.io/scibowl/"},
+      {label: "Sheet (figure on second sheet)", url: "https://docs.google.com/spreadsheets/d/1fbgxsfTC8Aesu3y8xYr4Y9aWwOZ3VnZKyBkKwof_8mY/edit?usp=sharing"}
+    ]
+  },
+  {
     name: "Science Bowl Evaluation Algorithm",
-    status: "complete", 
+    status: "complete",
     desc: "Evaluated Science Bowl practice questions by embedding practice sets into vectors and extracting cluster concepts using K-means. From this, a practice website that is in progress was created.",
     image: "./figures/scibowl_class.png",
     links:[
@@ -1214,7 +1096,7 @@ const PROJECTS = [
       { label: "Tutorial", url: "https://natthebag.github.io/cad"}
     ]
   },
-  
+
   {
     name: "Robotics Outreach",
     status: "ongoing",
@@ -1224,7 +1106,7 @@ const PROJECTS = [
   },
   {
     name: "LaTeX Writer",
-    status: "complete", 
+    status: "complete",
     desc: "Created tool to convert LaTeX to mouse inputs so that they can be created on any platform.",
     image: "./figures/latex.png",
     links:[
@@ -1239,7 +1121,7 @@ const PROJECTS = [
     links: [],
   },
   {
-      name: "Science Bowl Parser", 
+      name: "Science Bowl Parser",
       status: "complete",
       desc: "Created a parsing script for the NSB (National Science Bowl) official practice sets for team practice and statistic aggregation. Source code coming soon!",
       image: "./figures/scibowl_parser.png",
@@ -1271,34 +1153,38 @@ const PROJECTS = [
 function renderPosts() {
   const list = document.getElementById('post-list');
   const sorted = [...POSTS].sort((a, b) => b.date.localeCompare(a.date));
-  list.innerHTML = sorted.map((p, i) => `
-    <li class="post-item" style="animation-delay:${i * 0.06}s" onclick="openPost(${POSTS.indexOf(p)})">
-      <div class="post-meta">${p.display}</div>
-      <div class="post-title">${p.title}</div>
-      <p class="post-excerpt">${p.excerpt}</p>
+  list.innerHTML = sorted.map((p) => `
+    <li class="post-item" onclick="openPost(${POSTS.indexOf(p)})">
+      <span class="post-icon">📝</span>
+      <div class="post-text">
+        <div class="post-meta">${p.display}</div>
+        <div class="post-title">${p.title}</div>
+        <p class="post-excerpt">${p.excerpt}</p>
+      </div>
     </li>
   `).join('');
 }
 
 function renderProjects() {
   const grid = document.getElementById('projects-grid');
-  grid.innerHTML = PROJECTS.map((p, i) => `
-    <div class="project-card" style="animation-delay:${i * 0.07}s">
-      <div class="project-img-wrap">
-        ${p.image
-          ? `<img src="${p.image}" alt="${p.name}" loading="lazy" />`
-          : `<div class="project-img-placeholder">No image</div>`
-        }
+  grid.innerHTML = PROJECTS.map((p) => `
+    <div class="xp-window item-window">
+      <div class="xp-titlebar sm">
+        <span class="xp-title-icon">▣</span>
+        <span class="xp-title-text">${p.name}</span>
+        <span class="xp-badge ${p.status === 'ongoing' ? 'work' : 'ok'}">${p.status}</span>
       </div>
-      <div class="project-body">
-        <div class="project-header">
-          <div class="project-name">${p.name}</div>
-          <span class="status-badge ${p.status}">${p.status}</span>
+      <div class="item-body">
+        <div class="item-img-wrap">
+          ${p.image
+            ? `<img src="${p.image}" alt="${p.name}" loading="lazy" />`
+            : `<div class="item-img-placeholder">No image</div>`
+          }
         </div>
-        <p class="project-desc">${p.desc}</p>
+        <p class="item-desc">${p.desc}</p>
         ${p.links.length ? `
-          <div class="project-links">
-            ${p.links.map(l => `<a class="project-link" href="${l.url}" target="_blank">${l.label} ↗</a>`).join('')}
+          <div class="item-links">
+            ${p.links.map(l => `<a class="xp-button narrow" href="${l.url}" target="_blank">${l.label}</a>`).join('')}
           </div>
         ` : ''}
       </div>
@@ -1306,14 +1192,17 @@ function renderProjects() {
   `).join('');
 }
 
-/* ── MODAL ──────────────────────────── */
+/* ── POST DIALOG ────────────────────── */
 function openPost(idx) {
   const p = POSTS[idx];
+  document.getElementById('modal-window-title').textContent = p.title + ' — Notepad';
   document.getElementById('modal-meta').textContent = p.display;
   document.getElementById('modal-title').textContent = p.title;
   document.getElementById('modal-body').innerHTML = p.body;
   document.getElementById('modal-backdrop').classList.add('open');
   document.body.style.overflow = 'hidden';
+  addTask('task-post', '📝 ' + p.title, closeModal);
+  setStatus('Opened: ' + p.title);
   // update URL hash so this post is directly linkable
   if (p.slug) history.replaceState(null, '', '#post-' + p.slug);
 }
@@ -1321,20 +1210,17 @@ function openPost(idx) {
 function copyPostLink() {
   const url = window.location.href.split('#')[0] + window.location.hash;
   navigator.clipboard.writeText(url).then(() => {
-    const btn = document.querySelector('.modal-copy-link');
     const label = document.getElementById('copy-link-label');
-    btn.classList.add('copied');
     label.textContent = '✓ Copied!';
-    setTimeout(() => {
-      btn.classList.remove('copied');
-      label.textContent = '⌁ Copy link';
-    }, 2000);
+    setTimeout(() => { label.textContent = 'Copy link'; }, 2000);
   });
 }
 
 function closeModal() {
   document.getElementById('modal-backdrop').classList.remove('open');
   document.body.style.overflow = '';
+  removeTask('task-post');
+  setStatus('Done');
   // clear the hash without scrolling
   history.replaceState(null, '', window.location.pathname);
 }
@@ -1343,22 +1229,30 @@ function closeModalBackdrop(e) {
   if (e.target === document.getElementById('modal-backdrop')) closeModal();
 }
 
-// Escape closes whichever modal is open (handled in PUBLICATIONS section above)
-
 /* ── PAGE SWITCHING ──────────────────── */
+const PAGE_TITLES = {
+  home:     'Han Lu — Microsoft Internet Explorer',
+  about:    'About — Han Lu — Microsoft Internet Explorer',
+  projects: 'Projects &amp; Publications — Han Lu — Microsoft Internet Explorer'
+};
+const PAGE_PATHS = {
+  home:     'https://natthebag.github.io/',
+  about:    'https://natthebag.github.io/#about',
+  projects: 'https://natthebag.github.io/#projects'
+};
+
 function showPage(name) {
   document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.querySelectorAll('.xp-tab').forEach(b => b.classList.remove('active'));
   document.getElementById('page-' + name).classList.add('active');
   document.querySelector(`[data-page="${name}"]`).classList.add('active');
 
-  // re-trigger animations
-  document.querySelectorAll(`#page-${name} .post-item, #page-${name} .project-card`).forEach((el, i) => {
-    el.style.animation = 'none';
-    el.offsetHeight; // reflow
-    el.style.animation = '';
-    el.style.animationDelay = (i * 0.06) + 's';
-  });
+  const title = document.getElementById('window-title');
+  title.innerHTML = PAGE_TITLES[name] || PAGE_TITLES.home;
+  document.getElementById('address-text').textContent = PAGE_PATHS[name] || PAGE_PATHS.home;
+  const task = document.getElementById('task-main');
+  if (task) task.textContent = 'e  ' + title.textContent;
+  setStatus('Done');
 }
 
 /* ════════════════════════════════════════════════════════════
@@ -1423,29 +1317,36 @@ const PUBLICATIONS = [
 function renderPublications() {
   const list = document.getElementById('pub-list');
   list.innerHTML = PUBLICATIONS.map((p, i) => `
-    <div class="pub-card" style="animation-delay:${i * 0.06}s" onclick="openPub(${i})">
-      <div class="pub-img-wrap">
-        ${p.image
-          ? `<img src="${p.image}" alt="${p.title}" loading="lazy" />`
-          : `<div class="pub-img-placeholder">No image</div>`
-        }
+    <div class="xp-window item-window clickable" onclick="openPub(${i})">
+      <div class="xp-titlebar sm">
+        <span class="xp-title-icon">◈</span>
+        <span class="xp-title-text">${p.title}</span>
+        <span class="xp-badge info">${p.type}</span>
       </div>
-      <div class="pub-body">
-        <div class="pub-header">
-          <div class="pub-title">${p.title}</div>
-          <span class="pub-tag ${p.type}">${p.type}</span>
+      <div class="item-body">
+        <div class="item-img-wrap">
+          ${p.image
+            ? `<img src="${p.image}" alt="${p.title}" loading="lazy" />`
+            : `<div class="item-img-placeholder">No image</div>`
+          }
         </div>
-        <div class="pub-authors">${p.authors}</div>
-        <div class="pub-venue">${p.venue} · ${p.year}</div>
+        <div class="item-meta-row">
+          <div class="pub-authors">${p.authors}</div>
+          <div class="pub-venue">${p.venue ? p.venue + ' · ' : ''}${p.year}</div>
+        </div>
+        <div class="item-links">
+          <span class="xp-button narrow">Open…</span>
+        </div>
       </div>
     </div>
   `).join('');
 }
 
-/* ── PUB MODAL ───────────────────────── */
+/* ── PUB DIALOG ──────────────────────── */
 function openPub(idx) {
   const p = PUBLICATIONS[idx];
-  document.getElementById('pub-modal-venue').textContent = p.venue + ' · ' + p.year;
+  document.getElementById('pub-modal-window-title').textContent = p.title;
+  document.getElementById('pub-modal-venue').textContent = (p.venue ? p.venue + ' · ' : '') + p.year;
   document.getElementById('pub-modal-title').textContent = p.title;
 
   let body = `<div class="pub-modal-authors">${p.authors}</div>`;
@@ -1460,25 +1361,31 @@ function openPub(idx) {
   }
   if (p.links && p.links.length) {
     body += `<div class="pub-modal-links">
-      ${p.links.map(l => `<a class="project-link" href="${l.url}" target="_blank">${l.label} ↗</a>`).join('')}
+      ${p.links.map(l => `<a class="xp-button narrow" href="${l.url}" target="_blank">${l.label}</a>`).join('')}
     </div>`;
   }
 
   document.getElementById('pub-modal-body').innerHTML = body;
   document.getElementById('pub-modal-backdrop').classList.add('open');
   document.body.style.overflow = 'hidden';
+  addTask('task-pub', '📘 Publication', closePubModal);
+  setStatus('Opened: publication');
 }
 
 function closePubModal() {
   document.getElementById('pub-modal-backdrop').classList.remove('open');
   document.body.style.overflow = '';
+  removeTask('task-pub');
+  setStatus('Done');
 }
 
 function closePubModalBackdrop(e) {
   if (e.target === document.getElementById('pub-modal-backdrop')) closePubModal();
 }
 
-document.addEventListener('keydown', e => { if (e.key === 'Escape') { closeModal(); closePubModal(); } });
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') { closeModal(); closePubModal(); closeMsgBox(); closeStartMenu(); }
+});
 
 /* ════════════════════════════════════════════════════════════
    GALLERY — home page carousel
@@ -1524,6 +1431,7 @@ function buildCarousel() {
 
     const dot = document.createElement('div');
     dot.className = 'carousel-dot' + (i === 0 ? ' active' : '');
+    dot.title = item.title;
     dot.onclick = (e) => { e.stopPropagation(); carouselGoTo(i); };
     dots.appendChild(dot);
   });
@@ -1551,7 +1459,10 @@ function carouselStep(dir) {
 function carouselUpdateCaption() {
   const item = GALLERY[carouselIdx];
   document.getElementById('carousel-title').textContent = item.title;
-  document.getElementById('carousel-sub').textContent   = item.sub || '';
+  document.getElementById('carousel-sub').textContent   = item.sub || (carouselIdx + 1) + ' of ' + GALLERY.length;
+  const vt = document.getElementById('viewer-title');
+  const file = item.image.split('/').pop();
+  vt.textContent = file + ' — Windows Picture and Fax Viewer';
 }
 
 function carouselStartTimer() {
@@ -1563,11 +1474,121 @@ function carouselResetTimer() {
   carouselStartTimer();
 }
 
+/* ════════════════════════════════════════════════════════════
+   WINDOW CHROME — title bar buttons, taskbar, start menu, clock
+════════════════════════════════════════════════════════════ */
+
+function setStatus(text) {
+  const el = document.getElementById('status-text');
+  if (el) el.textContent = text;
+}
+
+/* main window minimize / maximize / close */
+function minimizeMain() {
+  document.getElementById('main-window').classList.add('minimized');
+  document.getElementById('task-main').classList.remove('active');
+  closeStartMenu();
+}
+
+function restoreMain() {
+  document.getElementById('main-window').classList.remove('minimized');
+  document.getElementById('task-main').classList.add('active');
+}
+
+function toggleMainWindow() {
+  const win = document.getElementById('main-window');
+  if (win.classList.contains('minimized')) restoreMain();
+  else minimizeMain();
+}
+
+function toggleMaximize() {
+  const win = document.getElementById('main-window');
+  win.classList.remove('minimized');
+  win.classList.toggle('maximized');
+  document.getElementById('task-main').classList.add('active');
+}
+
+function attemptClose() {
+  showMsgBox(
+    'Internet Explorer',
+    'This window cannot be closed.<br/>There are still robots to look at.',
+    '✕'
+  );
+}
+
+/* message box */
+function showMsgBox(title, html, icon) {
+  document.getElementById('msgbox-title').textContent = title;
+  document.getElementById('msgbox-text').innerHTML = html;
+  document.getElementById('msgbox-icon').textContent = icon || '!';
+  document.getElementById('msgbox-backdrop').classList.add('open');
+}
+function closeMsgBox() {
+  document.getElementById('msgbox-backdrop').classList.remove('open');
+}
+
+/* taskbar buttons for open dialogs */
+function addTask(id, label, onClick) {
+  if (document.getElementById(id)) return;
+  const btn = document.createElement('button');
+  btn.className = 'xp-task active';
+  btn.id = id;
+  btn.textContent = label;
+  btn.onclick = onClick;
+  document.getElementById('taskbar-tasks').appendChild(btn);
+  document.getElementById('task-main').classList.remove('active');
+}
+
+function removeTask(id) {
+  const btn = document.getElementById(id);
+  if (btn) btn.remove();
+  const main = document.getElementById('task-main');
+  if (main && !document.querySelector('.xp-task.active')) main.classList.add('active');
+}
+
+/* start menu */
+function toggleStartMenu(e) {
+  e.stopPropagation();
+  const menu = document.getElementById('start-menu');
+  const btn  = document.getElementById('start-button');
+  menu.classList.toggle('open');
+  btn.classList.toggle('open', menu.classList.contains('open'));
+}
+
+function closeStartMenu() {
+  document.getElementById('start-menu').classList.remove('open');
+  document.getElementById('start-button').classList.remove('open');
+}
+
+function startGo(page) {
+  restoreMain();
+  showPage(page);
+  closeStartMenu();
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+document.addEventListener('click', e => {
+  const menu = document.getElementById('start-menu');
+  if (menu.classList.contains('open') && !menu.contains(e.target)) closeStartMenu();
+});
+
+/* clock */
+function tickClock() {
+  const d = new Date();
+  let h = d.getHours();
+  const ampm = h >= 12 ? 'PM' : 'AM';
+  h = h % 12 || 12;
+  const m = String(d.getMinutes()).padStart(2, '0');
+  document.getElementById('taskbar-clock').textContent = `${h}:${m} ${ampm}`;
+}
+
 /* ── INIT ─────────────────────────────── */
 renderPosts();
 renderProjects();
 renderPublications();
 buildCarousel();
+tickClock();
+setInterval(tickClock, 10000);
 
 // If URL contains #post-<slug>, open that post immediately
 const hashMatch = window.location.hash.match(/^#post-(.+)$/);
