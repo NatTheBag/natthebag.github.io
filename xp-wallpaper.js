@@ -136,54 +136,119 @@
     }
 
     sceneCtx.putImageData(img, 0, 0);
+
+    // most of the flowers are static, so they bake straight into the
+    // scene and cost nothing per frame
+    for (const f of backFlowers) drawFlower(sceneCtx, f);
   }
 
   /* ── SPRITES ──────────────────────────────────────────────
-     '.' transparent · 'w' body · 's' shade · 'e' eye         */
+     '.' transparent · 'w' body · 's' shade · 'e' eye · 'p' inner ear
 
-  // facing right · long upright ears · cotton tail at the left
-  const BUNNY_RUN_A = [
-    '.......w.w.',
-    '.......w.w.',
-    '......www..',
-    '.....wwwww.',
-    '..wwwwwwew.',
-    '.wwwwwwwww.',
-    'wwwwwwwwww.',
-    '..ww...ww..',
-    '..ss...ss..'
+     The hop is four poses on a 12x10 grid, all bottom-aligned to
+     the same ground line, so the arc comes from the lift applied
+     when drawing rather than from the art:
+
+       CROUCH  gathered on the ground, ears up
+       PUSH    driving off the back legs, nose rising
+       STRETCH fully extended at the top of the arc
+       LAND    front legs reaching for the ground             */
+
+  // facing right · cotton tail at the left
+  const BUNNY_CROUCH = [
+    '........wp..',
+    '........wp..',
+    '.......wwp..',
+    '.....wwwww..',
+    '....wwwwwew.',
+    '..wwwwwwwww.',
+    '.wwwwwwwwww.',
+    '.wwwwwwwww..',
+    '..ww...ww...',
+    '..ss...ss...'
   ];
 
-  const BUNNY_RUN_B = [
-    '.......w.w.',
-    '.......w.w.',
-    '......www..',
-    '.....wwwww.',
-    '..wwwwwwew.',
-    '.wwwwwwwww.',
-    'wwwwwwwwww.',
-    '.w......w..',
-    's........s.'
+  const BUNNY_PUSH = [
+    '.........wp.',
+    '.........wp.',
+    '.......wwww.',
+    '.....wwwwew.',
+    '...wwwwwwww.',
+    '..wwwwwwww..',
+    'wwwwwwww....',
+    'www..www....',
+    '.ww....w....',
+    '............'
+  ];
+
+  const BUNNY_STRETCH = [
+    '.........wp.',
+    '.........wp.',
+    '.......wwww.',
+    '.....wwwwew.',
+    '..wwwwwwwww.',
+    'wwwwwwwwww..',
+    'ww....wwww..',
+    'w.....w..w..',
+    '............',
+    '............'
+  ];
+
+  const BUNNY_LAND = [
+    '.........wp.',
+    '........wwp.',
+    '.......www..',
+    '.....wwwwew.',
+    '...wwwwwwww.',
+    '..wwwwwwww..',
+    '.wwwwwwww...',
+    '..ww..www...',
+    '..w.....w...',
+    '........s...'
   ];
 
   const BUNNY_SIT = [
-    '.....w.w...',
-    '.....w.w...',
-    '.....www...',
-    '....wwwww..',
-    '...wwwwwew.',
-    '..wwwwwwww.',
-    '..wwwwwwww.',
-    '..wwwwwwww.',
-    '..ssswwss..'
+    '......w.wp..',
+    '......w.wp..',
+    '......wwww..',
+    '.....wwwwew.',
+    '....wwwwwww.',
+    '...wwwwwwww.',
+    '...wwwwwwww.',
+    '...wwwwwwww.',
+    '...wwwwwwww.',
+    '...sswwwss..'
   ];
 
+  // one full hop, in order
+  const HOP_FRAMES = [BUNNY_CROUCH, BUNNY_PUSH, BUNNY_STRETCH, BUNNY_LAND];
+  const HOP_CUTS   = [0.26, 0.46, 0.76];   // phase boundaries between them
+
   const COATS = [
-    { w: '#f5f3ec', s: '#cfc9bd', e: '#2b2b28' },  // white
-    { w: '#f5f3ec', s: '#cfc9bd', e: '#2b2b28' },
-    { w: '#cbc7be', s: '#9c988d', e: '#2b2b28' },  // grey
-    { w: '#b8865a', s: '#8a603a', e: '#241c14' },  // brown
-    { w: '#8f7358', s: '#6b543e', e: '#241c14' }   // dark brown
+    { w: '#f5f3ec', s: '#cfc9bd', e: '#2b2b28', p: '#e79aa8' },  // white
+    { w: '#f5f3ec', s: '#cfc9bd', e: '#2b2b28', p: '#e79aa8' },
+    { w: '#cbc7be', s: '#9c988d', e: '#2b2b28', p: '#d99aa2' },  // grey
+    { w: '#b8865a', s: '#8a603a', e: '#241c14', p: '#d98f7a' },  // brown
+    { w: '#8f7358', s: '#6b543e', e: '#241c14', p: '#c98878' }   // dark brown
+  ];
+
+  /* ── FLOWERS ──────────────────────────────────────────────
+     'p' petal · 'c' centre · 's' stem                        */
+
+  const FLOWER_SHAPES = [
+    [ '.p.', 'pcp', '.p.', '.s.', '.s.' ],          // open bloom
+    [ 'p.p', '.c.', '.s.', '.s.', '.s.' ],          // two-headed sprig
+    [ '.p.', '.s.', '.s.' ],                        // bud
+    [ 'p.p', '.c.', 'p.p', '.s.', '.s.' ]           // four-petal
+  ];
+
+  const BLOOMS = [
+    { p: '#fdfcf2', c: '#f2c832', s: '#357a1e' },   // daisy
+    { p: '#f8d94a', c: '#dfa100', s: '#357a1e' },   // buttercup
+    { p: '#d9584a', c: '#33241a', s: '#2f6f1a' },   // poppy
+    { p: '#8296dd', c: '#f2e9b4', s: '#357a1e' },   // cornflower
+    { p: '#c78ed4', c: '#f5eaa8', s: '#357a1e' },   // lilac
+    { p: '#f0a8c0', c: '#f7e6b0', s: '#2f6f1a' }    // clover pink
   ];
 
   const CLOUDS = [
@@ -209,7 +274,7 @@
 
   const CLOUD_COAT = { w: '#ffffff', s: '#cfe0f2' };
 
-  function drawSprite(sprite, px, py, scale, dir, coat) {
+  function drawSprite(target, sprite, px, py, scale, dir, coat) {
     const cols = sprite[0].length;
     for (let r = 0; r < sprite.length; r++) {
       const row = sprite[r];
@@ -219,8 +284,8 @@
         const color = coat[ch];
         if (!color) continue;
         const cx = dir < 0 ? (cols - 1 - c) : c;
-        ctx.fillStyle = color;
-        ctx.fillRect(
+        target.fillStyle = color;
+        target.fillRect(
           Math.round(px + cx * scale),
           Math.round(py + r * scale),
           scale, scale
@@ -231,10 +296,36 @@
 
   /* ── ACTORS ───────────────────────────────────────────────── */
 
-  const HOP = [0, -1, -2, -2, -1, 0];   // vertical offset through a hop
+  const HOP_PERIOD = 0.55;   // seconds for one full hop
+  const HOP_START  = 0.22;   // phase at which the feet leave the ground
 
-  let bunnies = [];
-  let clouds  = [];
+  let bunnies      = [];
+  let clouds       = [];
+  let backFlowers  = [];     // baked into the scene
+  let frontFlowers = [];     // drawn over the bunnies
+
+  /* Height off the ground through a hop: a smooth arc that is zero
+     while gathering and zero again on landing. */
+  function hopLift(phase, scale) {
+    if (phase < HOP_START) return 0;
+    const t = (phase - HOP_START) / (1 - HOP_START);
+    return -4.2 * scale * Math.sin(Math.PI * t);
+  }
+
+  /* Ground speed through a hop — barely moving while gathering, quick
+     through the air. Averages out to roughly 1, so overall pace holds. */
+  function hopSpeed(phase) {
+    if (phase < HOP_START) return 0.22;
+    const t = (phase - HOP_START) / (1 - HOP_START);
+    return 0.22 + 1.55 * Math.sin(Math.PI * t);
+  }
+
+  function hopSprite(phase) {
+    for (let i = 0; i < HOP_CUTS.length; i++) {
+      if (phase < HOP_CUTS[i]) return HOP_FRAMES[i];
+    }
+    return HOP_FRAMES[HOP_FRAMES.length - 1];
+  }
 
   function makeBunny(spawnAnywhere) {
     const depth = 0.10 + Math.random() * 0.60;      // 0 = far, 1 = near
@@ -249,6 +340,41 @@
       state: 'run',
       timer: 1 + Math.random() * 4
     };
+  }
+
+  function makeFlower() {
+    const depth  = 0.05 + Math.random() * 0.92;
+    const shape  = FLOWER_SHAPES[(Math.random() * FLOWER_SHAPES.length) | 0];
+    return {
+      depth,
+      sprite: shape,
+      scale:  depth < 0.5 ? 1 : 2,
+      coat:   BLOOMS[(Math.random() * BLOOMS.length) | 0],
+      x:      Math.random() * W,
+      dir:    Math.random() < 0.5 ? 1 : -1
+    };
+  }
+
+  function plantFlowers() {
+    const total = Math.round(W / 8);
+    backFlowers = [];
+    frontFlowers = [];
+    for (let i = 0; i < total; i++) {
+      const f = makeFlower();
+      f.y = groundY(f.x, f.depth);
+      // the nearest few sit in front of the bunnies, the rest behind
+      (f.depth > 0.74 ? frontFlowers : backFlowers).push(f);
+    }
+  }
+
+  function groundY(x, depth) {
+    const hy = hillY(Math.max(0, Math.min(W - 1, x)));
+    return hy + depth * (H - hy);
+  }
+
+  function drawFlower(target, f) {
+    drawSprite(target, f.sprite, f.x, f.y - f.sprite.length * f.scale,
+               f.scale, f.dir, f.coat);
   }
 
   function makeCloud(spawnAnywhere) {
@@ -277,10 +403,12 @@
 
   function updateBunny(b, dt) {
     if (b.state === 'run') {
-      b.x += b.dir * b.speed * dt;
-      b.phase = (b.phase + dt / 0.38) % 1;
+      // ground speed follows the hop, so they surge and settle
+      b.x += b.dir * b.speed * hopSpeed(b.phase) * dt;
+      b.phase = (b.phase + dt / HOP_PERIOD) % 1;
       b.timer -= dt;
-      if (b.timer <= 0) {
+      if (b.timer <= 0 && b.phase < HOP_START) {
+        // only stop once the feet are back down
         b.state = 'sit';
         b.timer = 1.2 + Math.random() * 3;
       }
@@ -288,6 +416,7 @@
       b.timer -= dt;
       if (b.timer <= 0) {
         b.state = 'run';
+        b.phase = 0;                              // set off from a crouch
         b.timer = 2 + Math.random() * 6;
         if (Math.random() < 0.35) b.dir *= -1;    // change their mind
       }
@@ -300,29 +429,29 @@
   }
 
   function drawBunny(b) {
-    const hy   = hillY(Math.max(0, Math.min(W - 1, b.x)));
-    const feet = hy + b.depth * (H - hy);
+    const feet = groundY(b.x, b.depth);
 
     let sprite, lift = 0;
     if (b.state === 'sit') {
       sprite = BUNNY_SIT;
     } else {
-      const step = Math.floor(b.phase * HOP.length) % HOP.length;
-      lift   = HOP[step] * b.scale;
-      sprite = b.phase < 0.5 ? BUNNY_RUN_A : BUNNY_RUN_B;
+      sprite = hopSprite(b.phase);
+      lift   = hopLift(b.phase, b.scale);
     }
 
     const top = feet - sprite.length * b.scale + lift;
 
-    // shadow keeps them planted on the grass
-    ctx.fillStyle = 'rgba(20, 50, 12, 0.22)';
+    // the shadow stays on the grass and tightens as they rise
+    const air = Math.min(1, -lift / (4.2 * b.scale));
+    ctx.fillStyle = `rgba(20, 50, 12, ${0.24 - air * 0.12})`;
     ctx.fillRect(
-      Math.round(b.x + b.scale),
+      Math.round(b.x + (2 + air * 2) * b.scale),
       Math.round(feet - b.scale),
-      8 * b.scale, b.scale
+      Math.max(b.scale, (8 - air * 4) * b.scale),
+      b.scale
     );
 
-    drawSprite(sprite, b.x, top, b.scale, b.dir, b.coat);
+    drawSprite(ctx, sprite, b.x, top, b.scale, b.dir, b.coat);
   }
 
   /* ── LOOP ─────────────────────────────────────────────────── */
@@ -338,13 +467,16 @@
         c.x += c.speed * dt;
         if (c.x > W) c.x = -c.sprite[0].length * c.scale;
       }
-      drawSprite(c.sprite, c.x, c.y, c.scale, 1, CLOUD_COAT);
+      drawSprite(ctx, c.sprite, c.x, c.y, c.scale, 1, CLOUD_COAT);
     }
 
     for (const b of bunnies) {
       if (dt) updateBunny(b, dt);
       drawBunny(b);
     }
+
+    // the nearest flowers sit in front, so a bunny can hop behind them
+    for (const f of frontFlowers) drawFlower(ctx, f);
   }
 
   let last = 0;
@@ -369,6 +501,7 @@
     canvas.height = H;
     ctx.imageSmoothingEnabled = false;
 
+    plantFlowers();     // needs the new W/H, and buildScene bakes them in
     buildScene();
 
     if (bunnies.length) {

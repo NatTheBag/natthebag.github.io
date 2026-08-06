@@ -419,6 +419,95 @@
     }
 
     /* ═══════════════════════════════════════
+       LISTENING — Spotify in a Media Player window
+    ═══════════════════════════════════════ */
+    .listening-block { margin: 26px 0 0; }
+
+    .player-window { margin-top: 10px; }
+
+    /* Spotify's embed is dark and rounds its own corners, so the
+       frame behind it is dark too and the corners blend away */
+    .player-body {
+      background: #121212;
+      padding: 3px;
+    }
+    .player-body iframe {
+      display: block;
+      width: 100%;
+      border: none;
+    }
+
+    .player-empty {
+      background: var(--xp-white);
+      border: 1px solid var(--xp-fieldline);
+      padding: 22px 14px;
+      text-align: center;
+      font-size: 11px;
+      color: var(--xp-muted);
+    }
+
+    /* ═══════════════════════════════════════
+       INTERESTS
+    ═══════════════════════════════════════ */
+    .interests-page { padding: 24px 0 0; }
+
+    .book-list { list-style: none; }
+
+    .book-item {
+      padding: 9px 10px;
+      display: flex;
+      gap: 11px;
+      align-items: flex-start;
+    }
+    .book-item + .book-item { border-top: 1px solid #eeece2; }
+    .book-item:hover { background: var(--xp-sel-soft); }
+
+    /* a little book spine, coloured per entry */
+    .book-spine {
+      width: 15px;
+      height: 21px;
+      flex-shrink: 0;
+      margin-top: 2px;
+      background: var(--spine, #4a6ea9);
+      border: 1px solid rgba(0,0,0,0.4);
+      border-radius: 1px 2px 2px 1px;
+      box-shadow: inset 3px 0 0 rgba(255,255,255,0.4),
+                  inset -1px -1px 0 rgba(0,0,0,0.25);
+    }
+
+    .book-text { min-width: 0; }
+
+    .book-title {
+      font-size: 12px;
+      font-weight: bold;
+      color: #0d3b7a;
+      line-height: 1.35;
+    }
+
+    .book-author {
+      font-weight: normal;
+      color: var(--xp-dim);
+    }
+
+    /* the one-sentence thought */
+    .book-thought {
+      font-size: 11px;
+      color: var(--xp-text);
+      line-height: 1.55;
+      margin-top: 3px;
+      padding-left: 8px;
+      border-left: 2px solid var(--xp-face2);
+    }
+    .book-thought.empty { color: var(--xp-muted); font-style: italic; }
+
+    .book-empty {
+      padding: 18px 12px;
+      font-size: 11px;
+      color: var(--xp-muted);
+      text-align: center;
+    }
+
+    /* ═══════════════════════════════════════
        DIALOGS (post + publication modals)
     ═══════════════════════════════════════ */
     .modal-backdrop {
@@ -660,6 +749,7 @@
           <button class="xp-tab active" data-page="home"     onclick="showPage('home')">Home</button>
           <button class="xp-tab"        data-page="about"    onclick="showPage('about')">About</button>
           <button class="xp-tab"        data-page="projects" onclick="showPage('projects')">Projects</button>
+          <button class="xp-tab"        data-page="interests" onclick="showPage('interests')">Interests</button>
         </div>
       </div>
     </div>
@@ -888,6 +978,49 @@
         </div>
       </div>
 
+      <!-- ═══════════════════════════════════════════
+           INTERESTS PAGE
+      ════════════════════════════════════════════ -->
+      <div id="page-interests" class="page">
+        <div class="interests-page">
+          <div class="section-label">Bookshelf</div>
+          <div class="listbox">
+            <ul class="book-list" id="book-list"></ul>
+          </div>
+
+          <div class="listening-block">
+            <div class="section-label">Listening</div>
+
+            <div class="xp-window player-window">
+              <div class="xp-titlebar sm">
+                <span class="xp-title-icon">♪</span>
+                <span class="xp-title-text">Windows Media Player</span>
+                <span class="xp-title-btns">
+                  <a class="xp-tb" id="player-open" href="#" target="_blank"
+                     rel="noopener" title="Open in Spotify">↗</a>
+                </span>
+              </div>
+
+              <div class="player-body" id="player-frame">
+                <!-- the embed is built by JS from the PLAYLIST link below -->
+              </div>
+
+              <div class="xp-statusbar">
+                <span class="xp-status-cell grow" id="player-status">Loading…</span>
+                <span class="xp-status-cell" style="min-width:90px;">Spotify</span>
+              </div>
+            </div>
+          </div>
+
+          <footer>
+            <div class="footer-inner">
+              <span class="footer-copy">© 2026 Han Lu — All rights reserved.</span>
+              <span class="footer-email"><a href="mailto:hanlu0427@gmail.com">hanlu0427@gmail.com</a></span>
+            </div>
+          </footer>
+        </div>
+      </div>
+
     </div><!-- /shell -->
   </div><!-- /browser-body -->
 
@@ -981,6 +1114,7 @@
     <button class="xp-startmenu-item" onclick="startGo('home')"><span class="ico">⌂</span>Home</button>
     <button class="xp-startmenu-item" onclick="startGo('about')"><span class="ico">👤</span>About</button>
     <button class="xp-startmenu-item" onclick="startGo('projects')"><span class="ico">🗂</span>Projects &amp; Publications</button>
+    <button class="xp-startmenu-item" onclick="startGo('interests')"><span class="ico">📚</span>Interests</button>
     <div class="xp-startmenu-rule"></div>
     <a class="xp-startmenu-item" href="./resume.pdf" target="_blank"><span class="ico">▤</span>Résumé.pdf</a>
     <a class="xp-startmenu-item" href="/cad"><span class="ico">▩</span>CAD Tutorials</a>
@@ -1265,12 +1399,14 @@ function closeModalBackdrop(e) {
 const PAGE_TITLES = {
   home:     'Han Lu — Microsoft Internet Explorer',
   about:    'About — Han Lu — Microsoft Internet Explorer',
-  projects: 'Projects &amp; Publications — Han Lu — Microsoft Internet Explorer'
+  projects: 'Projects &amp; Publications — Han Lu — Microsoft Internet Explorer',
+  interests: 'Interests — Han Lu — Microsoft Internet Explorer'
 };
 const PAGE_PATHS = {
   home:     'https://natthebag.github.io/',
   about:    'https://natthebag.github.io/#about',
-  projects: 'https://natthebag.github.io/#projects'
+  projects: 'https://natthebag.github.io/#projects',
+  interests: 'https://natthebag.github.io/#interests'
 };
 
 function showPage(name) {
@@ -1284,7 +1420,12 @@ function showPage(name) {
   document.getElementById('address-text').textContent = PAGE_PATHS[name] || PAGE_PATHS.home;
   const task = document.getElementById('task-main');
   if (task) task.textContent = 'e  ' + title.textContent;
-  setStatus('Done');
+
+  if (name === 'interests' && BOOKS.length) {
+    setStatus(BOOKS.length + (BOOKS.length === 1 ? ' book' : ' books'));
+  } else {
+    setStatus('Done');
+  }
 }
 
 /* ════════════════════════════════════════════════════════════
@@ -1418,6 +1559,207 @@ function closePubModalBackdrop(e) {
 document.addEventListener('keydown', e => {
   if (e.key === 'Escape') { closeModal(); closePubModal(); closeMsgBox(); closeStartMenu(); }
 });
+
+/* ════════════════════════════════════════════════════════════
+   ███╗   ███╗██╗   ██╗███████╗██╗ ██████╗
+   ████╗ ████║██║   ██║██╔════╝██║██╔════╝
+   ██╔████╔██║██║   ██║███████╗██║██║
+   ██║╚██╔╝██║██║   ██║╚════██║██║██║
+   ██║ ╚═╝ ██║╚██████╔╝███████║██║╚██████╗
+   ╚═╝     ╚═╝ ╚═════╝ ╚══════╝╚═╝ ╚═════╝
+
+   HOW TO CHANGE THE PLAYLIST
+   ──────────────────────────
+   Paste any Spotify share link below. In Spotify: ⋯ → Share →
+   Copy link. Playlists, albums, artists and single tracks all
+   work, and so does the spotify:playlist:... URI form.
+
+   The ?si=... tracking code Spotify tacks on the end is ignored,
+   so you can paste the link exactly as it gives it to you.
+
+   Set it to "" to hide the player entirely.
+════════════════════════════════════════════════════════════ */
+
+const PLAYLIST = "https://open.spotify.com/playlist/6FeoGgg57ZTq0W6EBg2dZj";
+
+// how tall the embed is, in px. ~152 shows just the player bar,
+// ~352 shows the player plus a scrollable track list.
+const PLAYLIST_HEIGHT = 352;
+
+/* ── PLAYER ──────────────────────────── */
+
+// Pull the kind + id out of any Spotify link, ignoring the locale
+// prefix (/intl-de/) and the ?si= share token.
+function parseSpotify(link) {
+  const m = String(link || '').match(
+    /(?:open\.spotify\.com\/(?:intl-[a-z]{2}\/)?|spotify:)(playlist|album|track|artist|show|episode)[:/]([A-Za-z0-9]+)/i
+  );
+  if (!m) return null;
+  const kind = m[1].toLowerCase();
+  const id   = m[2];
+  return {
+    kind, id,
+    url:   `https://open.spotify.com/${kind}/${id}`,
+    embed: `https://open.spotify.com/embed/${kind}/${id}`
+  };
+}
+
+function renderPlaylist() {
+  const frame  = document.getElementById('player-frame');
+  const status = document.getElementById('player-status');
+  const open   = document.getElementById('player-open');
+  const item   = parseSpotify(PLAYLIST);
+
+  if (!item) {
+    frame.innerHTML = `<div class="player-empty">${
+      PLAYLIST ? 'That doesn\'t look like a Spotify link.' : 'No playlist set.'
+    }</div>`;
+    status.textContent = 'Stopped';
+    open.style.display = 'none';
+    return;
+  }
+
+  frame.innerHTML = `<iframe
+      src="${item.embed}?utm_source=generator"
+      height="${PLAYLIST_HEIGHT}"
+      style="border-radius:0"
+      allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
+      loading="lazy"
+      title="Spotify ${item.kind}"></iframe>`;
+
+  open.href = item.url;
+  status.textContent = 'Ready — ' + item.kind.charAt(0).toUpperCase() + item.kind.slice(1);
+}
+
+/* ════════════════════════════════════════════════════════════
+   ██████╗  ██████╗  ██████╗ ██╗  ██╗███████╗
+   ██╔══██╗██╔═══██╗██╔═══██╗██║ ██╔╝██╔════╝
+   ██████╔╝██║   ██║██║   ██║█████╔╝ ███████╗
+   ██╔══██╗██║   ██║██║   ██║██╔═██╗ ╚════██║
+   ██████╔╝╚██████╔╝╚██████╔╝██║  ██╗███████║
+   ╚═════╝  ╚═════╝  ╚═════╝ ╚═╝  ╚═╝╚══════╝
+
+   HOW TO ADD A BOOK
+   ─────────────────
+   Add an object to the BOOKS array below. Newest first — they
+   show in the order you write them. Fill in:
+
+     title   → the book's title
+     author  → who wrote it
+     thought → ONE sentence on what you made of it.
+               Leave it as "" if you haven't decided yet — the
+               row just shows a quiet placeholder until you do.
+
+   Example:
+   {
+     title: "The Design of Everyday Things",
+     author: "Don Norman",
+     thought: "Made me notice every badly-placed door handle for a month."
+   },
+════════════════════════════════════════════════════════════ */
+
+const BOOKS = [
+  // ← add your books here, newest first. For example:
+  // {
+  //   title: "Structures: Or Why Things Don't Fall Down",
+  //   author: "J. E. Gordon",
+  //   thought: "The clearest explanation of why anything stands up that I've read."
+  // },
+
+  {
+    title: "Tess of the D'Ubvervilles",
+    author: "Thomas Hardy",
+    thought: "Currently reading."
+  },
+  {
+    title: "Lolita",
+    author: "Vladimir Nabokov",
+    thought: "Interesting perspective."
+  },
+  {
+    title: "Candide",
+    author: "Voltaire",
+    thought: "Excellent use of our philosophy course..."
+  },
+  {
+    title: "Sense and Sensibility",
+    author: "Jane Austen",
+    thought: "Favorite Austen book so far! Better than Pride & Prejudice."
+  },
+  {
+    title: "The Bell Jar",
+    author: "Sylvia Plath",
+    thought: "Feels like I am going insane."
+  },
+  {
+    title: "The Stranger",
+    author: "Albert Camus",
+    thought: "Read this on the plane... very strange"
+  },
+  {
+    title: "Les Miserables",
+    author: "Victor Hugo",
+    thought: "A satisfying mixture of war descriptions and philosophical intrigue"
+  },
+  {
+    title: "Thus Spoke Zarathustra",
+    author: "Friedrich Nietzsche",
+    thought: "'Of the Sublime Men' is my favorite section."
+  },
+  {
+    title: "Madame Bovary",
+    author: "Gustave Flaubert",
+    thought: "Madame Bovary, c'est moi. (Flaubert)"
+  },
+  {
+    title: "The Brothers Karamazov",
+    author: "Fyodor Dostoevsky",
+    thought: "Taking a Tolstoy break. The Grand Inquisitor section is splendid!"
+  },
+  {
+    title: "Anna Karenina",
+    author: "Leo Tolstoy",
+    thought: "My favorite book... Excellent combination of social drama and stylistic flair."
+  },
+  {
+    title: "War and Peace",
+    author: "Leo Tolstoy",
+    thought: "First really long novel I've read in a long time..."
+  },
+  {
+    title: "White Nights",
+    author: "Fyodor Dostoevsky",
+    thought: "This book reinvigorated my interested in reading :)"
+  }
+];
+
+/* ── BOOK RENDER ─────────────────────── */
+
+// spine colours cycle so the list reads like a shelf
+const SPINES = ['#8C1515', '#2a5c8f', '#3c7a3c', '#8a5a1a', '#5c3f74', '#286b6b'];
+
+function renderBooks() {
+  const list = document.getElementById('book-list');
+
+  if (!BOOKS.length) {
+    list.innerHTML = `<li class="book-empty">No books listed yet.</li>`;
+    return;
+  }
+
+  list.innerHTML = BOOKS.map((b, i) => `
+    <li class="book-item">
+      <span class="book-spine" style="--spine:${SPINES[i % SPINES.length]}"></span>
+      <div class="book-text">
+        <div class="book-title">
+          ${b.title}${b.author ? ` <span class="book-author">— ${b.author}</span>` : ''}
+        </div>
+        <div class="book-thought${b.thought ? '' : ' empty'}">
+          ${b.thought || 'No thoughts written down yet.'}
+        </div>
+      </div>
+    </li>
+  `).join('');
+}
 
 /* ════════════════════════════════════════════════════════════
    GALLERY — home page carousel
@@ -1619,6 +1961,8 @@ function tickClock() {
 renderPosts();
 renderProjects();
 renderPublications();
+renderBooks();
+renderPlaylist();
 buildCarousel();
 tickClock();
 setInterval(tickClock, 10000);
