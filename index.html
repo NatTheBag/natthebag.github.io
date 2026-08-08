@@ -6,6 +6,40 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <meta name="theme-color" content="#245edb" />
   <title>Han Lu</title>
+  <meta name="description" content="Han Lu — student at Stanford Online High School. Engineering, robotics, and building things that exist in the physical world." />
+
+  <!-- ── LINK PREVIEW ──────────────────────────────────────────
+       How the site looks when the URL is pasted into iMessage,
+       Discord, Slack, WhatsApp, X, and so on. The picture is
+       ./social-preview.png — regenerate it with:
+
+           python3 tools/make-social-images.py
+
+       og:image has to be an absolute URL; a relative one is
+       ignored by most of these. If the site ever moves off
+       natthebag.github.io, update the two image URLs and og:url.
+  ─────────────────────────────────────────────────────────── -->
+  <meta property="og:type"        content="website" />
+  <meta property="og:site_name"   content="Han Lu" />
+  <meta property="og:url"         content="https://natthebag.github.io/" />
+  <meta property="og:title"       content="Han Lu" />
+  <meta property="og:description" content="Engineering, robotics, and building things that exist in the physical world." />
+  <meta property="og:image"       content="https://natthebag.github.io/social-preview.png" />
+  <meta property="og:image:type"  content="image/png" />
+  <meta property="og:image:width"  content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta property="og:image:alt"   content="A pixel-art hillside with bunnies and wildflowers, and a Windows XP window reading Han Lu." />
+
+  <meta name="twitter:card"        content="summary_large_image" />
+  <meta name="twitter:title"       content="Han Lu" />
+  <meta name="twitter:description" content="Engineering, robotics, and building things that exist in the physical world." />
+  <meta name="twitter:image"       content="https://natthebag.github.io/social-preview.png" />
+
+  <!-- tab icon: the pixel bunny from the wallpaper -->
+  <link rel="icon" href="./favicon.ico" sizes="any" />
+  <link rel="icon" type="image/png" href="./favicon-32.png" sizes="32x32" />
+  <link rel="apple-touch-icon" href="./apple-touch-icon.png" />
+
   <link rel="stylesheet" href="./xp.css" />
   <script src="./xp-wallpaper.js" defer></script>
   <style>
@@ -1177,6 +1211,16 @@
 
 const POSTS = [
   {
+    slug: "janestreet-aug",
+    date: "2026-08-07",
+    display: "August 2026",
+    title: "Jane Street ASIC Puzzle Solution",
+    excerpt: "Writeup for the ASIC reverse engineering challenge posed by Jane Street in August.",
+    body: `
+      <p>This is a filler post and will be updated on or after September 4th.</p>
+    `
+  },
+  {
     slug: "welcome",            // ← direct link: natthebag.github.io/#post-welcome
     date: "2025-07-26",
     display: "Jul 2025",
@@ -1240,7 +1284,17 @@ const PROJECTS = [
     desc: "For our BWSI Capstone project, we created a matrix multiplier and integrated that into a CNN accelerator by programming memory re-addressers and parallel MAC processes. Went through the full RTL to GDSII flow, expected tapeout Sept. 2026",
     image: "./figures/cnn.png",
     links:[
-      {label: "SystemVerilog source file", url: "https://drive.google.com/file/d/1ExY5TptdJf2CDCwyN8SYbIh9Rj9XhtzK/view?usp=sharing"}
+      {label: "SystemVerilog source file", url: "https://drive.google.com/file/d/1ExY5TptdJf2CDCwyN8SYbIh9Rj9XhtzK/view?usp=sharing"},
+      {label: "Matrix Multiplier how-to", url: "https://bwsiasics.notion.site/"}
+    ]
+  },
+  {
+    name: "FTC Offseason Autonomous Drive Development",
+    status: "ongoing",
+    desc: "Developed a robot detection CV model on LimeLight and implemented it into a pathfinding algorithm for auto scoring while avoiding other robots.",
+    image: "./figures/offseason_docs.png",
+    links:[
+      {label: "Documentation", url: "./src/ftc_offseason_docs.pdf"}
     ]
   },
   {
@@ -1254,6 +1308,15 @@ const PROJECTS = [
     ]
   },
   {
+    name: "ASIC Reverse Engineering", 
+    status: "complete",
+    desc: "Reverse-engineered an ASIC to solve the Jane Street challenge by extracting netlist from GDSII and running iverilog simulations.",
+    image:"./figures/janestreet.png",
+    links:[
+      {label: "Solution Write-up", url: "https://natthebag.github.io/#post-janestreet-aug"}
+    ]
+  },
+  {
     name: "3D Printing Curriculum",
     status: "ongoing",
     desc: "Created online CAD and design tutorials for team and public use. Presented in hardware and software workshops for our school community.",
@@ -1262,7 +1325,15 @@ const PROJECTS = [
       { label: "Tutorial", url: "https://natthebag.github.io/cad"}
     ]
   },
-
+  {
+    name: "Pomodoro Timer",
+    status: "complete",
+    desc: "For the second capstone, our group created a pomodoro timer for focusing using FPGA and breadboard via Pmod interface.",
+    image: "./figures/pomodoro.png",
+    links: [
+      { label: "Source File", url: "./src/workbreak2.v"}
+    ]
+  },
   {
     name: "Robotics Outreach",
     status: "ongoing",
@@ -1783,7 +1854,8 @@ const GALLERY = [
   { image: "./carousel/scibowl.png", title: "Science Bowl Classifier", sub: "See Projects..."},
   { image: "./carousel/servechassis.png", title: "Swerve Drive Chassis for FTC", sub: ""},
   { image: "./carousel/cnn.png", title: "CNN Accelerator Chip", sub: "Completed for BWSI Capstone"},
-  { image: "./carousel/swerve2.png", title: "New Swerve Design", sub: ""},
+  { image: "./figures/offseason_docs.png", title: "Robot Identifier Computer Vision Model"},
+
 ];
 
 /* ── CAROUSEL ────────────────────────── */
