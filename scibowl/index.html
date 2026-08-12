@@ -234,33 +234,6 @@
             border-bottom: 1px solid var(--xp-face2);
         }
 
-        .resource-list {
-            list-style: none;
-            padding: 0;
-            background: var(--xp-white);
-            border: 1px solid var(--xp-fieldline);
-        }
-
-        .resource-list li {
-            padding: 4px 8px 4px 20px;
-            position: relative;
-            color: var(--xp-text);
-            font-size: 11px;
-            line-height: 1.5;
-        }
-        .resource-list li + li { border-top: 1px solid #eeece2; }
-        .resource-list li:hover { background: var(--xp-sel-soft); }
-
-        .resource-list li:before {
-            content: "▸";
-            position: absolute;
-            left: 7px;
-            color: var(--xp-muted);
-        }
-
-        .resource-link { color: var(--xp-link); }
-        .resource-link:visited { color: var(--xp-link-visit); }
-
         .topic-tags {
             display: flex;
             flex-wrap: wrap;
@@ -348,7 +321,7 @@
     <!-- ── HEADER ───────────────────────────────── -->
     <div class="header">
         <h1>Science Bowl Study Guide</h1>
-        <p>Vector-embedding-powered concept classification with textbook stuff.....</p>
+        <p>Vector-embedding-powered concept classification over a few thousand Science Bowl questions.</p>
     </div>
 
     <!-- ── STATS ────────────────────────────────── -->
@@ -410,22 +383,8 @@
     // BIOLOGY
     "zoology": {
         "category": "biology",
-        "questionCount": 168,
+        "questionCount": 155,
         "avgConfidence": 0.42,
-        "textbooks": [
-            "Chapter 32-34: Animal Diversity",
-            "Chapter 40: Animal Form and Function"
-        ],
-        "online": [
-            {
-                "name": "Khan Academy: Animals",
-                "url": "https://www.khanacademy.org/search?page_search_query=Animals"
-            },
-            {
-                "name": "Crash Course Biology: Animals",
-                "url": "https://www.youtube.com/results?search_query=Crash+Course+Biology:+Animals"
-            }
-        ],
         "topics": [
             "Animal classification",
             "Vertebrates vs invertebrates",
@@ -435,23 +394,8 @@
     },
     "cytology": {
         "category": "biology",
-        "questionCount": 143,
+        "questionCount": 128,
         "avgConfidence": 0.46,
-        "textbooks": [
-            "Chapter 6: A Tour of the Cell",
-            "Chapter 7: Membrane Structure and Function",
-            "Chapter 12: The Cell Cycle"
-        ],
-        "online": [
-            {
-                "name": "Khan Academy: Cell structure",
-                "url": "https://www.khanacademy.org/search?page_search_query=Cell+structure"
-            },
-            {
-                "name": "Crash Course Biology: Eukaryopolis (#4)",
-                "url": "https://www.youtube.com/results?search_query=Crash+Course+Biology:+Eukaryopolis+(#4)"
-            }
-        ],
         "topics": [
             "Cell organelles",
             "Cell membrane",
@@ -461,24 +405,8 @@
     },
     "biochemistry": {
         "category": "biology",
-        "questionCount": 130,
+        "questionCount": 114,
         "avgConfidence": 0.47,
-        "textbooks": [
-            "Chapter 5: Biological Macromolecules",
-            "Chapter 8: Introduction to Metabolism",
-            "Chapter 9: Cellular Respiration",
-            "Chapter 10: Photosynthesis"
-        ],
-        "online": [
-            {
-                "name": "Khan Academy: Macromolecules",
-                "url": "https://www.khanacademy.org/search?page_search_query=Macromolecules"
-            },
-            {
-                "name": "Crash Course Biology: Biological Molecules (#3)",
-                "url": "https://www.youtube.com/results?search_query=Crash+Course+Biology:+Biological+Molecules+(#3)"
-            }
-        ],
         "topics": [
             "Proteins and enzymes",
             "Carbohydrates and lipids",
@@ -488,24 +416,8 @@
     },
     "genetics": {
         "category": "biology",
-        "questionCount": 92,
+        "questionCount": 85,
         "avgConfidence": 0.42,
-        "textbooks": [
-            "Chapter 13: Meiosis and Sexual Life Cycles",
-            "Chapter 14: Mendel and the Gene Idea",
-            "Chapter 15: Chromosomal Basis of Inheritance",
-            "Chapter 16: Molecular Basis of Inheritance"
-        ],
-        "online": [
-            {
-                "name": "Khan Academy: Classical genetics",
-                "url": "https://www.khanacademy.org/search?page_search_query=Classical+genetics"
-            },
-            {
-                "name": "Crash Course Biology: DNA (#10)",
-                "url": "https://www.youtube.com/results?search_query=Crash+Course+Biology:+DNA+(#10)"
-            }
-        ],
         "topics": [
             "DNA structure",
             "Gene expression",
@@ -515,23 +427,8 @@
     },
     "botany": {
         "category": "biology",
-        "questionCount": 83,
+        "questionCount": 76,
         "avgConfidence": 0.40,
-        "textbooks": [
-            "Chapter 29-30: Plant Diversity",
-            "Chapter 35-36: Plant Structure & Growth",
-            "Chapter 39: Plant Responses"
-        ],
-        "online": [
-            {
-                "name": "Khan Academy: Plant biology",
-                "url": "https://www.khanacademy.org/search?page_search_query=Plant+biology"
-            },
-            {
-                "name": "Crash Course Biology: Plants",
-                "url": "https://www.youtube.com/results?search_query=Crash+Course+Biology:+Plants"
-            }
-        ],
         "topics": [
             "Plant anatomy",
             "Photosynthesis",
@@ -541,22 +438,8 @@
     },
     "heredity": {
         "category": "biology",
-        "questionCount": 69,
+        "questionCount": 64,
         "avgConfidence": 0.38,
-        "textbooks": [
-            "Chapter 14: Mendel and the Gene Idea",
-            "Chapter 15: Chromosomal Basis of Inheritance"
-        ],
-        "online": [
-            {
-                "name": "Khan Academy: Heredity",
-                "url": "https://www.khanacademy.org/search?page_search_query=Heredity"
-            },
-            {
-                "name": "Crash Course Biology: Heredity (#9)",
-                "url": "https://www.youtube.com/results?search_query=Crash+Course+Biology:+Heredity+(#9)"
-            }
-        ],
         "topics": [
             "Mendelian genetics",
             "Punnett squares",
@@ -566,21 +449,8 @@
     },
     "immunology": {
         "category": "biology",
-        "questionCount": 62,
+        "questionCount": 58,
         "avgConfidence": 0.39,
-        "textbooks": [
-            "Chapter 43: The Immune System"
-        ],
-        "online": [
-            {
-                "name": "Khan Academy: Immune system",
-                "url": "https://www.khanacademy.org/search?page_search_query=Immune+system"
-            },
-            {
-                "name": "Crash Course Biology: Immune System (#32)",
-                "url": "https://www.youtube.com/results?search_query=Crash+Course+Biology:+Immune+System+(#32)"
-            }
-        ],
         "topics": [
             "Innate immunity",
             "Adaptive immunity",
@@ -592,22 +462,8 @@
     // CHEMISTRY
     "acids": {
         "category": "chemistry",
-        "questionCount": 255,
+        "questionCount": 233,
         "avgConfidence": 0.44,
-        "textbooks": [
-            "Chapter 16: Acid-Base Equilibria",
-            "Chapter 17: Aqueous Equilibria"
-        ],
-        "online": [
-            {
-                "name": "Khan Academy: Acids and bases",
-                "url": "https://www.khanacademy.org/search?page_search_query=Acids+and+bases"
-            },
-            {
-                "name": "Crash Course Chemistry: Acids & Bases (#30)",
-                "url": "https://www.youtube.com/results?search_query=Crash+Course+Chemistry:+Acids+&+Bases+(#30)"
-            }
-        ],
         "topics": [
             "pH and pOH",
             "Strong vs weak acids",
@@ -617,22 +473,8 @@
     },
     "composition": {
         "category": "chemistry",
-        "questionCount": 211,
+        "questionCount": 195,
         "avgConfidence": 0.42,
-        "textbooks": [
-            "Chapter 2: Atoms, Molecules, and Ions",
-            "Chapter 3: Stoichiometry"
-        ],
-        "online": [
-            {
-                "name": "Khan Academy: Chemical composition",
-                "url": "https://www.khanacademy.org/search?page_search_query=Chemical+composition"
-            },
-            {
-                "name": "Crash Course Chemistry: The Mole (#6)",
-                "url": "https://www.youtube.com/results?search_query=Crash+Course+Chemistry:+The+Mole+(#6)"
-            }
-        ],
         "topics": [
             "Molecular formulas",
             "Elements and compounds",
@@ -642,22 +484,8 @@
     },
     "thermodynamics": {
         "category": "chemistry",
-        "questionCount": 191,
+        "questionCount": 170,
         "avgConfidence": 0.39,
-        "textbooks": [
-            "Chapter 5: Thermochemistry",
-            "Chapter 19: Chemical Thermodynamics"
-        ],
-        "online": [
-            {
-                "name": "Khan Academy: Thermodynamics",
-                "url": "https://www.khanacademy.org/search?page_search_query=Thermodynamics"
-            },
-            {
-                "name": "Crash Course Chemistry: Enthalpy (#18)",
-                "url": "https://www.youtube.com/results?search_query=Crash+Course+Chemistry:+Enthalpy+(#18)"
-            }
-        ],
         "topics": [
             "Heat and temperature",
             "Enthalpy",
@@ -669,21 +497,8 @@
     // EARTH AND SPACE
     "oceanography": {
         "category": "earth",
-        "questionCount": 218,
+        "questionCount": 199,
         "avgConfidence": 0.41,
-        "textbooks": [
-            "Earth Science Ch 14-16: Oceans"
-        ],
-        "online": [
-            {
-                "name": "Khan Academy: Oceans",
-                "url": "https://www.khanacademy.org/search?page_search_query=Oceans"
-            },
-            {
-                "name": "NOAA Ocean Today",
-                "url": "#"
-            }
-        ],
         "topics": [
             "Ocean zones",
             "Currents and tides",
@@ -693,21 +508,8 @@
     },
     "astronomy": {
         "category": "earth",
-        "questionCount": 217,
+        "questionCount": 201,
         "avgConfidence": 0.38,
-        "textbooks": [
-            "Earth Science Ch 23-27: Astronomy"
-        ],
-        "online": [
-            {
-                "name": "Khan Academy: Cosmology",
-                "url": "https://www.khanacademy.org/search?page_search_query=Cosmology"
-            },
-            {
-                "name": "Crash Course Astronomy",
-                "url": "https://www.youtube.com/results?search_query=Crash+Course+Astronomy"
-            }
-        ],
         "topics": [
             "Stars and galaxies",
             "Solar system",
@@ -717,21 +519,8 @@
     },
     "geology": {
         "category": "earth",
-        "questionCount": 207,
+        "questionCount": 181,
         "avgConfidence": 0.46,
-        "textbooks": [
-            "Earth Science Ch 1-13: Geology"
-        ],
-        "online": [
-            {
-                "name": "Khan Academy: Plate tectonics",
-                "url": "https://www.khanacademy.org/search?page_search_query=Plate+tectonics"
-            },
-            {
-                "name": "USGS educational resources",
-                "url": "#"
-            }
-        ],
         "topics": [
             "Rock cycle",
             "Minerals",
@@ -743,22 +532,8 @@
     // PHYSICS
     "acceleration": {
         "category": "physics",
-        "questionCount": 181,
+        "questionCount": 168,
         "avgConfidence": 0.41,
-        "textbooks": [
-            "Chapter 2-3: Kinematics",
-            "Chapter 4: Newton's Laws"
-        ],
-        "online": [
-            {
-                "name": "Khan Academy: Acceleration",
-                "url": "https://www.khanacademy.org/search?page_search_query=Acceleration"
-            },
-            {
-                "name": "Crash Course Physics: Motion (#1)",
-                "url": "https://www.youtube.com/results?search_query=Crash+Course+Physics:+Motion+(#1)"
-            }
-        ],
         "topics": [
             "Kinematics equations",
             "Acceleration vs velocity",
@@ -768,22 +543,8 @@
     },
     "particles": {
         "category": "physics",
-        "questionCount": 162,
+        "questionCount": 138,
         "avgConfidence": 0.39,
-        "textbooks": [
-            "Chapter 38-40: Quantum Physics",
-            "Chapter 44: Particle Physics"
-        ],
-        "online": [
-            {
-                "name": "Khan Academy: Quantum physics",
-                "url": "https://www.khanacademy.org/search?page_search_query=Quantum+physics"
-            },
-            {
-                "name": "Crash Course Physics: Quantum Mechanics",
-                "url": "https://www.youtube.com/results?search_query=Crash+Course+Physics:+Quantum+Mechanics"
-            }
-        ],
         "topics": [
             "Subatomic particles",
             "Quarks and leptons",
@@ -793,22 +554,8 @@
     },
     "electromagnetism": {
         "category": "physics",
-        "questionCount": 150,
+        "questionCount": 139,
         "avgConfidence": 0.39,
-        "textbooks": [
-            "Chapters 21-25: Electricity",
-            "Chapters 29-31: Magnetism"
-        ],
-        "online": [
-            {
-                "name": "Khan Academy: Electromagnetism",
-                "url": "https://www.khanacademy.org/search?page_search_query=Electromagnetism"
-            },
-            {
-                "name": "Crash Course Physics: Electric Fields (#26)",
-                "url": "https://www.youtube.com/results?search_query=Crash+Course+Physics:+Electric+Fields+(#26)"
-            }
-        ],
         "topics": [
             "Electric fields",
             "Magnetic fields",
@@ -818,22 +565,8 @@
     },
     "velocity": {
         "category": "physics",
-        "questionCount": 118,
+        "questionCount": 108,
         "avgConfidence": 0.41,
-        "textbooks": [
-            "Chapter 2: Motion in One Dimension",
-            "Chapter 3: Motion in Two Dimensions"
-        ],
-        "online": [
-            {
-                "name": "Khan Academy: Velocity",
-                "url": "https://www.khanacademy.org/search?page_search_query=Velocity"
-            },
-            {
-                "name": "Crash Course Physics: Velocity (#2)",
-                "url": "https://www.youtube.com/results?search_query=Crash+Course+Physics:+Velocity+(#2)"
-            }
-        ],
         "topics": [
             "Speed vs velocity",
             "Vector components",
@@ -845,17 +578,8 @@
     // MATH
     "coordinates": {
         "category": "math",
-        "questionCount": 86,
+        "questionCount": 84,
         "avgConfidence": 0.36,
-        "textbooks": [
-            "Algebra 2: Coordinate Geometry"
-        ],
-        "online": [
-            {
-                "name": "Khan Academy: Coordinate plane",
-                "url": "https://www.khanacademy.org/search?page_search_query=Coordinate+plane"
-            }
-        ],
         "topics": [
             "Cartesian coordinates",
             "Distance formula",
@@ -865,17 +589,8 @@
     },
     "sequences": {
         "category": "math",
-        "questionCount": 62,
+        "questionCount": 52,
         "avgConfidence": 0.32,
-        "textbooks": [
-            "Precalculus: Sequences and Series"
-        ],
-        "online": [
-            {
-                "name": "Khan Academy: Sequences",
-                "url": "https://www.khanacademy.org/search?page_search_query=Sequences"
-            }
-        ],
         "topics": [
             "Arithmetic sequences",
             "Geometric sequences",
@@ -885,17 +600,8 @@
     },
     "geometry": {
         "category": "math",
-        "questionCount": 60,
+        "questionCount": 57,
         "avgConfidence": 0.36,
-        "textbooks": [
-            "Geometry: Shapes and Measurement"
-        ],
-        "online": [
-            {
-                "name": "Khan Academy: Geometry",
-                "url": "https://www.khanacademy.org/search?page_search_query=Geometry"
-            }
-        ],
         "topics": [
             "Area and perimeter",
             "Volume",
@@ -905,17 +611,8 @@
     },
     "algebra": {
         "category": "math",
-        "questionCount": 53,
+        "questionCount": 50,
         "avgConfidence": 0.32,
-        "textbooks": [
-            "Algebra 1 & 2"
-        ],
-        "online": [
-            {
-                "name": "Khan Academy: Algebra",
-                "url": "https://www.khanacademy.org/search?page_search_query=Algebra"
-            }
-        ],
         "topics": [
             "Solving equations",
             "Factoring",
@@ -925,17 +622,8 @@
     },
     "probability": {
         "category": "math",
-        "questionCount": 52,
+        "questionCount": 42,
         "avgConfidence": 0.28,
-        "textbooks": [
-            "Statistics: Probability"
-        ],
-        "online": [
-            {
-                "name": "Khan Academy: Probability",
-                "url": "https://www.khanacademy.org/search?page_search_query=Probability"
-            }
-        ],
         "topics": [
             "Basic probability",
             "Combinatorics",
@@ -945,17 +633,8 @@
     },
     "trigonometry": {
         "category": "math",
-        "questionCount": 50,
+        "questionCount": 49,
         "avgConfidence": 0.42,
-        "textbooks": [
-            "Precalculus: Trigonometry"
-        ],
-        "online": [
-            {
-                "name": "Khan Academy: Trigonometry",
-                "url": "https://www.khanacademy.org/search?page_search_query=Trigonometry"
-            }
-        ],
         "topics": [
             "Unit circle",
             "Trig identities",
@@ -965,17 +644,8 @@
     },
     "functions": {
         "category": "math",
-        "questionCount": 46,
+        "questionCount": 42,
         "avgConfidence": 0.31,
-        "textbooks": [
-            "Algebra 2: Functions"
-        ],
-        "online": [
-            {
-                "name": "Khan Academy: Functions",
-                "url": "https://www.khanacademy.org/search?page_search_query=Functions"
-            }
-        ],
         "topics": [
             "Function notation",
             "Domain and range",
@@ -985,17 +655,8 @@
     },
     "equations": {
         "category": "math",
-        "questionCount": 45,
+        "questionCount": 41,
         "avgConfidence": 0.30,
-        "textbooks": [
-            "Algebra 1: Equations"
-        ],
-        "online": [
-            {
-                "name": "Khan Academy: Equations",
-                "url": "https://www.khanacademy.org/search?page_search_query=Equations"
-            }
-        ],
         "topics": [
             "Linear equations",
             "Quadratic equations",
@@ -1005,17 +666,8 @@
     },
     "rates": {
         "category": "math",
-        "questionCount": 42,
+        "questionCount": 38,
         "avgConfidence": 0.29,
-        "textbooks": [
-            "Algebra 1: Rates and Ratios"
-        ],
-        "online": [
-            {
-                "name": "Khan Academy: Rates",
-                "url": "https://www.khanacademy.org/search?page_search_query=Rates"
-            }
-        ],
         "topics": [
             "Rate problems",
             "Speed and distance",
@@ -1025,21 +677,8 @@
     },
     "calculus": {
         "category": "math",
-        "questionCount": 34,
+        "questionCount": 32,
         "avgConfidence": 0.32,
-        "textbooks": [
-            "Calculus: Limits and Derivatives"
-        ],
-        "online": [
-            {
-                "name": "Khan Academy: Calculus",
-                "url": "https://www.khanacademy.org/search?page_search_query=Calculus"
-            },
-            {
-                "name": "3Blue1Brown: Essence of Calculus",
-                "url": "#"
-            }
-        ],
         "topics": [
             "Limits",
             "Derivatives",
@@ -1049,17 +688,8 @@
     },
     "evaluation": {
         "category": "math",
-        "questionCount": 26,
+        "questionCount": 24,
         "avgConfidence": 0.33,
-        "textbooks": [
-            "Algebra: Expression Evaluation"
-        ],
-        "online": [
-            {
-                "name": "Khan Academy: Order of operations",
-                "url": "https://www.khanacademy.org/search?page_search_query=Order+of+operations"
-            }
-        ],
         "topics": [
             "Order of operations",
             "Evaluating expressions",
@@ -1069,17 +699,8 @@
     },
     "exponentials": {
         "category": "math",
-        "questionCount": 23,
+        "questionCount": 22,
         "avgConfidence": 0.31,
-        "textbooks": [
-            "Algebra 2: Exponentials and Logarithms"
-        ],
-        "online": [
-            {
-                "name": "Khan Academy: Exponentials",
-                "url": "https://www.khanacademy.org/search?page_search_query=Exponentials"
-            }
-        ],
         "topics": [
             "Exponent rules",
             "Exponential functions",
@@ -1091,17 +712,8 @@
     // ENERGY
     "classification": {
         "category": "energy",
-        "questionCount": 126,
+        "questionCount": 112,
         "avgConfidence": 0.40,
-        "textbooks": [
-            "Physics: Energy Types and Classification"
-        ],
-        "online": [
-            {
-                "name": "Khan Academy: Energy",
-                "url": "https://www.khanacademy.org/search?page_search_query=Energy"
-            }
-        ],
         "topics": [
             "Types of energy",
             "Energy classification",
@@ -1111,17 +723,8 @@
     },
     "potential": {
         "category": "energy",
-        "questionCount": 125,
+        "questionCount": 115,
         "avgConfidence": 0.39,
-        "textbooks": [
-            "Physics Chapter 6: Potential Energy"
-        ],
-        "online": [
-            {
-                "name": "Khan Academy: Potential energy",
-                "url": "https://www.khanacademy.org/search?page_search_query=Potential+energy"
-            }
-        ],
         "topics": [
             "Gravitational potential",
             "Elastic potential",
@@ -1131,17 +734,8 @@
     },
     "efficiency": {
         "category": "energy",
-        "questionCount": 121,
+        "questionCount": 110,
         "avgConfidence": 0.38,
-        "textbooks": [
-            "Physics: Energy Efficiency"
-        ],
-        "online": [
-            {
-                "name": "Khan Academy: Energy efficiency",
-                "url": "https://www.khanacademy.org/search?page_search_query=Energy+efficiency"
-            }
-        ],
         "topics": [
             "Energy calculations",
             "Efficiency formulas",
@@ -1155,15 +749,6 @@
         "category": "general",
         "questionCount": 29,
         "avgConfidence": 0.35,
-        "textbooks": [
-            "General Science: Units and Measurement"
-        ],
-        "online": [
-            {
-                "name": "Khan Academy: Unit conversion",
-                "url": "https://www.khanacademy.org/search?page_search_query=Unit+conversion"
-            }
-        ],
         "topics": [
             "Unit conversion",
             "Metric system",
@@ -1173,17 +758,8 @@
     },
     "environment": {
         "category": "general",
-        "questionCount": 29,
+        "questionCount": 27,
         "avgConfidence": 0.36,
-        "textbooks": [
-            "Environmental Science"
-        ],
-        "online": [
-            {
-                "name": "Khan Academy: Environmental science",
-                "url": "https://www.khanacademy.org/search?page_search_query=Environmental+science"
-            }
-        ],
         "topics": [
             "Climate change",
             "Pollution",
@@ -1193,17 +769,8 @@
     },
     "elements": {
         "category": "general",
-        "questionCount": 25,
+        "questionCount": 24,
         "avgConfidence": 0.37,
-        "textbooks": [
-            "Chemistry Chapter 2: Atoms and Elements"
-        ],
-        "online": [
-            {
-                "name": "Khan Academy: Periodic table",
-                "url": "https://www.khanacademy.org/search?page_search_query=Periodic+table"
-            }
-        ],
         "topics": [
             "Periodic table",
             "Element properties",
@@ -1271,22 +838,6 @@
                     </div>
 
                     <div class="resources-content" id="resources-${conceptName}">
-                        <div class="resource-section">
-                            <h3>Textbook Chapters</h3>
-                            <ul class="resource-list">
-                                ${data.textbooks.map(tb => `<li>${tb}</li>`).join('')}
-                            </ul>
-                        </div>
-
-                        <div class="resource-section">
-                            <h3>Online Resources</h3>
-                            <ul class="resource-list">
-                                ${data.online.map(resource => `
-                                    <li><a href="${resource.url}" class="resource-link" target="_blank">${resource.name}</a></li>
-                                `).join('')}
-                            </ul>
-                        </div>
-
                         <div class="resource-section">
                             <h3>Key Topics</h3>
                             <div class="topic-tags">
