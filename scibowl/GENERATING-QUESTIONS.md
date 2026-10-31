@@ -89,6 +89,9 @@ Emit the accept-alternatives the grader already understands, e.g.
 
 ## 5. LLM generation, offline and batched
 
+> **Built** — see [`tools/generate-questions/`](../tools/generate-questions/README.md).
+> `node generate.js --dry-run` exercises the whole pipeline without an API key.
+
 Generate with the Claude API as a build step, commit the resulting CSV. Do
 **not** call an API from the page: this is a static GitHub Pages site, so any
 key shipped to the browser is public. (If live generation is ever wanted, it

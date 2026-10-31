@@ -176,6 +176,8 @@ body.xp-desktop > .xp-window { position: relative; z-index: 1; }
 }
 .xp-menu-item {
   font-family: var(--xp-ui);
+  text-decoration: none;
+  display: inline-block;
   font-size: 11px;
   color: var(--xp-text);
   background: none;
@@ -200,6 +202,7 @@ body.xp-desktop > .xp-window { position: relative; z-index: 1; }
 }
 .xp-tool {
   font-family: var(--xp-ui);
+  text-decoration: none;
   font-size: 11px;
   color: var(--xp-text);
   background: none;
@@ -335,6 +338,8 @@ body.xp-desktop > .xp-window { position: relative; z-index: 1; }
 }
 .xp-tab {
   font-family: var(--xp-ui);
+  text-decoration: none;
+  display: inline-block;
   font-size: 11px;
   color: var(--xp-text);
   background: var(--xp-face2);
