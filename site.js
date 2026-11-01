@@ -48,7 +48,63 @@ const POSTS = [
     title: "Jane Street ASIC Puzzle Solution",
     excerpt: "Writeup for the ASIC reverse engineering challenge posed by Jane Street in August.",
     body: `
-      <p>This is a filler post and will be updated on or after September 4th.</p>
+      <p>The challenge was outlined in
+      <a href="https://blog.janestreet.com/can-you-reverse-engineer-an-asic/" target="_blank" rel="noopener">this blog post</a>
+      and the materials were provided in
+      <a href="https://github.com/janestreet/asic-puzzle-2026" target="_blank" rel="noopener">this repository</a>.</p>
+
+      <p>First, the waveform was examined. GTKWave inspection and the
+      <a href="https://gds-viewer.tinytapeout.com/" target="_blank" rel="noopener">TinyTapeout GDS viewer</a>
+      assisted in high-level understanding of the target ASIC. Off the bat, there are outputs
+      that hint at the solution:</p>
+
+      <ol>
+        <li>It can be observed that the input <code>I</code> is a 121 bit input that lasts for the
+        duration of the <code>enable</code> HIGH stage. This is pretty suspicious, since it is
+        simply 11^2.</li>
+        <li>An output <code>O</code> outputs its output only after <code>enable</code> goes LOW.</li>
+        <li>This output is the same for both the test cases. We know that since success is LOW,
+        this rendition of <code>O</code> is not what is ultimately desired. This begs the question:
+        what does it mean? The output is consistent, specifically
+        <code>54 52 59 20 41 47 41 49 4E</code>. This means nothing! However, if we translate hex
+        to ASCII, we get: "TRY AGAIN". This is much more useful.</li>
+      </ol>
+
+      <p>The approach to actually solve this problem was to (1) extract the netlist then
+      (2) simulate netlist using <code>iverilog</code> until <code>success</code> outputs HIGH.</p>
+
+      <p>For step 1, we begin by extracting the cells used in the design. GDS provides this
+      information directly, along with the locations of each module. Writing a simple script to
+      extract this cell information is trivial. After these cells are extracted, we have to find
+      the interconnect between them. To achieve this, the bounding boxes of the wires were
+      extracted from the GDS file using a python script. The terminal locations of these wires
+      were then correlated to the ports of the cells as specified before. From these two
+      components, the netlist can easily be compiled using another script.</p>
+
+      <p>For step 2, we have two approaches. First, I tried to use <code>iverilog</code> and my
+      installed Skywater130 PDK to simply bash every possibility until the desired result is
+      reached on the success flag. However, bashing 2<sup>121</sup> possibilities will take quite
+      a while yet is not an elegant solution. The second approach is to understand what the design
+      does in reality. Taking observation (1) into consideration, I guessed that it was a puzzle
+      game of sorts, where the board is 11x11. So, I tested a few different configurations to
+      probe out the output, since I assume <code>O</code> outputs something other than
+      <code>TRY AGAIN</code>. Specifically, I tested the trivial case (i.e. all zeroes), the case
+      with all 1s, and some random cases. Using this method, I reached 3 other messages:
+      <code>BIG BANG</code>, <code>EMPTY SKY</code>, and <code>TWO NOT TOUCH</code> (again
+      converting from hex to ASCII). A quick google search reveals that this game is Star Battle.
+      The most traditional rendition of this puzzle is 10x10 with 2 stars per column, row, and
+      region. The last condition is that two stars must not touch. But now another question
+      arises: columns and rows are easily defined, but what IS the area constraint specifically?</p>
+
+      <p>This was where I spent most of my time. First, I tried to identify clusters of DFFs to
+      piece together how they change based on the 121 bit input. I assume that the DFFs will
+      change based on the board configuation since it needs to check the area, column, and row
+      correctness. Probing these and tracking which ones changed after the input of test variables
+      yields the area maps for this specific board. Inputting these into a star battle solver
+      gives us the answer after some reformatting.</p>
+
+      <p>So, the answer is
+      <code class="block">0000000101010000100000000000010101010000000000001010000001000001000000100000101000010000000100000010000010010001010000000</code></p>
     `
   },
   {

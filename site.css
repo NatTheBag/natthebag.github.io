@@ -551,6 +551,25 @@
       margin: 18px 0 7px;
     }
     .modal-body a { color: var(--xp-link); }
+    .modal-body ol,
+    .modal-body ul { margin: 0 0 11px 22px; }
+    .modal-body li { margin-bottom: 5px; }
+    .modal-body code {
+      font-family: var(--xp-mono);
+      font-size: 11px;
+      background: var(--xp-face);
+      border: 1px solid var(--xp-shadow);
+      padding: 0 4px;
+      color: #123f7d;
+      overflow-wrap: anywhere;
+    }
+    /* a long literal — a bitstring, a hex dump — on its own line */
+    .modal-body code.block {
+      display: block;
+      margin-top: 6px;
+      padding: 7px 9px;
+      line-height: 1.6;
+    }
 
     .dialog-buttons {
       display: flex;
